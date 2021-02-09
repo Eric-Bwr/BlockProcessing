@@ -6,6 +6,7 @@
 #include <FrameBuffer.h>
 #include <TimeRepresentationSystem/Clock.h>
 #include <Game/Terrain/TerrainManager.h>
+#include <Game/Terrain/Chunk/ChunkGenerator.h>
 #include "Engine/3D/Camera/CameraFirstPerson.h"
 #include "Engine/PostProcess/PostProcessManager.h"
 #include "Engine/3D/Model3D/Model3D.h"
@@ -43,6 +44,7 @@ private:
     Matrix4f model;
     Shader* shader;
     CubeMesher* cubeMesher;
+    ChunkGenerator* chunkGenerator;
     TerrainManager* terrainManager;
     Texture* texture;
 private:

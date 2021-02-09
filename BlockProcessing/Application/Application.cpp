@@ -47,14 +47,19 @@ void App::_init() {
     shader = new Shader("../Assets/Shader/TerrainShader.glsl");
     shader->bind();
     shader->setUniformMatrix4f("projection", projection.getBuffer());
+    shader->setUniform3f("lightPos", 10, 500, 10);
+    shader->setUniformBool("blinn", true);
     auto transform = new Transform3D(0.0, 0.0, 0.0, 20.0);
     texture = new Texture("../Assets/Textures/Atlas");
     texture->load(true);
     model = transform->getMatrix();
+    shader->setUniformMatrix4f("model", model.getBuffer());
     cubeMesher = new CubeMesher();
     cubeMesher->setAtlasRows(16);
-    terrainManager = new TerrainManager(cubeMesher);
+    chunkGenerator = new ChunkGenerator();
+    terrainManager = new TerrainManager(cubeMesher, chunkGenerator, 20, 16, 256);
     terrainManager->generate(0, 0);
+    std::cout << shader->getErrorMessage();
 }
 
 void App::_update(double &gameTime) {
@@ -65,6 +70,7 @@ void App::_update(double &gameTime) {
     else
         camera->setMovementSpeed(cameraSpeed);
     camera->update();
+    terrainManager->generate(camera->getX(), camera->getZ());
     //------------------------------------------------------------------------------------------------------------------------------------------
 }
 
@@ -75,9 +81,18 @@ void App::_render(double &gameTime) {
     glEnable(GL_DEPTH_TEST);
     shader->bind();
     shader->setUniformMatrix4f("view", camera->getViewMatrix().getBuffer());
-    shader->setUniformMatrix4f("model", model.getBuffer());
+    shader->setUniform3f("viewPos", camera->getX(), camera->getY(), camera->getZ());
     texture->bind();
     terrainManager->render();
+    if(collision){
+        collision = false;
+        shader->unbind();
+        shader->reload();
+        std::cout << shader->getErrorMessage();
+        shader->setUniformMatrix4f("projection", projection.getBuffer());
+        shader->setUniform3f("lightPos", 10, 500, 10);
+        shader->setUniformBool("blinn", true);
+    }
 }
 
 void App::_save() {

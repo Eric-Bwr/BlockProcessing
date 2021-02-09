@@ -15,9 +15,9 @@ class CubeMesher {
 public:
     CubeMesher();
     void setAtlasRows(int rowCount);
-    void addFace(std::vector<float> &data, float x, float y, float z, int face);
+    void addFace(std::vector<float>& data, float x, float y, float z, int face);
     void addFace(std::vector<float>& data, int textureXOffset, int textureYOffset, float x, float y, float z, int face);
-        VertexBufferObjectLayout *layout;
+    VertexBufferObjectLayout *layout;
     ~CubeMesher();
 private:
     int rowCount = 1;

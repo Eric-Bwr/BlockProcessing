@@ -1,19 +1,23 @@
 #pragma once
 
 #include <vector>
-#include "Chunk.h"
+#include "Game/Terrain/Chunk/Chunk.h"
 #include "CubeMesher.h"
 #include <FastNoise.h>
+#include "Chunk/ChunkGenerator.h"
 
 class TerrainManager {
 public:
-    explicit TerrainManager(CubeMesher* cubeMesher);
-    void generate(uint64_t tileX, uint64_t tileY);
+    TerrainManager(CubeMesher* cubeMesher, ChunkGenerator* chunkGenerator, float terrainSize, int chunkSize, int terrainHeight);
+    int64_t getChunkPosition(float coord) const;
+    int getTerrainHeightInBlocks(int64_t x, int64_t z);
+    void generate(float x, float z);
     void render();
+    ~TerrainManager();
 private:
-    Chunk* testChunk;
-
+    Chunk* chunk = nullptr;
+    float terrainSize = 1, chunkSize = 1, terrainHeight = 1;
     CubeMesher* cubeMesher;
-    std::vector<Chunk*> chunks;
+    ChunkGenerator* chunkGenerator;
     FastNoise* fastNoise;
 };
