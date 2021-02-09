@@ -1,4 +1,3 @@
-#include <iostream>
 #include "TerrainManager.h"
 
 TerrainManager::TerrainManager(CubeMesher *cubeMesher, ChunkGenerator* chunkGenerator, float terrainSize, int chunkSize, int terrainHeight) : cubeMesher(cubeMesher), chunkGenerator(chunkGenerator), terrainSize(terrainSize), chunkSize((float)chunkSize), terrainHeight((float)terrainHeight) {
@@ -10,22 +9,22 @@ TerrainManager::TerrainManager(CubeMesher *cubeMesher, ChunkGenerator* chunkGene
 }
 
 void TerrainManager::generate(float x, float z) {
-   auto tileX = (int64_t)(floorf((x / terrainSize) / chunkSize));
-   auto tileZ = (int64_t)(floorf((z / terrainSize) / chunkSize));
-   if(chunk == nullptr){
-       chunk = chunkGenerator->initChunk(tileX, tileZ);
-       chunkGenerator->generateChunkData(chunk);
-   }else {
-       if (!(chunk->tileX == tileX && chunk->tileZ == tileZ)) {
-           delete chunk;
-           chunk = chunkGenerator->initChunk(tileX, tileZ);
-           chunkGenerator->generateChunkData(chunk);
-       }
-   }
+    auto tileX = (int64_t)(floorf((x / terrainSize) / chunkSize));
+    auto tileZ = (int64_t)(floorf((z / terrainSize) / chunkSize));
+    if(chunk == nullptr){
+        chunk = chunkGenerator->initChunk(tileX, tileZ);
+        chunkGenerator->generateChunkData(chunk);
+    } else {
+        if (!(chunk->tileX == tileX && chunk->tileZ == tileZ)) {
+            delete chunk;
+            chunk = chunkGenerator->initChunk(tileX, tileZ);
+            chunkGenerator->generateChunkData(chunk);
+        }
+    }
 }
 
 void TerrainManager::render() {
-    chunkGenerator->renderChunk(chunk);
+    ChunkGenerator::renderChunk(chunk);
 }
 
 int64_t TerrainManager::getChunkPosition(float coord) const {
