@@ -1,5 +1,6 @@
 #include "BlockAir.h"
 
 BlockAir::BlockAir() {
-    type = 0;
+    name = "Air";
+    id = 0;
 }

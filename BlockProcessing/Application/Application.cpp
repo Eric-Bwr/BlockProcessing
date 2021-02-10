@@ -33,7 +33,7 @@ void App::_init() {
 
     timer.setTimedBoolDuration(1.0f);
 
-    camera = new CameraFirstPerson(0.0f, 0.0f, -20.0f, 2.0f, 0.025f, 90.0f, 0.0f);
+    camera = new CameraFirstPerson(0.0f, 0.0f, -20.0f, 7.0f, 0.025f, 90.0f, 0.0f);
 
     glfwSetInputMode(appWindow->getWindow(), GLFW_STICKY_KEYS, GLFW_TRUE);
     glfwSetInputMode(appWindow->getWindow(), GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
@@ -59,7 +59,8 @@ void App::_init() {
     cubeMesher = new CubeMesher();
     cubeMesher->setAtlasRows(16);
     chunkGenerator = new ChunkGenerator();
-    terrainManager = new TerrainManager(cubeMesher, chunkGenerator);
+    blockManager = new BlockManager();
+    terrainManager = new TerrainManager(cubeMesher, chunkGenerator, blockManager);
     std::cout << shader->getErrorMessage();
     terrainManager->generate(camera->getX(), camera->getZ());
 }
@@ -72,9 +73,9 @@ void App::_update(double &gameTime) {
     else
         camera->setMovementSpeed(cameraSpeed);
     camera->update();
-    camera->setPosition(camera->getX(), terrainManager->getTerrainHeight((int64_t)camera->getX(), (int64_t)camera->getZ()) + TERRAIN_SIZE * 4,
-                        camera->getZ());
-    std::cout << terrainManager->getTerrainHeight((int64_t)camera->getX(), (int64_t)camera->getZ()) << "\n";
+    //camera->setPosition(camera->getX(), terrainManager->getTerrainHeight((int64_t)camera->getX(), (int64_t)camera->getZ()) + TERRAIN_SIZE * 4,
+    //                    camera->getZ());
+   // std::cout << terrainManager->getTerrainHeight((int64_t)camera->getX(), (int64_t)camera->getZ()) << "\n";
     //TODO: terrainManager->generate(camera->getX(), camera->getZ());
     //------------------------------------------------------------------------------------------------------------------------------------------
 }

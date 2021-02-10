@@ -45,6 +45,7 @@ private:
     Shader* shader;
     CubeMesher* cubeMesher;
     ChunkGenerator* chunkGenerator;
+    BlockManager* blockManager;
     TerrainManager* terrainManager;
     Texture* texture;
 private:

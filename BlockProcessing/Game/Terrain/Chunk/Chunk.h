@@ -2,11 +2,12 @@
 
 #include <Buffer.h>
 #include "../TerrainDefines.h"
+#include "ChunkBlock.h"
 
 struct Chunk {
     int64_t tileX, tileZ;
     std::vector<float> faceData;
-    float* blockData;
+    ChunkBlock* blockData[65536];
     uint64_t faceDataSize;
     uint64_t vertexCount;
     unsigned int vao;

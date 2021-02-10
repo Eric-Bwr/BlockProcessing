@@ -10,7 +10,7 @@
 
 class TerrainManager {
 public:
-    TerrainManager(CubeMesher* cubeMesher, ChunkGenerator* chunkGenerator);
+    TerrainManager(CubeMesher* cubeMesher, ChunkGenerator* chunkGenerator, BlockManager* blockManager);
     void generate(float x, float z);
     void render();
     static int64_t getChunkPosition(float coord);

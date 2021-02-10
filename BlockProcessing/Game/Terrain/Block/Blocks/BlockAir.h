@@ -1,8 +1,10 @@
 #pragma once
 
-#include "Game/Terrain/Block/Block.h"
+#include "Block.h"
 
-class BlockAir : public Block{
+#define BLOCK_AIR 0
+
+class BlockAir : public Block {
 public:
     BlockAir();
 };

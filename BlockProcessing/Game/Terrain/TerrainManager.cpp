@@ -1,11 +1,11 @@
 #include "TerrainManager.h"
 
-TerrainManager::TerrainManager(CubeMesher *cubeMesher, ChunkGenerator* chunkGenerator) : cubeMesher(cubeMesher), chunkGenerator(chunkGenerator) {
+TerrainManager::TerrainManager(CubeMesher *cubeMesher, ChunkGenerator* chunkGenerator, BlockManager* blockManager) : cubeMesher(cubeMesher), chunkGenerator(chunkGenerator) {
     fastNoise = new FastNoise;
     fastNoise->SetNoiseType(FastNoise::Perlin);
     fastNoise->SetSeed(1337);
     fastNoise->SetFrequency(0.0075);
-    chunkGenerator->init(cubeMesher, fastNoise);
+    chunkGenerator->init(cubeMesher, fastNoise, blockManager);
 }
 
 void TerrainManager::generate(float x, float z) {
@@ -14,7 +14,8 @@ void TerrainManager::generate(float x, float z) {
     for(int xx = tileX - 4; xx < tileX + 4; xx++){
         for(int zz = tileZ - 4; zz < tileZ + 4; zz++){
             chunks.emplace_back(chunkGenerator->initChunk(tileX + xx, tileZ + zz));
-            chunkGenerator->generateChunkData(chunks.back());
+            chunkGenerator->generateChunkBlockData(chunks.back());
+            chunkGenerator->generateChunkFaceData(chunks.back());
         }
     }
 }
