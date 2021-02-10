@@ -56,9 +56,9 @@ void App::_init() {
     model.identity();
     model.scale(TERRAIN_SIZE);
     shader->setUniformMatrix4f("model", model.getBuffer());
-    cubeMesher = new CubeMesher();
+    cubeMesher = new CubeManager();
     cubeMesher->setAtlasRows(16);
-    chunkGenerator = new ChunkGenerator();
+    chunkGenerator = new ChunkManager();
     blockManager = new BlockManager();
     terrainManager = new TerrainManager(cubeMesher, chunkGenerator, blockManager);
     std::cout << shader->getErrorMessage();

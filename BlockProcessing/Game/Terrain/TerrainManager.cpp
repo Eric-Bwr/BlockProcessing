@@ -1,28 +1,38 @@
 #include "TerrainManager.h"
 
-TerrainManager::TerrainManager(CubeMesher *cubeMesher, ChunkGenerator* chunkGenerator, BlockManager* blockManager) : cubeMesher(cubeMesher), chunkGenerator(chunkGenerator) {
+TerrainManager::TerrainManager(CubeManager *cubeMesher, ChunkManager* chunkGenerator, BlockManager* blockManager) : cubeMesher(cubeMesher), chunkGenerator(chunkGenerator) {
     fastNoise = new FastNoise;
     fastNoise->SetNoiseType(FastNoise::Perlin);
     fastNoise->SetSeed(1337);
     fastNoise->SetFrequency(0.0075);
     chunkGenerator->init(cubeMesher, fastNoise, blockManager);
+    for(int xx = 0; xx < CHUNKING_DIAMETER; xx++){
+        for(int zz = 0; zz < CHUNKING_DIAMETER; zz++) {
+            chunks[xx + zz * CHUNKING_DIAMETER] = nullptr;
+        }
+    }
 }
 
 void TerrainManager::generate(float x, float z) {
     auto tileX = (int64_t)(floorf((x / TERRAIN_SIZE) / CHUNK_SIZE));
     auto tileZ = (int64_t)(floorf((z / TERRAIN_SIZE) / CHUNK_SIZE));
-    for(int xx = tileX - 4; xx < tileX + 4; xx++){
-        for(int zz = tileZ - 4; zz < tileZ + 4; zz++){
-            chunks.emplace_back(chunkGenerator->initChunk(tileX + xx, tileZ + zz));
-            chunkGenerator->generateChunkBlockData(chunks.back());
-            chunkGenerator->generateChunkFaceData(chunks.back());
+    for(int xx = 0; xx < CHUNKING_DIAMETER; xx++){
+        for(int zz = 0; zz < CHUNKING_DIAMETER; zz++){
+            auto chunk = chunks[xx + zz * CHUNKING_DIAMETER];
+            if(chunk == nullptr){
+                chunk = chunkGenerator->initChunk(tileX + (-(xx - CHUNKING_RADIUS)), tileZ + (-(zz - CHUNKING_RADIUS)));
+                chunkGenerator->generateChunkBlockData(chunk);
+                chunkGenerator->generateChunkFaceData(chunk);
+                chunks[xx + zz * CHUNKING_DIAMETER] = chunk;
+           }
         }
     }
 }
 
 void TerrainManager::render() {
     for(auto chunk : chunks)
-        ChunkGenerator::renderChunk(chunk);
+        if(chunk != nullptr)
+            ChunkManager::renderChunk(chunk);
 }
 
 int64_t TerrainManager::getChunkPosition(float coord) {

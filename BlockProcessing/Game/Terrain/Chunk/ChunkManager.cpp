@@ -1,12 +1,12 @@
-#include "ChunkGenerator.h"
+#include "ChunkManager.h"
 
-void ChunkGenerator::init(CubeMesher *cubeMesher, FastNoise *fastNoise, BlockManager *blockManager) {
+void ChunkManager::init(CubeManager *cubeMesher, FastNoise *fastNoise, BlockManager *blockManager) {
     this->cubeMesher = cubeMesher;
     this->fastNoise = fastNoise;
     this->blockManager = blockManager;
 }
 
-Chunk *ChunkGenerator::initChunk(int64_t tileX, int64_t tileZ) {
+Chunk *ChunkManager::initChunk(int64_t tileX, int64_t tileZ) {
     auto chunk = new Chunk;
     chunk->tileX = tileX;
     chunk->tileZ = tileZ;
@@ -32,7 +32,7 @@ Chunk *ChunkGenerator::initChunk(int64_t tileX, int64_t tileZ) {
 }
 
 //THIS METHOD WILL BE GONE AND BIOME GEN AND SORTA STUFF WILL TAKE OVER IN A WAY BETTER WAY THIS IS JUST TO HAVE SMTH TO LOOK AT
-void ChunkGenerator::generateChunkBlockData(Chunk *chunk) {
+void ChunkManager::generateChunkBlockData(Chunk *chunk) {
     Block *block;
     for (int x = 0; x < CHUNK_SIZE; x++) {
         for (int z = 0; z < CHUNK_SIZE; z++) {
@@ -57,7 +57,7 @@ void ChunkGenerator::generateChunkBlockData(Chunk *chunk) {
     }
 }
 
-void ChunkGenerator::generateChunkFaceData(Chunk *chunk) {
+void ChunkManager::generateChunkFaceData(Chunk *chunk) {
     Block *block;
     for (int x = 0; x < CHUNK_SIZE; x++) {
         for (int z = 0; z < CHUNK_SIZE; z++) {
@@ -85,23 +85,34 @@ void ChunkGenerator::generateChunkFaceData(Chunk *chunk) {
                             cubeMesher->addFace(chunk->faceData, block->textureTopX, block->textureTopY, posX, y, posZ,
                                                 FACE_TOP);
                     }
-                    //
-                    //auto neighborTop = chunk->blockData[z * CHUNK_SIZE * CHUNK_SIZE + (y + 1) * CHUNK_SIZE + x];
-                    //if(neighborTop != nullptr)
-                    //    if(neighborTop->id == BLOCK_AIR)
-                    //        cubeMesher->addFace(chunk->faceData, block->textureTopX, block->textureTopY, posX, y, posZ, FACE_TOP);
-                    // auto neighborLeft = chunk->blockData[z * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + (x - 1)];
-                    //  auto neighborRight = chunk->blockData[z * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + (x + 1)];
-                    //  auto neighborFront = chunk->blockData[(z + 1) * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + x];
-                    // auto neighborBack = chunk->blockData[(z - 1) * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + x];
-                    //if(neighborLeft->id == BLOCK_AIR)
-                    //      cubeMesher->addFace(chunk->faceData, block->textureLeftX, block->textureLeftY, posX, y, posZ, FACE_LEFT);
-                    // if(neighborRight->id == BLOCK_AIR)
-                    //     cubeMesher->addFace(chunk->faceData, block->textureRightX, block->textureRightY, posX, y, posZ, FACE_RIGHT);
-                    // if(neighborFront->id == BLOCK_AIR)
-                    //     cubeMesher->addFace(chunk->faceData, block->textureFrontX, block->textureFrontY, posX, y, posZ, FACE_FRONT);
-                    // if(neighborBack->id == BLOCK_AIR)
-                    //     cubeMesher->addFace(chunk->faceData, block->textureBackX, block->textureBackY, posX, y, posZ, FACE_BACK);
+                    //if(x == 0)
+                   //     cubeMesher->addFace(chunk->faceData, block->textureLeftX, block->textureLeftY, posX, y, posZ, FACE_LEFT);
+                   //}else{
+                   //    auto neighborLeft = chunk->blockData[z * CHUNK_SIZE * TERRAIN_HEIGHT + y * CHUNK_SIZE + (x - 1)];
+                   //    if(neighborLeft->id == BLOCK_AIR)
+                   //        cubeMesher->addFace(chunk->faceData, block->textureLeftX, block->textureLeftY, posX, y, posZ, FACE_LEFT);
+                   //}
+                  //  if(x == CHUNK_SIZE)
+                  //      cubeMesher->addFace(chunk->faceData, block->textureRightX, block->textureRightY, posX, y, posZ, FACE_RIGHT);
+                    //}else{
+                    //    auto neighborRight = chunk->blockData[z * CHUNK_SIZE * TERRAIN_HEIGHT + y * CHUNK_SIZE + (x + 1)];
+                    //    if(neighborRight->id == BLOCK_AIR)
+                    //         cubeMesher->addFace(chunk->faceData, block->textureRightX, block->textureRightY, posX, y, posZ, FACE_RIGHT);
+                    //}
+                    //if(z == 0){
+                    //  //  cubeMesher->addFace(chunk->faceData, block->textureFrontX, block->textureFrontY, posX, y, posZ, FACE_FRONT);
+                    //}else{
+                    //    auto neighborFront = chunk->blockData[(z + 1) * CHUNK_SIZE * TERRAIN_HEIGHT + y * CHUNK_SIZE + x];
+                    //   // if(neighborFront->id == BLOCK_AIR)
+                    //   //     cubeMesher->addFace(chunk->faceData, block->textureFrontX, block->textureFrontY, posX, y, posZ, FACE_FRONT);
+                    //}
+                   // if(z == CHUNK_SIZE){
+                   //     //cubeMesher->addFace(chunk->faceData, block->textureBackX, block->textureBackY, posX, y, posZ, FACE_BACK);
+                   // }else{
+                   //     auto neighborBack = chunk->blockData[(z - 1) * CHUNK_SIZE * TERRAIN_HEIGHT + y * CHUNK_SIZE + x];
+                   //     if(neighborBack->id == BLOCK_AIR)
+                   //         cubeMesher->addFace(chunk->faceData, block->textureBackX, block->textureBackY, posX, y, posZ, FACE_BACK);
+                   // }
                 }
             }
         }
@@ -114,7 +125,7 @@ void ChunkGenerator::generateChunkFaceData(Chunk *chunk) {
     glBufferSubData(GL_ARRAY_BUFFER, 0, cubeMesher->layout->getStride() * chunk->vertexCount, chunk->faceData.data());
 }
 
-void ChunkGenerator::renderChunk(Chunk *chunk) {
+void ChunkManager::renderChunk(Chunk *chunk) {
     glBindVertexArray(chunk->vao);
     glDrawArrays(GL_TRIANGLES, 0, chunk->vertexCount);
 }

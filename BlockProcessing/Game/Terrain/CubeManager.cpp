@@ -1,6 +1,6 @@
-#include "CubeMesher.h"
+#include "CubeManager.h"
 
-CubeMesher::CubeMesher() {
+CubeManager::CubeManager() {
     frontFace = new float[48]{
             0, 0, 1, 0, 0, 0, 0, -1,
             1, 0, 1, 1, 0, 0, 0, -1,
@@ -55,11 +55,11 @@ CubeMesher::CubeMesher() {
     layout->pushFloat(3);
 }
 
-void CubeMesher::setAtlasRows(int rowCount){
+void CubeManager::setAtlasRows(int rowCount){
     this->rowCount = rowCount;
 }
 
-void CubeMesher::addFace(std::vector<float>& data, float x, float y, float z, int face) {
+void CubeManager::addFace(std::vector<float>& data, float x, float y, float z, int face) {
     data.resize(data.size() + 48);
     float* dataPtr = data.data() + (data.size() - 48);
     switch (face) {
@@ -91,7 +91,7 @@ void CubeMesher::addFace(std::vector<float>& data, float x, float y, float z, in
     }
 }
 
-void CubeMesher::addFace(std::vector<float>& data, int textureXOffset, int textureYOffset, float x, float y, float z, int face) {
+void CubeManager::addFace(std::vector<float>& data, int textureXOffset, int textureYOffset, float x, float y, float z, int face) {
     data.resize(data.size() + 48);
     float* dataPtr = data.data() + (data.size() - 48);
     switch (face) {
@@ -125,7 +125,7 @@ void CubeMesher::addFace(std::vector<float>& data, int textureXOffset, int textu
     }
 }
 
-CubeMesher::~CubeMesher() {
+CubeManager::~CubeManager() {
     delete[] frontFace;
     delete[] backFace;
     delete[] leftFace;
