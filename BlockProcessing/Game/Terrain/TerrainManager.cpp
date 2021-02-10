@@ -1,38 +1,35 @@
 #include "TerrainManager.h"
 
-TerrainManager::TerrainManager(CubeMesher *cubeMesher, ChunkGenerator* chunkGenerator, float terrainSize, int chunkSize, int terrainHeight) : cubeMesher(cubeMesher), chunkGenerator(chunkGenerator), terrainSize(terrainSize), chunkSize((float)chunkSize), terrainHeight((float)terrainHeight) {
+TerrainManager::TerrainManager(CubeMesher *cubeMesher, ChunkGenerator* chunkGenerator) : cubeMesher(cubeMesher), chunkGenerator(chunkGenerator) {
     fastNoise = new FastNoise;
     fastNoise->SetNoiseType(FastNoise::Perlin);
     fastNoise->SetSeed(1337);
     fastNoise->SetFrequency(0.0075);
-    chunkGenerator->init(cubeMesher, fastNoise, chunkSize, terrainHeight);
+    chunkGenerator->init(cubeMesher, fastNoise);
 }
 
 void TerrainManager::generate(float x, float z) {
-    auto tileX = (int64_t)(floorf((x / terrainSize) / chunkSize));
-    auto tileZ = (int64_t)(floorf((z / terrainSize) / chunkSize));
-    if(chunk == nullptr){
-        chunk = chunkGenerator->initChunk(tileX, tileZ);
-        chunkGenerator->generateChunkData(chunk);
-    } else {
-        if (!(chunk->tileX == tileX && chunk->tileZ == tileZ)) {
-            delete chunk;
-            chunk = chunkGenerator->initChunk(tileX, tileZ);
-            chunkGenerator->generateChunkData(chunk);
+    auto tileX = (int64_t)(floorf((x / TERRAIN_SIZE) / CHUNK_SIZE));
+    auto tileZ = (int64_t)(floorf((z / TERRAIN_SIZE) / CHUNK_SIZE));
+    for(int xx = tileX - 4; xx < tileX + 4; xx++){
+        for(int zz = tileZ - 4; zz < tileZ + 4; zz++){
+            chunks.emplace_back(chunkGenerator->initChunk(tileX + xx, tileZ + zz));
+            chunkGenerator->generateChunkData(chunks.back());
         }
     }
 }
 
 void TerrainManager::render() {
-    ChunkGenerator::renderChunk(chunk);
+    for(auto chunk : chunks)
+        ChunkGenerator::renderChunk(chunk);
 }
 
-int64_t TerrainManager::getChunkPosition(float coord) const {
-    return (int64_t)(floorf((coord / terrainSize) / chunkSize));
+int64_t TerrainManager::getChunkPosition(float coord) {
+    return (int64_t)(floorf((coord / TERRAIN_SIZE) / CHUNK_SIZE));
 }
 
-int TerrainManager::getTerrainHeightInBlocks(int64_t x, int64_t z) {
-    return int(((fastNoise->GetNoise(x, z) + 1.0f) / 2.0f) * terrainHeight);
+int TerrainManager::getTerrainHeight(int64_t x, int64_t z) {
+    return (int)(floorf(((fastNoise->GetNoise(x / TERRAIN_SIZE, z / TERRAIN_SIZE) + 1.0f) / 2.0f) * TERRAIN_HEIGHT) * TERRAIN_SIZE);
 }
 
 TerrainManager::~TerrainManager() {

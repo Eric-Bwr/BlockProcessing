@@ -1,10 +1,8 @@
 #include "ChunkGenerator.h"
 
-void ChunkGenerator::init(CubeMesher *cubeMesher, FastNoise *fastNoise, int chunkSize, int terrainHeight) {
+void ChunkGenerator::init(CubeMesher *cubeMesher, FastNoise *fastNoise) {
     this->cubeMesher = cubeMesher;
     this->fastNoise = fastNoise;
-    this->chunkSize = chunkSize;
-    this->terrainHeight = (float)terrainHeight;
 }
 
 Chunk* ChunkGenerator::initChunk(int64_t tileX, int64_t tileZ) {
@@ -32,11 +30,11 @@ Chunk* ChunkGenerator::initChunk(int64_t tileX, int64_t tileZ) {
 }
 
 void ChunkGenerator::generateChunkData(Chunk* chunk) {
-    for(int x = 0; x < chunkSize; x++) {
-        for(int z = 0; z < chunkSize; z++) {
-            int posX = chunk->tileX * chunkSize + x;
-            int posZ = chunk->tileZ * chunkSize + z;
-            float height = int(((fastNoise->GetNoise(posX, posZ) + 1.0f) / 2.0f) * terrainHeight);
+    for(int x = 0; x < CHUNK_SIZE; x++) {
+        for(int z = 0; z < CHUNK_SIZE; z++) {
+            int posX = chunk->tileX * CHUNK_SIZE + x;
+            int posZ = chunk->tileZ * CHUNK_SIZE + z;
+            float height = int(((fastNoise->GetNoise(posX, posZ) + 1.0f) / 2.0f) * TERRAIN_HEIGHT);
             cubeMesher->addFace(chunk->faceData, 2, 0, posX, height, posZ, FACE_BOTTOM);
             cubeMesher->addFace(chunk->faceData, 2, 0, posX, height, posZ, FACE_TOP);
             cubeMesher->addFace(chunk->faceData, 2, 0, posX, height, posZ, FACE_LEFT);

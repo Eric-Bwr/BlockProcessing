@@ -1,0 +1,6 @@
+#pragma once
+
+#define TERRAIN_SIZE 20
+#define TERRAIN_HEIGHT 255
+#define CHUNK_SIZE 16
+#define CHUNK_CUBIC_SIZE = CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE;

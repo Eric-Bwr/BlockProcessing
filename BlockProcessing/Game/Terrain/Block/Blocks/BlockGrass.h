@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Block.h"
+#include "Game/Terrain/Block/Block.h"
 
 class BlockGrass : public Block{
 public:
