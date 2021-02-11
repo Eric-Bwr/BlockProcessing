@@ -56,13 +56,8 @@ void App::_init() {
     model.identity();
     model.scale(TERRAIN_SIZE);
     shader->setUniformMatrix4f("model", model.getBuffer());
-    cubeMesher = new CubeManager();
-    cubeMesher->setAtlasRows(16);
-    chunkGenerator = new ChunkManager();
-    blockManager = new BlockManager();
-    terrainManager = new TerrainManager(cubeMesher, chunkGenerator, blockManager);
+    terrainManager = new TerrainManager(16);
     std::cout << shader->getErrorMessage();
-    terrainManager->generate(camera->getX(), camera->getZ());
 }
 
 void App::_update(double &gameTime) {
@@ -73,6 +68,7 @@ void App::_update(double &gameTime) {
     else
         camera->setMovementSpeed(cameraSpeed);
     camera->update();
+    terrainManager->generate(camera->getX(), camera->getY(), camera->getZ());
     //camera->setPosition(camera->getX(), terrainManager->getTerrainHeight((int64_t)camera->getX(), (int64_t)camera->getZ()) + TERRAIN_SIZE * 4,
     //                    camera->getZ());
    // std::cout << terrainManager->getTerrainHeight((int64_t)camera->getX(), (int64_t)camera->getZ()) << "\n";

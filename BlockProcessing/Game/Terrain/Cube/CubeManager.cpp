@@ -1,6 +1,6 @@
 #include "CubeManager.h"
 
-CubeManager::CubeManager() {
+CubeManager::CubeManager(int rowCount) : rowCount(rowCount) {
     frontFace = new float[48]{
             0, 0, 1, 0, 0, 0, 0, -1,
             1, 0, 1, 1, 0, 0, 0, -1,
@@ -53,10 +53,6 @@ CubeManager::CubeManager() {
     layout->pushFloat(3);
     layout->pushFloat(2);
     layout->pushFloat(3);
-}
-
-void CubeManager::setAtlasRows(int rowCount){
-    this->rowCount = rowCount;
 }
 
 void CubeManager::addFace(std::vector<float>& data, float x, float y, float z, int face) {

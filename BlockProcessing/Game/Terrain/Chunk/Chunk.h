@@ -5,7 +5,7 @@
 #include "ChunkBlock.h"
 
 struct Chunk {
-    int64_t tileX, tileZ;
+    int64_t tileX, tileY, tileZ;
     std::vector<float> faceData;
     ChunkBlock* blockData[CHUNK_CUBIC_SIZE];
     uint64_t faceDataSize;

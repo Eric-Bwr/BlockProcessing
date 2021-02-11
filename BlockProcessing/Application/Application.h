@@ -2,7 +2,7 @@
 
 #include <iostream>
 #include "Engine/Window/Window.h"
-#include "Game/Terrain/CubeManager.h"
+#include "Game/Terrain/Cube/CubeManager.h"
 #include <FrameBuffer.h>
 #include <TimeRepresentationSystem/Clock.h>
 #include <Game/Terrain/TerrainManager.h>
@@ -43,9 +43,6 @@ private:
     Matrix4f view;
     Matrix4f model;
     Shader* shader;
-    CubeManager* cubeMesher;
-    ChunkManager* chunkGenerator;
-    BlockManager* blockManager;
     TerrainManager* terrainManager;
     Texture* texture;
 private:

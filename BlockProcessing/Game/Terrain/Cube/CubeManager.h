@@ -2,7 +2,6 @@
 
 #include <Buffer.h>
 #include <memory.h>
-#include <Texture.h>
 
 #define FACE_TOP 0
 #define FACE_BOTTOM 1
@@ -13,8 +12,7 @@
 
 class CubeManager {
 public:
-    CubeManager();
-    void setAtlasRows(int rowCount);
+    explicit CubeManager(int rowCount);
     void addFace(std::vector<float>& data, float x, float y, float z, int face);
     void addFace(std::vector<float>& data, int textureXOffset, int textureYOffset, float x, float y, float z, int face);
     VertexBufferObjectLayout *layout;
