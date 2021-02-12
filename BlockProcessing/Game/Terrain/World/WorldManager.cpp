@@ -1,8 +1,8 @@
 #include "WorldManager.h"
 
-WorldManager::WorldManager(FastNoise *fastNoise, ChunkManager *chunkManager, BlockManager *blockManager) : fastNoise(fastNoise), chunkManager(chunkManager), blockManager(blockManager) {
-    chunkManager->setWorldManager(this);
-}
+FastNoise* WorldManager::fastNoise;
+std::vector<Chunk*> WorldManager::chunks;
+std::vector<Chunk*> WorldManager::unloadedChunks;
 
 void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
     for(int i = 0; i < chunks.size(); i++) {
@@ -23,10 +23,13 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
                     }
                 }
                 if (generate) {
-                    auto chunk = chunkManager->initChunk(xx, yy, zz);
+                    auto chunk = new Chunk;
+                    chunk->tileX = tileX;
+                    chunk->tileY = tileY;
+                    chunk->tileZ = tileZ;
                     generateChunkData(chunk);
-                    chunkManager->generateChunkData(chunk);
-                    chunks.emplace_back(chunk);
+                    ChunkManager::generateChunkData(chunk);
+                    unloadedChunks.emplace_back(chunk);
                 }
             }
         }
@@ -40,40 +43,25 @@ void WorldManager::generateChunkData(Chunk *chunk) {
             int posZ = chunk->tileZ * CHUNK_SIZE + z;
             for (int y = 0; y < CHUNK_SIZE; y++) {
                 int posY = chunk->tileY * CHUNK_SIZE + y;
-                chunk->blockData[z * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + x] = getChunkBlock(posX, posY, posZ);
+                auto chunkBlock = new ChunkBlock;
+                getChunkBlock(chunkBlock, posX, posY, posZ);
+                chunk->blockData[z * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + x] = chunkBlock;
             }
         }
     }
 }
 
-Chunk *WorldManager::getChunk(int64_t tileX, int64_t tileY, int64_t tileZ, bool generate) {
-    for (auto chunk : chunks) {
-        if (chunk->tileX == tileX && chunk->tileY == tileY && chunk->tileZ == tileZ)
-            return chunk;
-    }
-    if(!generate)
-        return nullptr;
-    else{
-        auto chunk = chunkManager->initChunk(tileX, tileY, tileZ);
-        generateChunkData(chunk);
-        chunkManager->generateChunkData(chunk);
-        return chunk;
-    }
-}
-
-ChunkBlock *WorldManager::getChunkBlock(int x, int y, int z) {
+void WorldManager::getChunkBlock(ChunkBlock* chunkBlock, int x, int y, int z) {
     int height = int(((fastNoise->GetNoise(x, z) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER);
-    auto chunkBlock = new ChunkBlock;
     if (y > height || y < 0) {
-        chunkBlock->id = blockManager->getBlockByID(BLOCK_AIR)->id;
+        chunkBlock->id = BlockManager::getBlockByID(BLOCK_AIR)->id;
     } else if (y == height) {
-        chunkBlock->id = blockManager->getBlockByID(BLOCK_GRASS)->id;
+        chunkBlock->id = BlockManager::getBlockByID(BLOCK_GRASS)->id;
     } else if (y < height && y >= height - 3) {
-        chunkBlock->id = blockManager->getBlockByID(BLOCK_DIRT)->id;
+        chunkBlock->id = BlockManager::getBlockByID(BLOCK_DIRT)->id;
     } else {
-        chunkBlock->id = blockManager->getBlockByID(BLOCK_STONE)->id;
+        chunkBlock->id = BlockManager::getBlockByID(BLOCK_STONE)->id;
     }
-    return chunkBlock;
 }
 
 void WorldManager::render() {
@@ -88,4 +76,8 @@ WorldManager::~WorldManager() {
         delete chunk;
     }
     chunks.clear();
+    for (auto chunk : unloadedChunks) {
+        delete chunk;
+    }
+    unloadedChunks.clear();
 }

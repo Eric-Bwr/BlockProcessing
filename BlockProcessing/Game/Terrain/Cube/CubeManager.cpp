@@ -1,6 +1,16 @@
 #include "CubeManager.h"
 
-CubeManager::CubeManager(int rowCount) : rowCount(rowCount) {
+VertexBufferObjectLayout* CubeManager::layout;
+float* CubeManager::frontFace;
+float* CubeManager::backFace;
+float* CubeManager::leftFace;
+float* CubeManager::rightFace;
+float* CubeManager::topFace;
+float* CubeManager::bottomFace;
+int CubeManager::rowCount;
+
+CubeManager::CubeManager(int count) {
+    rowCount = count;
     frontFace = new float[48]{
             0, 0, 1, 0, 0, 0, 0, -1,
             1, 0, 1, 1, 0, 0, 0, -1,

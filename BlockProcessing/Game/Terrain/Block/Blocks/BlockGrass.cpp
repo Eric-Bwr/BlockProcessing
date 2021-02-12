@@ -3,7 +3,7 @@
 BlockGrass::BlockGrass() {
     name = "Grass";
     id = 3;
-    textureTopX = 0;
+    textureTopX = 7;
     textureTopY = 0;
     textureBottomX = 2;
     textureBottomY = 0;

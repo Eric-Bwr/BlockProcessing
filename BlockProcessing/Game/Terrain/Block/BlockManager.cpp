@@ -1,5 +1,7 @@
 #include "BlockManager.h"
 
+std::map<unsigned int, Block*> BlockManager::blocks;
+
 BlockManager::BlockManager() {
     addBlock(new BlockAir());
     addBlock(new BlockStone());

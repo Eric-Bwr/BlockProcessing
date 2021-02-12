@@ -1,6 +1,7 @@
 #pragma once
 
 #include <FastNoise.h>
+#include <thread>
 #include <cmath>
 #include "Game/Terrain/Chunk/Chunk.h"
 #include "Game/Terrain/Cube/CubeManager.h"
@@ -11,11 +12,11 @@ class TerrainManager {
 public:
     explicit TerrainManager(int atlasRows);
     void generate(float x, float y, float z);
-    void render();
+    void render() const;
     static int64_t getChunkPosition(float coord);
-    int getTerrainHeight(int64_t x, int64_t z);
+    int getTerrainHeight(int64_t x, int64_t z) const;
     ~TerrainManager();
-private:
+public:
     WorldManager* worldManager;
     ChunkManager* chunkManager;
     BlockManager* blockManager;

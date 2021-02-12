@@ -13,16 +13,16 @@
 class CubeManager {
 public:
     explicit CubeManager(int rowCount);
-    void addFace(std::vector<float>& data, float x, float y, float z, int face);
-    void addFace(std::vector<float>& data, int textureXOffset, int textureYOffset, float x, float y, float z, int face);
-    VertexBufferObjectLayout *layout;
+    static void addFace(std::vector<float>& data, float x, float y, float z, int face);
+    static void addFace(std::vector<float>& data, int textureXOffset, int textureYOffset, float x, float y, float z, int face);
+    static VertexBufferObjectLayout *layout;
     ~CubeManager();
 private:
-    int rowCount = 1;
-    float *frontFace;
-    float *backFace;
-    float *leftFace;
-    float *rightFace;
-    float *topFace;
-    float *bottomFace;
+    static int rowCount;
+    static float *frontFace;
+    static float *backFace;
+    static float *leftFace;
+    static float *rightFace;
+    static float *topFace;
+    static float *bottomFace;
 };

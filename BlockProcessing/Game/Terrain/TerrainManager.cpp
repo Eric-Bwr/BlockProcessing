@@ -7,18 +7,27 @@ TerrainManager::TerrainManager(int atlasRows) {
     fastNoise->SetFrequency(0.0075);
     cubeManager = new CubeManager(atlasRows);
     blockManager = new BlockManager();
-    chunkManager = new ChunkManager(cubeManager, blockManager);
-    worldManager = new WorldManager(fastNoise, chunkManager, blockManager);
+    chunkManager = new ChunkManager();
+    worldManager = new WorldManager();
+    WorldManager::fastNoise = fastNoise;
 }
 
 void TerrainManager::generate(float x, float y, float z) {
     auto tileX = (int64_t)(floorf((x / TERRAIN_SIZE) / CHUNK_SIZE));
     auto tileY = (int64_t)(floorf((y / TERRAIN_SIZE) / CHUNK_SIZE));
     auto tileZ = (int64_t)(floorf((z / TERRAIN_SIZE) / CHUNK_SIZE));
-    worldManager->generate(tileX, tileY, tileZ);
+    std::thread thread(WorldManager::generate, tileX, tileY, tileZ);
+    thread.detach();
+    for(int i = 0; i < WorldManager::unloadedChunks.size(); i++){
+        auto chunk = WorldManager::unloadedChunks.at(i);
+        ChunkManager::initChunk(chunk, tileX, tileY, tileZ);
+        ChunkManager::loadChunkData(chunk);
+        WorldManager::chunks.emplace_back(chunk);
+        WorldManager::unloadedChunks.erase(WorldManager::unloadedChunks.begin() + i);
+    }
 }
 
-void TerrainManager::render() {
+void TerrainManager::render() const {
     worldManager->render();
 }
 
@@ -26,11 +35,12 @@ int64_t TerrainManager::getChunkPosition(float coord) {
     return (int64_t)(floorf((coord / TERRAIN_SIZE) / CHUNK_SIZE));
 }
 
-int TerrainManager::getTerrainHeight(int64_t x, int64_t z) {
-    return (int)(floorf(((fastNoise->GetNoise(x / TERRAIN_SIZE, z / TERRAIN_SIZE) + 1.0f) / 2.0f) * CHUNK_SIZE) * TERRAIN_SIZE);
+int TerrainManager::getTerrainHeight(int64_t x, int64_t z) const {
+    return (int)(floorf(((fastNoise->GetNoise(x / TERRAIN_SIZE, z / TERRAIN_SIZE) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER) *TERRAIN_SIZE);
 }
 
 TerrainManager::~TerrainManager() {
+    delete generationThread;
     delete worldManager;
     delete chunkManager;
     delete blockManager;

@@ -9,8 +9,8 @@
 class BlockManager {
 public:
     BlockManager();
-    void addBlock(Block* block);
-    Block* getBlockByID(unsigned int id);
+    static void addBlock(Block* block);
+    static Block* getBlockByID(unsigned int id);
 private:
-    std::map<unsigned int, Block*> blocks;
+    static std::map<unsigned int, Block*> blocks;
 };
