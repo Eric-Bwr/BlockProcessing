@@ -9,14 +9,13 @@
 
 class TerrainManager {
 public:
-    TerrainManager(int atlasRows);
+    explicit TerrainManager(int atlasRows);
     void generate(float x, float y, float z);
     void render();
     static int64_t getChunkPosition(float coord);
     int getTerrainHeight(int64_t x, int64_t z);
     ~TerrainManager();
 private:
-    std::vector<Chunk*> chunks;
     WorldManager* worldManager;
     ChunkManager* chunkManager;
     BlockManager* blockManager;
