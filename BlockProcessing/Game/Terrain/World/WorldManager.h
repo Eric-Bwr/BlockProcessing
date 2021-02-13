@@ -5,6 +5,8 @@
 #include <FastNoise.h>
 #include <unordered_map>
 #include <unordered_set>
+#include <atomic>
+#include <algorithm>
 #include "../Chunk/ChunkManager.h"
 #include "../Block/BlockManager.h"
 
@@ -24,8 +26,7 @@ class WorldManager {
 public:
     static void init();
     static void generate(int64_t tileX, int64_t tileY, int64_t tileZ);
-    static void generateChunkData(Chunk* chunk);
-    static void getChunkBlock(ChunkBlock* chunkBlock, int x, int y, int z);
+    static void getChunkBlock(ChunkBlock& chunkBlock, int x, int y, int z);
     void render();
     ~WorldManager();
 public:

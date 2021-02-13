@@ -1,5 +1,3 @@
-#include <atomic>
-#include <algorithm>
 #include "WorldManager.h"
 
 FastNoise *WorldManager::fastNoise;
@@ -7,15 +5,13 @@ std::unordered_map<Coord, Chunk *, Hash, Compare> WorldManager::chunks;
 std::unordered_set<Coord, Hash, Compare> WorldManager::chunksGenerating;
 std::vector<Coord> WorldManager::chunksCandidatesForGenerating;
 
-class Generator {
+struct Generator {
 public:
     std::atomic_bool isBusy = false;
     std::atomic_bool isAlive = true;
     Chunk *chunk = nullptr;
     Coord coord;
 };
-
-#include "iostream"
 
 static void GeneratorLoop(Generator *generator) {
     while (generator->isAlive) {
@@ -33,25 +29,13 @@ static void GeneratorLoop(Generator *generator) {
     delete generator;
 }
 
-#define NUM_THREADS 5
+static Generator *generators[CHUNKING_THREADS];
 
-static Generator *generators[NUM_THREADS];
-
-void InitThreads() {
-    for (int i = 0; i < NUM_THREADS; i++) {
+void WorldManager::init() {
+    for (int i = 0; i < CHUNKING_THREADS; i++) {
         generators[i] = new Generator();
         std::thread t(GeneratorLoop, generators[i]);
         t.detach();
-    }
-}
-
-void WorldManager::init() {
-    InitThreads();
-}
-
-void EndThreads() {
-    for (auto &generator : generators) {
-        generator->isAlive = false;
     }
 }
 
@@ -61,8 +45,9 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
         ++next_it;
         if (_abs64(it->first.tileX - tileX) > CHUNKING_DELETION_RADIUS ||
             _abs64(it->first.tileZ - tileZ) > CHUNKING_DELETION_RADIUS) {
-            chunks.erase(it);
+            ChunkManager::unloadChunk(it->second);
             delete it->second;
+            chunks.erase(it);
         }
     }
     for (int xx = tileX - CHUNKING_RADIUS; xx <= tileX + CHUNKING_RADIUS; xx++) {
@@ -119,16 +104,16 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
     }
 }
 
-void WorldManager::getChunkBlock(ChunkBlock *chunkBlock, int x, int y, int z) {
+void WorldManager::getChunkBlock(ChunkBlock& chunkBlock, int x, int y, int z) {
     int height = int(((fastNoise->GetNoise(x, z) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER);
     if (y > height || y < 0) {
-        chunkBlock->id = BlockManager::getBlockByID(BLOCK_AIR)->id;
+        chunkBlock.id = BlockManager::getBlockByID(BLOCK_AIR)->id;
     } else if (y == height) {
-        chunkBlock->id = BlockManager::getBlockByID(BLOCK_GRASS)->id;
+        chunkBlock.id = BlockManager::getBlockByID(BLOCK_GRASS)->id;
     } else if (y < height && y >= height - 3) {
-        chunkBlock->id = BlockManager::getBlockByID(BLOCK_DIRT)->id;
+        chunkBlock.id = BlockManager::getBlockByID(BLOCK_DIRT)->id;
     } else {
-        chunkBlock->id = BlockManager::getBlockByID(BLOCK_STONE)->id;
+        chunkBlock.id = BlockManager::getBlockByID(BLOCK_STONE)->id;
     }
 }
 
@@ -140,9 +125,11 @@ void WorldManager::render() {
 }
 
 WorldManager::~WorldManager() {
-    EndThreads();
     for (auto&[coord, chunk] : chunks) {
         delete chunk;
     }
     chunks.clear();
+    for (auto &generator : generators) {
+        generator->isAlive = false;
+    }
 }

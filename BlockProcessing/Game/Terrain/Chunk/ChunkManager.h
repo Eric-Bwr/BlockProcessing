@@ -13,4 +13,5 @@ public:
     static void generateChunkFaceData(Chunk *chunk);
     static void loadChunkData(Chunk* chunk);
     static void renderChunk(Chunk* chunk);
+    static void unloadChunk(Chunk* chunk);
 };

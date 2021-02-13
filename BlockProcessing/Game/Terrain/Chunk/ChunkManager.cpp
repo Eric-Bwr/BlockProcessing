@@ -29,7 +29,7 @@ void ChunkManager::generateChunkBlockData(Chunk *chunk) {
             int posY = chunk->coord.tileY * CHUNK_SIZE + y;
             for (int z = 0; z < CHUNK_SIZE; z++) {
                 int posZ = chunk->coord.tileZ * CHUNK_SIZE + z;
-                auto chunkBlock = new ChunkBlock;
+                ChunkBlock chunkBlock;
                 WorldManager::getChunkBlock(chunkBlock, posX, posY, posZ);
                 chunk->blockData[z * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + x] = chunkBlock;
             }
@@ -46,66 +46,66 @@ void ChunkManager::generateChunkFaceData(Chunk *chunk) {
             for (int z = 0; z < CHUNK_SIZE; z++) {
                 int posZ = chunk->coord.tileZ * CHUNK_SIZE + z;
                 auto chunkBlock = chunk->blockData[z * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + x];
-                if (chunkBlock->id != BLOCK_AIR) {
-                    block = BlockManager::getBlockByID(chunkBlock->id);
+                if (chunkBlock.id != BLOCK_AIR) {
+                    block = BlockManager::getBlockByID(chunkBlock.id);
                     if (y == 0) {
-                        auto neighbor = new ChunkBlock;
+                        ChunkBlock neighbor;
                         WorldManager::getChunkBlock(neighbor, posX, posY - 1, posZ);
-                        if (neighbor->id == BLOCK_AIR)
+                        if (neighbor.id == BLOCK_AIR)
                             CubeManager::addFace(chunk->faceData, block->textureBottomX, block->textureBottomY, posX, posY, posZ, FACE_BOTTOM);
                     } else {
                         auto neighbor = chunk->blockData[z * CHUNK_SIZE * CHUNK_SIZE + (y - 1) * CHUNK_SIZE + x];
-                        if (neighbor->id == BLOCK_AIR)
+                        if (neighbor.id == BLOCK_AIR)
                             CubeManager::addFace(chunk->faceData, block->textureBottomX, block->textureBottomY, posX, posY, posZ, FACE_BOTTOM);
                     }
                     if (y == CHUNK_SIZE - 1) {
-                        auto neighbor = new ChunkBlock;
+                        ChunkBlock neighbor;
                         WorldManager::getChunkBlock(neighbor, posX, posY + 1, posZ);
-                        if (neighbor->id == BLOCK_AIR)
+                        if (neighbor.id == BLOCK_AIR)
                             CubeManager::addFace(chunk->faceData, block->textureTopX, block->textureTopY, posX, posY, posZ, FACE_TOP);
                     } else {
                         auto neighbor = chunk->blockData[z * CHUNK_SIZE * CHUNK_SIZE + (y + 1) * CHUNK_SIZE + x];
-                        if (neighbor->id == BLOCK_AIR)
+                        if (neighbor.id == BLOCK_AIR)
                             CubeManager::addFace(chunk->faceData, block->textureTopX, block->textureTopY, posX, posY, posZ, FACE_TOP);
                     }
                     if (x == CHUNK_SIZE - 1) {
-                        auto neighbor = new ChunkBlock;
+                        ChunkBlock neighbor;
                         WorldManager::getChunkBlock(neighbor, posX + 1, posY, posZ);
-                        if (neighbor->id == BLOCK_AIR)
+                        if (neighbor.id == BLOCK_AIR)
                             CubeManager::addFace(chunk->faceData, block->textureRightX, block->textureRightY, posX, posY, posZ, FACE_RIGHT);
                     } else {
                         auto neighbor = chunk->blockData[z * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + (x + 1)];
-                        if (neighbor->id == BLOCK_AIR)
+                        if (neighbor.id == BLOCK_AIR)
                             CubeManager::addFace(chunk->faceData, block->textureRightX, block->textureRightY, posX, posY, posZ, FACE_RIGHT);
                     }
                     if (x == 0) {
-                        auto neighbor = new ChunkBlock;
+                        ChunkBlock neighbor;
                         WorldManager::getChunkBlock(neighbor, posX - 1, posY, posZ);
-                        if (neighbor->id == BLOCK_AIR)
+                        if (neighbor.id == BLOCK_AIR)
                             CubeManager::addFace(chunk->faceData, block->textureLeftX, block->textureLeftY, posX, posY, posZ, FACE_LEFT);
                     } else {
                         auto neighbor = chunk->blockData[z * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + (x - 1)];
-                        if (neighbor->id == BLOCK_AIR)
+                        if (neighbor.id == BLOCK_AIR)
                             CubeManager::addFace(chunk->faceData, block->textureLeftX, block->textureLeftY, posX, posY, posZ, FACE_LEFT);
                     }
                     if (z == CHUNK_SIZE - 1) {
-                        auto neighbor = new ChunkBlock;
+                        ChunkBlock neighbor;
                         WorldManager::getChunkBlock(neighbor, posX, posY, posZ + 1);
-                        if (neighbor->id == BLOCK_AIR)
+                        if (neighbor.id == BLOCK_AIR)
                             CubeManager::addFace(chunk->faceData, block->textureFrontX, block->textureFrontY, posX, posY, posZ, FACE_FRONT);
                     } else {
                         auto neighbor = chunk->blockData[(z + 1) * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + x];
-                        if (neighbor->id == BLOCK_AIR)
+                        if (neighbor.id == BLOCK_AIR)
                             CubeManager::addFace(chunk->faceData, block->textureFrontX, block->textureFrontY, posX, posY, posZ, FACE_FRONT);
                     }
                     if (z == 0) {
-                        auto neighbor = new ChunkBlock;
+                        ChunkBlock neighbor;
                         WorldManager::getChunkBlock(neighbor, posX, posY, posZ - 1);
-                        if (neighbor->id == BLOCK_AIR)
+                        if (neighbor.id == BLOCK_AIR)
                             CubeManager::addFace(chunk->faceData, block->textureBackX, block->textureBackY, posX, posY, posZ, FACE_BACK);
                     } else {
                         auto neighbor = chunk->blockData[(z - 1) * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + x];
-                        if (neighbor->id == BLOCK_AIR)
+                        if (neighbor.id == BLOCK_AIR)
                             CubeManager::addFace(chunk->faceData, block->textureBackX, block->textureBackY, posX, posY, posZ, FACE_BACK);
                     }
                 }
@@ -127,4 +127,10 @@ void ChunkManager::loadChunkData(Chunk* chunk){
 void ChunkManager::renderChunk(Chunk *chunk) {
     glBindVertexArray(chunk->vao);
     glDrawArrays(GL_TRIANGLES, 0, chunk->vertexCount);
+}
+
+void ChunkManager::unloadChunk(Chunk* chunk){
+    glDeleteBuffers(1, &chunk->vbo);
+    glDeleteVertexArrays(1, &chunk->vao);
+    chunk->faceData.clear();
 }
