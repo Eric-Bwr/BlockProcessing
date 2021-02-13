@@ -10,21 +10,14 @@ TerrainManager::TerrainManager(int atlasRows) {
     chunkManager = new ChunkManager();
     worldManager = new WorldManager();
     WorldManager::fastNoise = fastNoise;
+    WorldManager::init();
 }
 
 void TerrainManager::generate(float x, float y, float z) {
     auto tileX = (int64_t)(floorf((x / TERRAIN_SIZE) / CHUNK_SIZE));
     auto tileY = (int64_t)(floorf((y / TERRAIN_SIZE) / CHUNK_SIZE));
     auto tileZ = (int64_t)(floorf((z / TERRAIN_SIZE) / CHUNK_SIZE));
-    std::thread thread(WorldManager::generate, tileX, tileY, tileZ);
-    thread.detach();
-    for(int i = 0; i < WorldManager::unloadedChunks.size(); i++){
-        auto chunk = WorldManager::unloadedChunks.at(i);
-        ChunkManager::initChunk(chunk, tileX, tileY, tileZ);
-        ChunkManager::loadChunkData(chunk);
-        WorldManager::chunks.emplace_back(chunk);
-        WorldManager::unloadedChunks.erase(WorldManager::unloadedChunks.begin() + i);
-    }
+    WorldManager::generate(tileX, tileY, tileZ);
 }
 
 void TerrainManager::render() const {
@@ -40,7 +33,6 @@ int TerrainManager::getTerrainHeight(int64_t x, int64_t z) const {
 }
 
 TerrainManager::~TerrainManager() {
-    delete generationThread;
     delete worldManager;
     delete chunkManager;
     delete blockManager;

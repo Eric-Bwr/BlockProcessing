@@ -1,7 +1,6 @@
 #pragma once
 
 #include <FastNoise.h>
-#include <thread>
 #include <cmath>
 #include "Game/Terrain/Chunk/Chunk.h"
 #include "Game/Terrain/Cube/CubeManager.h"

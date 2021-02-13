@@ -8,8 +8,9 @@ class WorldManager;
 
 class ChunkManager {
 public:
-    static void initChunk(Chunk* chunk, int64_t tileX, int64_t tileY, int64_t tileZ);
-    static void generateChunkData(Chunk *chunk);
+    static void initChunk(Chunk* chunk);
+    static void generateChunkBlockData(Chunk *chunk);
+    static void generateChunkFaceData(Chunk *chunk);
     static void loadChunkData(Chunk* chunk);
     static void renderChunk(Chunk* chunk);
 };

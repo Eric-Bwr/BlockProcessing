@@ -1,57 +1,125 @@
+#include <atomic>
+#include <algorithm>
 #include "WorldManager.h"
 
-FastNoise* WorldManager::fastNoise;
-std::vector<Chunk*> WorldManager::chunks;
-std::vector<Chunk*> WorldManager::unloadedChunks;
+FastNoise *WorldManager::fastNoise;
+std::unordered_map<Coord, Chunk *, Hash, Compare> WorldManager::chunks;
+std::unordered_set<Coord, Hash, Compare> WorldManager::chunksGenerating;
+std::vector<Coord> WorldManager::chunksCandidatesForGenerating;
+
+class Generator {
+public:
+    std::atomic_bool isBusy = false;
+    std::atomic_bool isAlive = true;
+    Chunk *chunk = nullptr;
+    Coord coord;
+};
+
+#include "iostream"
+
+static void GeneratorLoop(Generator *generator) {
+    while (generator->isAlive) {
+        if (generator->isBusy) {
+            generator->chunk = new Chunk;
+            generator->chunk->render = false;
+            generator->chunk->coord = generator->coord;
+            ChunkManager::generateChunkBlockData(generator->chunk);
+            ChunkManager::generateChunkFaceData(generator->chunk);
+            generator->isBusy = false;
+        } else {
+            std::this_thread::sleep_for(std::chrono::milliseconds(16));
+        }
+    }
+    delete generator;
+}
+
+#define NUM_THREADS 5
+
+static Generator *generators[NUM_THREADS];
+
+void InitThreads() {
+    for (int i = 0; i < NUM_THREADS; i++) {
+        generators[i] = new Generator();
+        std::thread t(GeneratorLoop, generators[i]);
+        t.detach();
+    }
+}
+
+void WorldManager::init() {
+    InitThreads();
+}
+
+void EndThreads() {
+    for (auto &generator : generators) {
+        generator->isAlive = false;
+    }
+}
 
 void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
-    for(int i = 0; i < chunks.size(); i++) {
-        auto chunk = chunks.at(i);
-        if(_abs64(chunk->tileX - tileX) > CHUNKING_RADIUS || _abs64(chunk->tileZ - tileZ) > CHUNKING_RADIUS){
-            chunks.erase(chunks.begin() + i);
-            delete chunk;
+    chunksCandidatesForGenerating.clear();
+    for (auto it = chunks.cbegin(), next_it = it; it != chunks.cend(); it = next_it) {
+        ++next_it;
+        if (_abs64(it->first.tileX - tileX) > CHUNKING_DELETION_RADIUS ||
+            _abs64(it->first.tileZ - tileZ) > CHUNKING_DELETION_RADIUS) {
+            chunks.erase(it);
+            delete it->second;
         }
     }
     for (int xx = tileX - CHUNKING_RADIUS; xx <= tileX + CHUNKING_RADIUS; xx++) {
         for (int yy = tileY - CHUNKING_RADIUS; yy <= tileY + CHUNKING_RADIUS; yy++) {
             for (int zz = tileZ - CHUNKING_RADIUS; zz <= tileZ + CHUNKING_RADIUS; zz++) {
-                bool generate = true;
-                for (auto chunk : chunks) {
-                    if (chunk->tileX == xx && chunk->tileY == yy && chunk->tileZ == zz) {
-                        generate = false;
-                        break;
-                    }
-                }
-                if (generate) {
-                    auto chunk = new Chunk;
-                    chunk->tileX = tileX;
-                    chunk->tileY = tileY;
-                    chunk->tileZ = tileZ;
-                    generateChunkData(chunk);
-                    ChunkManager::generateChunkData(chunk);
-                    unloadedChunks.emplace_back(chunk);
+                Coord coord{xx, yy, zz};
+                auto it = chunks.find(coord);
+                if (it == chunks.end()) {
+                    chunksCandidatesForGenerating.push_back(coord);
+                } else {
+                    auto &chunk = it->second;
+                    chunk->render = true;
                 }
             }
         }
     }
-}
-
-void WorldManager::generateChunkData(Chunk *chunk) {
-    for (int x = 0; x < CHUNK_SIZE; x++) {
-        int posX = chunk->tileX * CHUNK_SIZE + x;
-        for (int z = 0; z < CHUNK_SIZE; z++) {
-            int posZ = chunk->tileZ * CHUNK_SIZE + z;
-            for (int y = 0; y < CHUNK_SIZE; y++) {
-                int posY = chunk->tileY * CHUNK_SIZE + y;
-                auto chunkBlock = new ChunkBlock;
-                getChunkBlock(chunkBlock, posX, posY, posZ);
-                chunk->blockData[z * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + x] = chunkBlock;
+    std::sort(std::begin(chunksCandidatesForGenerating), std::end(chunksCandidatesForGenerating),
+              [&](const Coord &coord1, const Coord &coord2) {
+                  //TODO: int64_t frustumCulling = cameraObj can it see the chunk at coord coord1 & coord2 ? -10 : 10
+                  int64_t distance1 = Coord::distanceSquared(coord1, {tileX, tileY, tileZ});
+                  int64_t distance2 = Coord::distanceSquared(coord2, {tileX, tileY, tileZ});
+                  return distance1 - distance2 < 0;
+              }
+    );
+    std::vector<Chunk*> generatedChunks;
+    int chunkCoordIndex = 0;
+    for (auto &generator : generators) {
+        if (generator->isBusy) {
+            continue;
+        } else {
+            if (generator->chunk != nullptr) {
+                generatedChunks.push_back(generator->chunk);
+                generator->chunk = nullptr;
+            }
+            while (chunkCoordIndex < chunksCandidatesForGenerating.size()) {
+                auto coord = chunksCandidatesForGenerating[chunkCoordIndex];
+                bool currentlyGenerated = chunksGenerating.find(coord) != chunksGenerating.end();
+                if (currentlyGenerated) {
+                    chunkCoordIndex++;
+                } else {
+                    generator->coord = coord;
+                    generator->isBusy = true;
+                    chunksGenerating.insert(coord);
+                    break;
+                }
             }
         }
     }
+    for (auto &chunk : generatedChunks) {
+        chunksGenerating.erase(chunksGenerating.find(chunk->coord));
+        ChunkManager::initChunk(chunk);
+        ChunkManager::loadChunkData(chunk);
+        chunks.insert(std::pair<Coord, Chunk *>(chunk->coord, chunk));
+    }
 }
 
-void WorldManager::getChunkBlock(ChunkBlock* chunkBlock, int x, int y, int z) {
+void WorldManager::getChunkBlock(ChunkBlock *chunkBlock, int x, int y, int z) {
     int height = int(((fastNoise->GetNoise(x, z) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER);
     if (y > height || y < 0) {
         chunkBlock->id = BlockManager::getBlockByID(BLOCK_AIR)->id;
@@ -65,19 +133,16 @@ void WorldManager::getChunkBlock(ChunkBlock* chunkBlock, int x, int y, int z) {
 }
 
 void WorldManager::render() {
-    for (auto chunk : chunks) {
-        if (chunk != nullptr)
+    for (auto&[coord, chunk] : chunks) {
+        if (chunk->render)
             ChunkManager::renderChunk(chunk);
     }
 }
 
 WorldManager::~WorldManager() {
-    for (auto chunk : chunks) {
+    EndThreads();
+    for (auto&[coord, chunk] : chunks) {
         delete chunk;
     }
     chunks.clear();
-    for (auto chunk : unloadedChunks) {
-        delete chunk;
-    }
-    unloadedChunks.clear();
 }

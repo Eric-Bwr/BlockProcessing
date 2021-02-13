@@ -1,10 +1,7 @@
 #include "ChunkManager.h"
 #include "../World/WorldManager.h"
 
-void ChunkManager::initChunk(Chunk* chunk, int64_t tileX, int64_t tileY, int64_t tileZ) {
-    chunk->tileX = tileX;
-    chunk->tileY = tileY;
-    chunk->tileZ = tileZ;
+void ChunkManager::initChunk(Chunk* chunk) {
     chunk->faceDataSize = 0;
     chunk->vertexCount = 0;
     glGenVertexArrays(1, &chunk->vao);
@@ -25,14 +22,29 @@ void ChunkManager::initChunk(Chunk* chunk, int64_t tileX, int64_t tileY, int64_t
     }
 }
 
-void ChunkManager::generateChunkData(Chunk *chunk) {
+void ChunkManager::generateChunkBlockData(Chunk *chunk) {
+    for (int x = 0; x < CHUNK_SIZE; x++) {
+        int posX = chunk->coord.tileX * CHUNK_SIZE + x;
+        for (int y = 0; y < CHUNK_SIZE; y++) {
+            int posY = chunk->coord.tileY * CHUNK_SIZE + y;
+            for (int z = 0; z < CHUNK_SIZE; z++) {
+                int posZ = chunk->coord.tileZ * CHUNK_SIZE + z;
+                auto chunkBlock = new ChunkBlock;
+                WorldManager::getChunkBlock(chunkBlock, posX, posY, posZ);
+                chunk->blockData[z * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + x] = chunkBlock;
+            }
+        }
+    }
+}
+
+void ChunkManager::generateChunkFaceData(Chunk *chunk) {
     Block *block;
     for (int x = 0; x < CHUNK_SIZE; x++) {
-        int posX = chunk->tileX * CHUNK_SIZE + x;
+        int posX = chunk->coord.tileX * CHUNK_SIZE + x;
         for (int y = 0; y < CHUNK_SIZE; y++) {
-            int posY = chunk->tileY * CHUNK_SIZE + y;
+            int posY = chunk->coord.tileY * CHUNK_SIZE + y;
             for (int z = 0; z < CHUNK_SIZE; z++) {
-                int posZ = chunk->tileZ * CHUNK_SIZE + z;
+                int posZ = chunk->coord.tileZ * CHUNK_SIZE + z;
                 auto chunkBlock = chunk->blockData[z * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + x];
                 if (chunkBlock->id != BLOCK_AIR) {
                     block = BlockManager::getBlockByID(chunkBlock->id);

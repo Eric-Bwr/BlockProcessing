@@ -4,8 +4,19 @@
 #include "../TerrainDefines.h"
 #include "ChunkBlock.h"
 
-struct Chunk {
+struct Coord {
     int64_t tileX, tileY, tileZ;
+    static int64_t distanceSquared(const Coord &coord1, const Coord &coord2){
+        return
+        (coord1.tileX - coord2.tileX) * (coord1.tileX - coord2.tileX) +
+        (coord1.tileY - coord2.tileY) * (coord1.tileY - coord2.tileY) +
+        (coord1.tileZ - coord2.tileZ) * (coord1.tileZ - coord2.tileZ);
+    };
+};
+
+struct Chunk {
+    bool render = true;
+    Coord coord;
     std::vector<float> faceData;
     ChunkBlock* blockData[CHUNK_CUBIC_SIZE];
     uint64_t faceDataSize;
