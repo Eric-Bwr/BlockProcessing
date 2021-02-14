@@ -13,8 +13,7 @@
 class CubeManager {
 public:
     explicit CubeManager(int rowCount);
-    static void addFace(std::vector<float>& data, float x, float y, float z, int face);
-    static void addFace(std::vector<float>& data, int textureXOffset, int textureYOffset, float x, float y, float z, int face);
+    static void addFace(std::vector<float>& data, unsigned int id, int textureXOffset, int textureYOffset, float x, float y, float z, int face);
     static VertexBufferObjectLayout *layout;
     ~CubeManager();
 private:

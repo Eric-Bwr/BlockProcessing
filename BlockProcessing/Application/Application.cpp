@@ -69,12 +69,14 @@ void App::_update(double &gameTime) {
     else
         camera->setMovementSpeed(cameraSpeed);
     camera->update();
+    auto terrainHeight = (float)terrainManager->getTerrainHeight((int64_t) camera->getX(), (int64_t) camera->getZ());
+    if (collision) {
+        incr = terrainHeight - (camera->getY() - offset);
+        span += incr / 3;
+        camera->setPosition(camera->getX(), span + offset, camera->getZ());
+    }else
+        span = terrainHeight;
     terrainManager->generate(camera->getX(), camera->getY(), camera->getZ());
-    //camera->setPosition(camera->getX(), terrainManager->getTerrainHeight((int64_t)camera->getX(), (int64_t)camera->getZ()) + TERRAIN_SIZE * 4,
-    //                    camera->getZ());
-   // std::cout << terrainManager->getTerrainHeight((int64_t)camera->getX(), (int64_t)camera->getZ()) << "\n";
-    //TODO: terrainManager->generate(camera->getX(), camera->getZ());
-    //------------------------------------------------------------------------------------------------------------------------------------------
 }
 
 void App::_render(double &gameTime) {
@@ -89,9 +91,9 @@ void App::_render(double &gameTime) {
     shader->setUniform3f("viewPos", camera->getX(), camera->getY(), camera->getZ());
     texture->bind();
     terrainManager->render(&projectionView);
-    if (collision) {
-        collision = false;
-        shader->unbind();
+    if (alt) {
+        alt = false;
+        Shader::unbind();
         shader->reload();
         std::cout << shader->getErrorMessage();
         shader->setUniformMatrix4f("projection", projection.getBuffer());

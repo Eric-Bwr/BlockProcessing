@@ -56,7 +56,7 @@ bool App::onKeyPressed(es::KeyPressedEvent& e) {
         else
             glfwSetInputMode(appWindow->getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
-    if(e.getKey() == GLFW_KEY_R){
+    if(e.getKey() == GLFW_KEY_C){
         collision = !collision;
     }
     if(e.getKey() == GLFW_KEY_K){

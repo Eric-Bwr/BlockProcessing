@@ -111,7 +111,7 @@ void WorldManager::getChunkBlock(ChunkBlock& chunkBlock, int x, int y, int z) {
         chunkBlock.id = BlockManager::getBlockByID(BLOCK_AIR)->id;
     } else if (y == height) {
         chunkBlock.id = BlockManager::getBlockByID(BLOCK_GRASS)->id;
-    } else if (y < height && y >= height - 3) {
+    } else if (y < height && y >= height - 1) {
         chunkBlock.id = BlockManager::getBlockByID(BLOCK_DIRT)->id;
     } else {
         chunkBlock.id = BlockManager::getBlockByID(BLOCK_STONE)->id;

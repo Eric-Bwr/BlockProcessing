@@ -37,6 +37,9 @@ private:
     float cameraSpeed = 7.0f;
     bool zoom = true;
     bool wireFrame = false;
+    float span = 0.0f;
+    float incr = 1.0f;
+    float offset = 4.5 * TERRAIN_SIZE;
 
     float fov = 90.0f;
     Matrix4f projection;

@@ -2,9 +2,10 @@
 
 TerrainManager::TerrainManager(int atlasRows) {
     fastNoise = new FastNoise;
-    fastNoise->SetNoiseType(FastNoise::Perlin);
-    fastNoise->SetSeed(1337);
-    fastNoise->SetFrequency(0.0075);
+    fastNoise->SetNoiseType(FastNoise::PerlinFractal);
+    fastNoise->SetSeed(rand());
+    fastNoise->SetFrequency(0.009);
+    fastNoise->SetFractalOctaves(6);
     cubeManager = new CubeManager(atlasRows);
     blockManager = new BlockManager();
     chunkManager = new ChunkManager();
@@ -21,7 +22,7 @@ void TerrainManager::generate(float x, float y, float z) {
 }
 
 void TerrainManager::render(Matrix4f* projectionView) const {
-    worldManager->render(projectionView);
+    WorldManager::render(projectionView);
 }
 
 int64_t TerrainManager::getChunkPosition(float coord) {
@@ -29,7 +30,7 @@ int64_t TerrainManager::getChunkPosition(float coord) {
 }
 
 int TerrainManager::getTerrainHeight(int64_t x, int64_t z) const {
-    return (int)(floorf(((fastNoise->GetNoise(x / TERRAIN_SIZE, z / TERRAIN_SIZE) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER) *TERRAIN_SIZE);
+    return (int)(floorf(((fastNoise->GetNoise(x / TERRAIN_SIZE, z / TERRAIN_SIZE) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER) * TERRAIN_SIZE);
 }
 
 TerrainManager::~TerrainManager() {
