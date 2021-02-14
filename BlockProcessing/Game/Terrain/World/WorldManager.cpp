@@ -67,13 +67,12 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
     }
     std::sort(std::begin(chunkCandidatesForGenerating), std::end(chunkCandidatesForGenerating),
               [&](const Coord &coord1, const Coord &coord2) {
-                  //TODO: int64_t frustumCulling = cameraObj can it see the chunk at coord coord1 & coord2 ? -10 : 10
-                  int64_t distance1 = Coord::distanceSquared(coord1, {tileX, tileY, tileZ});
-                  int64_t distance2 = Coord::distanceSquared(coord2, {tileX, tileY, tileZ});
+                  int64_t distance1 = Coord::distanceSquared(coord1, {tileX, tileY, tileZ}) + (frustum.isInside(coord1) ? -10 : 10);
+                  int64_t distance2 = Coord::distanceSquared(coord2, {tileX, tileY, tileZ}) + (frustum.isInside(coord2) ? -10 : 10);
                   return distance1 - distance2 < 0;
               }
     );
-    std::vector<Chunk*> generatedChunks;
+    std::vector<Chunk *> generatedChunks;
     int chunkCoordIndex = 0;
     for (auto &chunkGenerator : chunkGenerators) {
         if (chunkGenerator->isBusy) {
@@ -105,7 +104,7 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
     }
 }
 
-void WorldManager::getChunkBlock(ChunkBlock& chunkBlock, int x, int y, int z) {
+void WorldManager::getChunkBlock(ChunkBlock &chunkBlock, int x, int y, int z) {
     int height = int(((fastNoise->GetNoise(x, z) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER);
     if (y > height || y < 0) {
         chunkBlock.id = BlockManager::getBlockByID(BLOCK_AIR)->id;
@@ -118,10 +117,11 @@ void WorldManager::getChunkBlock(ChunkBlock& chunkBlock, int x, int y, int z) {
     }
 }
 
-void WorldManager::render(Matrix4f* projectionView) {
+void WorldManager::render(Matrix4f *projectionView) {
     frustum.update(projectionView);
     for (auto&[coord, chunk] : chunks) {
         if (chunk->render)
+            if(frustum.isInside(coord))
             ChunkManager::renderChunk(chunk);
     }
 }
