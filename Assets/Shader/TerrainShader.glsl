@@ -14,7 +14,7 @@ out vec3 normals;
 out vec3 fragPosition;
 out float visibility;
 
-uniform float intensity = 0.00015;
+uniform float intensity = 0.0003;
 uniform float gradient = 1.2;
 
 void main(){

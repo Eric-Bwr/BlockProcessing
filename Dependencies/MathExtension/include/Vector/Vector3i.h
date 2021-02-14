@@ -29,3 +29,7 @@ struct Vector3i {
 
     const char* toString();
 };
+
+Vector3i& cross(Vector3i& left, const Vector3i& right);
+float dot(Vector3i& left, const Vector3i& right);
+Vector3i& normalize(Vector3i& vector);

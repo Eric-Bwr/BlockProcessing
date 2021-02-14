@@ -3,16 +3,7 @@
 #include <Buffer.h>
 #include "../TerrainDefines.h"
 #include "ChunkBlock.h"
-
-struct Coord {
-    int64_t tileX, tileY, tileZ;
-    static int64_t distanceSquared(const Coord &coord1, const Coord &coord2){
-        return
-        (coord1.tileX - coord2.tileX) * (coord1.tileX - coord2.tileX) +
-        (coord1.tileY - coord2.tileY) * (coord1.tileY - coord2.tileY) +
-        (coord1.tileZ - coord2.tileZ) * (coord1.tileZ - coord2.tileZ);
-    };
-};
+#include "../World/Frustum Culling/AABB.h"
 
 struct Chunk {
     bool render = true;
@@ -23,4 +14,5 @@ struct Chunk {
     uint64_t vertexCount;
     unsigned int vao;
     unsigned int vbo;
+    AABB aabb;
 };

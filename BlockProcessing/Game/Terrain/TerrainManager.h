@@ -11,7 +11,7 @@ class TerrainManager {
 public:
     explicit TerrainManager(int atlasRows);
     void generate(float x, float y, float z);
-    void render() const;
+    void render(Matrix4f* projectionView) const;
     static int64_t getChunkPosition(float coord);
     int getTerrainHeight(int64_t x, int64_t z) const;
     ~TerrainManager();

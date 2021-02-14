@@ -20,8 +20,8 @@ void TerrainManager::generate(float x, float y, float z) {
     WorldManager::generate(tileX, tileY, tileZ);
 }
 
-void TerrainManager::render() const {
-    worldManager->render();
+void TerrainManager::render(Matrix4f* projectionView) const {
+    worldManager->render(projectionView);
 }
 
 int64_t TerrainManager::getChunkPosition(float coord) {

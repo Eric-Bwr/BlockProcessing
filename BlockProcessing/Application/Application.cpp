@@ -58,6 +58,7 @@ void App::_init() {
     shader->setUniformMatrix4f("model", model.getBuffer());
     terrainManager = new TerrainManager(16);
     std::cout << shader->getErrorMessage();
+    projectionView.identity();
 }
 
 void App::_update(double &gameTime) {
@@ -78,15 +79,16 @@ void App::_update(double &gameTime) {
 
 void App::_render(double &gameTime) {
     view = camera->getViewMatrix();
+    projectionView = projectionView.multiply(projection, view);
     render(gameTime);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.8, 0.9, 0.9, 1.0);
     glEnable(GL_DEPTH_TEST);
     shader->bind();
-    shader->setUniformMatrix4f("view", camera->getViewMatrix().getBuffer());
+    shader->setUniformMatrix4f("view", view.getBuffer());
     shader->setUniform3f("viewPos", camera->getX(), camera->getY(), camera->getZ());
     texture->bind();
-    terrainManager->render();
+    terrainManager->render(&projectionView);
     if (collision) {
         collision = false;
         shader->unbind();

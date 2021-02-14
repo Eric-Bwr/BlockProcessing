@@ -41,6 +41,7 @@ private:
     float fov = 90.0f;
     Matrix4f projection;
     Matrix4f view;
+    Matrix4f projectionView;
     Matrix4f model;
     Shader* shader;
     TerrainManager* terrainManager;
