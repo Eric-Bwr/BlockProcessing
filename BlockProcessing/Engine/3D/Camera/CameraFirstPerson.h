@@ -52,9 +52,9 @@ public:
     int keyRight = GLFW_KEY_D;
     int keyUp = GLFW_KEY_SPACE;
     int keyDown = GLFW_KEY_LEFT_SHIFT;
-private:
     Matrix4f view;
     Vector3f camPos, front, up, right, worldUp;
+protected:
     float yaw, pitch, moveSpeed, mouseSensitivity, zoom = 45.0f, zoomSpeed = 1.0f;
     float maxPitch = 89.0f, minPitch = -89.0f, maxZoom = 45.0f, minZoom = 1.0f;
     bool hasLastPos = false, shouldZoom = true, attached = true;

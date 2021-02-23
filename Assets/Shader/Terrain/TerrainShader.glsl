@@ -16,7 +16,7 @@ out vec3 fragPosition;
 out float blockID;
 out float visibility;
 
-uniform float intensity = 0.0003;
+uniform float intensity = 0.00015;
 uniform float gradient = 1.2;
 
 void main(){
@@ -42,7 +42,7 @@ in float visibility;
 uniform sampler2D image;
 uniform vec3 lightPos;
 uniform vec3 viewPos;
-uniform bool blinn;
+uniform bool blinn = true;
 uniform vec3 skyColor = vec3(0.8, 0.9, 0.9);
 
 out vec4 FragColor;

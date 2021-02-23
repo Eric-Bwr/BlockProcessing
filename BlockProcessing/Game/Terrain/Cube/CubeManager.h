@@ -1,23 +1,24 @@
 #pragma once
 
+#include "../TerrainDefines.h"
+#include "../Block/BlockManager.h"
 #include <Buffer.h>
 #include <memory.h>
 
-#define FACE_TOP 0
-#define FACE_BOTTOM 1
-#define FACE_FRONT 2
-#define FACE_BACK 3
-#define FACE_LEFT 4
-#define FACE_RIGHT 5
+#define CHUNK_FACE_TOP 0
+#define CHUNK_FACE_BOTTOM 1
+#define CHUNK_FACE_FRONT 2
+#define CHUNK_FACE_BACK 3
+#define CHUNK_FACE_LEFT 4
+#define CHUNK_FACE_RIGHT 5
 
 class CubeManager {
 public:
-    explicit CubeManager(int rowCount);
-    static void addFace(std::vector<float>& data, unsigned int id, int textureXOffset, int textureYOffset, float x, float y, float z, int face);
+    static void init();
+    static void addFace(std::vector<float>& data, Block* block, float x, float y, float z, int face);
     static VertexBufferObjectLayout *layout;
     ~CubeManager();
 private:
-    static int rowCount;
     static float *frontFace;
     static float *backFace;
     static float *leftFace;

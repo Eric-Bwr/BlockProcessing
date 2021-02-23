@@ -2,11 +2,12 @@
 
 std::map<unsigned int, Block*> BlockManager::blocks;
 
-BlockManager::BlockManager() {
+void BlockManager::init() {
     addBlock(new BlockAir());
     addBlock(new BlockStone());
     addBlock(new BlockDirt());
     addBlock(new BlockGrass());
+    addBlock(new BlockPlanks());
 }
 
 void BlockManager::addBlock(Block* block) {

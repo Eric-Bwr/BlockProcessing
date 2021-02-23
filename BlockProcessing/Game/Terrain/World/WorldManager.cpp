@@ -3,6 +3,7 @@
 FastNoise *WorldManager::fastNoise;
 std::unordered_map<Coord, Chunk *, Hash, Compare> WorldManager::chunks;
 std::unordered_set<Coord, Hash, Compare> WorldManager::chunksGenerating;
+std::unordered_set<Coord, Hash, Compare> WorldManager::modifiedChunks;
 std::vector<Coord> WorldManager::chunkCandidatesForGenerating;
 Frustum WorldManager::frustum;
 
@@ -22,8 +23,8 @@ static void chunkGenerationLoop(ChunkGenerator *chunkGenerator) {
             chunkGenerator->chunk = new Chunk;
             chunkGenerator->chunk->render = false;
             chunkGenerator->chunk->coord = chunkGenerator->coord;
-            ChunkManager::generateChunkBlockData(chunkGenerator->chunk);
-            ChunkManager::generateChunkFaceData(chunkGenerator->chunk);
+            ChunkManager::generateChunkDefaultBlockData(chunkGenerator->chunk);
+            ChunkManager::generateChunkDefaultFaceData(chunkGenerator->chunk);
             chunkGenerator->isBusy = false;
         } else {
             std::this_thread::sleep_for(std::chrono::milliseconds(16));
@@ -58,17 +59,16 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
                 auto it = chunks.find(coord);
                 if (it == chunks.end()) {
                     chunkCandidatesForGenerating.push_back(coord);
-                } else {
-                    auto &chunk = it->second;
-                    chunk->render = true;
                 }
             }
         }
     }
     std::sort(std::begin(chunkCandidatesForGenerating), std::end(chunkCandidatesForGenerating),
               [&](const Coord &coord1, const Coord &coord2) {
-                  int64_t distance1 = Coord::distanceSquared(coord1, {tileX, tileY, tileZ}) + (frustum.isInside(coord1) ? -10 : 10);
-                  int64_t distance2 = Coord::distanceSquared(coord2, {tileX, tileY, tileZ}) + (frustum.isInside(coord2) ? -10 : 10);
+                  int64_t distance1 =
+                          Coord::distanceSquared(coord1, {tileX, tileY, tileZ}) + (frustum.isInside(coord1) ? -10 : 10);
+                  int64_t distance2 =
+                          Coord::distanceSquared(coord2, {tileX, tileY, tileZ}) + (frustum.isInside(coord2) ? -10 : 10);
                   return distance1 - distance2 < 0;
               }
     );
@@ -96,15 +96,62 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
             }
         }
     }
+    for (auto &chunk : modifiedChunks) {
+        chunks[chunk]->render = false;
+        chunks[chunk]->faceData.clear();
+        ChunkManager::generateChunkFaceData(chunks[chunk]);
+        ChunkManager::loadChunkData(chunks[chunk]);
+        chunks[chunk]->render = true;
+        auto neighborChunkTop = WorldManager::getChunkInChunkCoords(chunks[chunk]->coord.tileX, chunks[chunk]->coord.tileY + 1, chunks[chunk]->coord.tileZ);
+        auto neighborChunkBottom = WorldManager::getChunkInChunkCoords(chunks[chunk]->coord.tileX, chunks[chunk]->coord.tileY - 1, chunks[chunk]->coord.tileZ);
+        auto neighborChunkRight = WorldManager::getChunkInChunkCoords(chunks[chunk]->coord.tileX + 1, chunks[chunk]->coord.tileY, chunks[chunk]->coord.tileZ);
+        auto neighborChunkLeft = WorldManager::getChunkInChunkCoords(chunks[chunk]->coord.tileX - 1, chunks[chunk]->coord.tileY, chunks[chunk]->coord.tileZ);
+        auto neighborChunkFront = WorldManager::getChunkInChunkCoords(chunks[chunk]->coord.tileX, chunks[chunk]->coord.tileY, chunks[chunk]->coord.tileZ + 1);
+        auto neighborChunkBack = WorldManager::getChunkInChunkCoords(chunks[chunk]->coord.tileX, chunks[chunk]->coord.tileY, chunks[chunk]->coord.tileZ - 1);
+        if (neighborChunkTop != nullptr) {
+            ChunkManager::generateChunkFaceData(neighborChunkTop);
+            ChunkManager::loadChunkData(neighborChunkTop);
+        }
+        if (neighborChunkBottom != nullptr) {
+            ChunkManager::generateChunkFaceData(neighborChunkBottom);
+            ChunkManager::loadChunkData(neighborChunkBottom);
+        }
+        if (neighborChunkRight != nullptr) {
+            ChunkManager::generateChunkFaceData(neighborChunkRight);
+            ChunkManager::loadChunkData(neighborChunkRight);
+        }
+        if (neighborChunkLeft != nullptr) {
+            ChunkManager::generateChunkFaceData(neighborChunkLeft);
+            ChunkManager::loadChunkData(neighborChunkLeft);
+        }
+        if (neighborChunkFront != nullptr) {
+            ChunkManager::generateChunkFaceData(neighborChunkFront);
+            ChunkManager::loadChunkData(neighborChunkFront);
+        }
+        if (neighborChunkBack != nullptr) {
+            ChunkManager::generateChunkFaceData(neighborChunkBack);
+            ChunkManager::loadChunkData(neighborChunkBack);
+        }
+    }
+    modifiedChunks.clear();
     for (auto &chunk : generatedChunks) {
         chunksGenerating.erase(chunksGenerating.find(chunk->coord));
         ChunkManager::initChunk(chunk);
         ChunkManager::loadChunkData(chunk);
+        chunk->render = true;
         chunks.insert(std::pair<Coord, Chunk *>(chunk->coord, chunk));
     }
 }
 
-void WorldManager::getChunkBlock(ChunkBlock &chunkBlock, int x, int y, int z) {
+Chunk *WorldManager::getChunkInChunkCoords(int64_t x, int64_t y, int64_t z) {
+    auto it = chunks.find({x, y, z});
+    if (it == chunks.end()) {
+        return nullptr;
+    } else
+        return it->second;
+}
+
+void WorldManager::getDefaultChunkBlock(ChunkBlock &chunkBlock, int64_t x, int64_t y, int64_t z) {
     int height = int(((fastNoise->GetNoise(x, z) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER);
     if (y > height || y < 0) {
         chunkBlock.id = BlockManager::getBlockByID(BLOCK_AIR)->id;
@@ -117,12 +164,44 @@ void WorldManager::getChunkBlock(ChunkBlock &chunkBlock, int x, int y, int z) {
     }
 }
 
-void WorldManager::render(Matrix4f *projectionView) {
+void WorldManager::getChunkBlock(ChunkBlock &chunkBlock, int64_t x, int64_t y, int64_t z) {
+    auto chunkX = getChunkFromBlock(x);
+    auto chunkY = getChunkFromBlock(y);
+    auto chunkZ = getChunkFromBlock(z);
+    auto it = chunks.find({chunkX, chunkY, chunkZ});
+    if (it != chunks.end()) {
+        int indexX = x - (chunkX * CHUNK_SIZE);
+        int indexY = y - (chunkY * CHUNK_SIZE);
+        int indexZ = z - (chunkZ * CHUNK_SIZE);
+        if (indexX >= 0 && indexX < CHUNK_SIZE && indexY >= 0 && indexY < CHUNK_SIZE && indexZ >= 0 && indexZ < CHUNK_SIZE)
+            chunkBlock = it->second->blockData[indexZ * CHUNK_SIZE * CHUNK_SIZE + indexY * CHUNK_SIZE + indexX];
+    } else {
+        getDefaultChunkBlock(chunkBlock, chunkX, chunkY, chunkZ);
+    }
+}
+
+void WorldManager::setChunkBlock(ChunkBlock &chunkBlock, int64_t x, int64_t y, int64_t z) {
+    auto chunkX = getChunkFromBlock(x);
+    auto chunkY = getChunkFromBlock(y);
+    auto chunkZ = getChunkFromBlock(z);
+    auto it = chunks.find({chunkX, chunkY, chunkZ});
+    if (it != chunks.end()) {
+        int indexX = x - (chunkX * CHUNK_SIZE);
+        int indexY = y - (chunkY * CHUNK_SIZE);
+        int indexZ = z - (chunkZ * CHUNK_SIZE);
+        if (indexX >= 0 && indexX < CHUNK_SIZE && indexY >= 0 && indexY < CHUNK_SIZE && indexZ >= 0 && indexZ < CHUNK_SIZE) {
+            it->second->blockData[indexZ * CHUNK_SIZE * CHUNK_SIZE + indexY * CHUNK_SIZE + indexX] = chunkBlock;
+            modifiedChunks.insert({chunkX, chunkY, chunkZ});
+        }
+    }
+}
+
+void WorldManager::render(Matrix4f &projectionView) {
     frustum.update(projectionView);
     for (auto&[coord, chunk] : chunks) {
         if (chunk->render)
-            if(frustum.isInside(coord))
-            ChunkManager::renderChunk(chunk);
+            if (frustum.isInside(coord))
+                ChunkManager::renderChunk(chunk);
     }
 }
 

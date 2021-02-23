@@ -1,5 +1,8 @@
 #pragma once
 
+#include <Paths.h>
+#include <Shader.h>
+#include <Texture.h>
 #include <FastNoise.h>
 #include <cmath>
 #include "Game/Terrain/Chunk/Chunk.h"
@@ -9,16 +12,17 @@
 
 class TerrainManager {
 public:
-    explicit TerrainManager(int atlasRows);
-    void generate(float x, float y, float z);
-    void render(Matrix4f* projectionView) const;
+    static void init(int seed, FastNoise::NoiseType noiseType, float frequency, int octaves);
+    static void generate(int64_t tileX, int64_t tileY, int64_t tileZ);
+    static void render(Matrix4f& projectionView, Matrix4f& view, float x, float y, float z);
+    static void setProjection(Matrix4f& projection);
+    static void setLightPosition(float x, float y, float z);
     static int64_t getChunkPosition(float coord);
-    int getTerrainHeight(int64_t x, int64_t z) const;
+    static int getTerrainHeight(int64_t x, int64_t z);
     ~TerrainManager();
 public:
-    WorldManager* worldManager;
-    ChunkManager* chunkManager;
-    BlockManager* blockManager;
-    CubeManager* cubeManager;
-    FastNoise* fastNoise;
+    static Matrix4f model;
+    static Shader* shader;
+    static Texture* texture;
+    static FastNoise* fastNoise;
 };

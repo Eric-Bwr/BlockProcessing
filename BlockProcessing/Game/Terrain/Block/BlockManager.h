@@ -5,10 +5,11 @@
 #include "Blocks/BlockStone.h"
 #include "Blocks/BlockDirt.h"
 #include "Blocks/BlockGrass.h"
+#include "Blocks/BlockPlanks.h"
 
 class BlockManager {
 public:
-    BlockManager();
+    static void init();
     static void addBlock(Block* block);
     static Block* getBlockByID(unsigned int id);
 private:

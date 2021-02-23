@@ -2,7 +2,7 @@
 
 BlockDirt::BlockDirt() {
     name = "Dirt";
-    id = 2;
+    id = BLOCK_DIRT;
     textureTopX = 2;
     textureTopY = 0;
     textureBottomX = 2;

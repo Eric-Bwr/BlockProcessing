@@ -2,7 +2,7 @@
 
 BlockStone::BlockStone() {
     name = "Stone";
-    id = 1;
+    id = BLOCK_STONE;
     textureTopX = 1;
     textureTopY = 0;
     textureBottomX = 1;

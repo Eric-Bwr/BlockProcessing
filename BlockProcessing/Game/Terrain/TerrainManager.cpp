@@ -1,42 +1,66 @@
 #include "TerrainManager.h"
 
-TerrainManager::TerrainManager(int atlasRows) {
+Matrix4f TerrainManager::model;
+Shader* TerrainManager::shader;
+Texture* TerrainManager::texture;
+FastNoise* TerrainManager::fastNoise;
+
+void TerrainManager::init(int seed, FastNoise::NoiseType noiseType, float frequency, int octaves) {
     fastNoise = new FastNoise;
-    fastNoise->SetNoiseType(FastNoise::PerlinFractal);
-    fastNoise->SetSeed(rand());
-    fastNoise->SetFrequency(0.009);
-    fastNoise->SetFractalOctaves(6);
-    cubeManager = new CubeManager(atlasRows);
-    blockManager = new BlockManager();
-    chunkManager = new ChunkManager();
-    worldManager = new WorldManager();
+    fastNoise->SetNoiseType(noiseType);
+    fastNoise->SetSeed(seed);
+    fastNoise->SetFrequency(frequency);
+    fastNoise->SetFractalOctaves(octaves);
+    CubeManager::init();
+    BlockManager::init();
     WorldManager::fastNoise = fastNoise;
     WorldManager::init();
+    shader = new Shader(SHADER_TERRAIN);
+    shader->bind();
+    texture = new Texture(TEXTURE_TERRAIN_ATLAS);
+    texture->bind();
+    texture->clampEdge();
+    texture->minLinearMipLinear();
+    texture->magNear();
+    texture->setMaxLevel(TEXTURE_ATLAS_TILE_SIZE);
+    texture->setLodBias(TEXTURE_ATLAS_LOD_BIAS);
+    texture->load();
+    glGenerateMipmap(GL_TEXTURE_2D);
+    model.identity();
+    model.scale(TERRAIN_SIZE);
+    shader->setUniformMatrix4f("model", model.getBuffer());
 }
 
-void TerrainManager::generate(float x, float y, float z) {
-    auto tileX = (int64_t)(floorf((x / TERRAIN_SIZE) / CHUNK_SIZE));
-    auto tileY = (int64_t)(floorf((y / TERRAIN_SIZE) / CHUNK_SIZE));
-    auto tileZ = (int64_t)(floorf((z / TERRAIN_SIZE) / CHUNK_SIZE));
+void TerrainManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
     WorldManager::generate(tileX, tileY, tileZ);
 }
 
-void TerrainManager::render(Matrix4f* projectionView) const {
+void TerrainManager::render(Matrix4f& projectionView, Matrix4f& view, float x, float y, float z) {
+    shader->bind();
+    shader->setUniformMatrix4f("view", view.getBuffer());
+    shader->setUniform3f("viewPos", x, y, z);
+    texture->bind();
     WorldManager::render(projectionView);
 }
 
-int64_t TerrainManager::getChunkPosition(float coord) {
-    return (int64_t)(floorf((coord / TERRAIN_SIZE) / CHUNK_SIZE));
+void TerrainManager::setProjection(Matrix4f &projection) {
+    shader->bind();
+    shader->setUniformMatrix4f("projection", projection.getBuffer());
 }
 
-int TerrainManager::getTerrainHeight(int64_t x, int64_t z) const {
-    return (int)(floorf(((fastNoise->GetNoise(x / TERRAIN_SIZE, z / TERRAIN_SIZE) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER) * TERRAIN_SIZE);
+void TerrainManager::setLightPosition(float x, float y, float z) {
+    shader->bind();
+    shader->setUniform3f("lightPos", x, y, z);
+}
+
+int64_t TerrainManager::getChunkPosition(float coord) {
+    return (int64_t) (floorf((coord / TERRAIN_SIZE) / CHUNK_SIZE));
+}
+
+int TerrainManager::getTerrainHeight(int64_t x, int64_t z) {
+    return (int) (floorf(((fastNoise->GetNoise(x / TERRAIN_SIZE, z / TERRAIN_SIZE) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER) * TERRAIN_SIZE);
 }
 
 TerrainManager::~TerrainManager() {
-    delete worldManager;
-    delete chunkManager;
-    delete blockManager;
-    delete cubeManager;
     delete fastNoise;
 }

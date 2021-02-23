@@ -7,6 +7,9 @@
 #include <TimeRepresentationSystem/Clock.h>
 #include <Game/Terrain/TerrainManager.h>
 #include <Game/Terrain/Chunk/ChunkManager.h>
+#include <Game/Player/Player.h>
+#include <Game/Event/Events/amples.h>
+#include <Game/Terrain/Debug/ChunkBorder/ChunkBorderManager.h>
 #include "Engine/3D/Camera/CameraFirstPerson.h"
 #include "Engine/PostProcess/PostProcessManager.h"
 #include "Engine/3D/Model3D/Model3D.h"
@@ -21,7 +24,6 @@ private:
 
     std::shared_ptr<cs::BasicCallback<void, es::Event&>> eventCallback;
 
-    CameraFirstPerson* camera;
 
     trs::clock::Clock timer;
     //------------------------------------------------------------------------------------------------------------------------------------------
@@ -40,15 +42,14 @@ private:
     float span = 0.0f;
     float incr = 1.0f;
     float offset = 4.5 * TERRAIN_SIZE;
+    Player* player;
 
-    float fov = 90.0f;
+    amples* d;
+
+    float fov = 45.0f;
     Matrix4f projection;
     Matrix4f view;
     Matrix4f projectionView;
-    Matrix4f model;
-    Shader* shader;
-    TerrainManager* terrainManager;
-    Texture* texture;
 private:
     virtual void preInit() = 0;
     void _preInit();

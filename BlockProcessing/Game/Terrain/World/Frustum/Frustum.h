@@ -13,7 +13,7 @@ public:
 
 class Frustum {
 public:
-    void update(Matrix4f* projectionView);
+    void update(Matrix4f& projectionView);
     bool isInside(const Coord& coord);
 private:
     static Coord getVN(Vector3f &normal, const Coord& coord);

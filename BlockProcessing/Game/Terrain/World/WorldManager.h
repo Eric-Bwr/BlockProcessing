@@ -9,7 +9,8 @@
 #include <algorithm>
 #include "../Chunk/ChunkManager.h"
 #include "../Block/BlockManager.h"
-#include "Frustum Culling/Frustum.h"
+#include "Frustum/Frustum.h"
+#include "../Util/CoordinateHelper.h"
 
 struct Hash {
     int operator()(const Coord &coord) const {
@@ -27,12 +28,16 @@ class WorldManager {
 public:
     static void init();
     static void generate(int64_t tileX, int64_t tileY, int64_t tileZ);
-    static void getChunkBlock(ChunkBlock& chunkBlock, int x, int y, int z);
-    static void render(Matrix4f* projectionView);
+    static Chunk* getChunkInChunkCoords(int64_t x, int64_t y, int64_t z);
+    static void getDefaultChunkBlock(ChunkBlock& chunkBlock, int64_t x, int64_t y, int64_t z);
+    static void getChunkBlock(ChunkBlock& chunkBlock, int64_t x, int64_t y, int64_t z);
+    static void setChunkBlock(ChunkBlock& chunkBlock, int64_t x, int64_t y, int64_t z);
+    static void render(Matrix4f& projectionView);
     ~WorldManager();
 public:
     static FastNoise* fastNoise;
     static std::unordered_map<Coord, Chunk*, Hash, Compare> chunks;
+    static std::unordered_set<Coord, Hash, Compare> modifiedChunks;
     static std::unordered_set<Coord, Hash, Compare> chunksGenerating;
     static std::vector<Coord> chunkCandidatesForGenerating;
     static Frustum frustum;

@@ -2,5 +2,5 @@
 
 BlockAir::BlockAir() {
     name = "Air";
-    id = 0;
+    id = BLOCK_AIR;
 }

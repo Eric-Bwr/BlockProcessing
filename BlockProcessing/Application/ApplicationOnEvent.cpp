@@ -12,7 +12,7 @@ void App::_onEvent(es::Event &e) {
     dispatcher.dispatchMFunc<es::MouseUpScrollEvent>(BIND_FUNC(App::onMouseUpWheel));
     dispatcher.dispatchMFunc<es::MouseDownScrollEvent>(BIND_FUNC(App::onMouseDownWheel));
     dispatcher.dispatchMFunc<es::CharEvent>(BIND_FUNC(App::onChar));
-    camera->onEvent(e);
+    player->onEvent(e);
 }
 
 bool App::onWindowClose(es::WindowCloseEvent& e) {
@@ -50,7 +50,7 @@ bool App::onKeyPressed(es::KeyPressedEvent& e) {
     }
     if(e.getKey() == GLFW_KEY_X){
         modeCursor = !modeCursor;
-        camera->setAttached(!modeCursor);
+        player->setAttached(!modeCursor);
         if(modeCursor)
             glfwSetInputMode(appWindow->getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         else
@@ -88,6 +88,12 @@ bool App::onKeyReleased(es::KeyReleasedEvent &e) {
 }
 
 bool App::onMouseButtonPressed(es::MouseButtonPressedEvent& e){
+    if(e.getButton() == GLFW_MOUSE_BUTTON_2){
+        player->dig();
+    }
+    if(e.getButton() == GLFW_MOUSE_BUTTON_1){
+        player->place();
+    }
     return false;
 }
 

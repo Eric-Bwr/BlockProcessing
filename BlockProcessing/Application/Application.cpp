@@ -25,7 +25,7 @@ void App::_init() {
     float aspectRatio = width / height;
     glfwSetWindowUserPointer(appWindow->getWindow(), &eventCallback);
     setGLFWCallacks();
-    projection.perspective(fov / 2.0f, width, height, 0.1f, 20000.0f);
+    projection.perspective(fov, width, height, 1.0f, 20000.0f);
 
     targetTicks = actualTicks = 60;
     targetFrames = actualFrames = 60;
@@ -33,7 +33,7 @@ void App::_init() {
 
     timer.setTimedBoolDuration(1.0f);
 
-    camera = new CameraFirstPerson(0.0f, 0.0f, -20.0f, 7.0f, 0.025f, 90.0f, 0.0f);
+    player = new Player(0.0f, 0.0f, -20.0f, 7.0f, 0.025f, 90.0f, 0.0f);
 
     glfwSetInputMode(appWindow->getWindow(), GLFW_STICKY_KEYS, GLFW_TRUE);
     glfwSetInputMode(appWindow->getWindow(), GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
@@ -41,65 +41,61 @@ void App::_init() {
     glfwSetCursorPos(appWindow->getWindow(), width / 2, height / 2);
 
     glEnable(GL_MULTISAMPLE);
-    // glEnable(GL_CULL_FACE);
-    // glCullFace(GL_FRONT);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
     //------------------------------------------------------------------------------------------------------------------------------------------
-    shader = new Shader("../Assets/Shader/TerrainShader.glsl");
-    shader->bind();
-    shader->setUniformMatrix4f("projection", projection.getBuffer());
-    shader->setUniform3f("lightPos", 10, 500, 10);
-    shader->setUniformBool("blinn", true);
-    auto transform = new Transform3D(0.0, 0.0, 0.0, 20.0);
-    texture = new Texture("../Assets/Textures/Atlas");
-    texture->load(true);
-    //  model = transform->getMatrix();
-    model.identity();
-    model.scale(TERRAIN_SIZE);
-    shader->setUniformMatrix4f("model", model.getBuffer());
-    terrainManager = new TerrainManager(16);
-    std::cout << shader->getErrorMessage();
+
+    TerrainManager::init(rand(), FastNoise::PerlinFractal, 0.009, 6);
+    TerrainManager::setProjection(projection);
     projectionView.identity();
+    d = new amples;
+    EventManager::bind(d);
+    ChunkBorderManager::init();
+    ChunkBorderManager::setProjection(projection);
+    glEnable(GL_DEPTH_TEST);
 }
 
 void App::_update(double &gameTime) {
     update(gameTime);
-    fov = camera->getZoom();
+    fov = player->getZoom();
     if (zoom)
-        projection.perspective(fov, (float) width, (float) height, 1.0f, 10000.0f);
+        projection.perspective(fov, (float) width, (float) height, 1.0f, 20000.0f);
     else
-        camera->setMovementSpeed(cameraSpeed);
-    camera->update();
-    auto terrainHeight = (float)terrainManager->getTerrainHeight((int64_t) camera->getX(), (int64_t) camera->getZ());
+        player->setMovementSpeed(cameraSpeed);
+    player->update();
+    auto terrainHeight = (float) TerrainManager::getTerrainHeight((int64_t) player->getX(), (int64_t) player->getZ());
     if (collision) {
-        incr = terrainHeight - (camera->getY() - offset);
+        incr = terrainHeight - (player->getY() - offset);
         span += incr / 3;
-        camera->setPosition(camera->getX(), span + offset, camera->getZ());
-    }else
+        player->setPosition(player->getX(), span + offset, player->getZ());
+    } else
         span = terrainHeight;
-    terrainManager->generate(camera->getX(), camera->getY(), camera->getZ());
+    TerrainManager::setLightPosition(player->getX(), player->getY() + 1000, player->getZ());
+    TerrainManager::generate(player->getXChunk(), player->getYChunk(), player->getZChunk());
+    ChunkBorderManager::generate(player->getXChunk(), player->getYChunk(), player->getZChunk());
+    player->updatePlayer();
 }
 
 void App::_render(double &gameTime) {
-    view = camera->getViewMatrix();
-    projectionView = projectionView.multiply(projection, view);
-    render(gameTime);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.8, 0.9, 0.9, 1.0);
-    glEnable(GL_DEPTH_TEST);
-    shader->bind();
-    shader->setUniformMatrix4f("view", view.getBuffer());
-    shader->setUniform3f("viewPos", camera->getX(), camera->getY(), camera->getZ());
-    texture->bind();
-    terrainManager->render(&projectionView);
+    view = player->getViewMatrix();
+    projectionView = projectionView.multiply(projection, view);
+    render(gameTime);
+    TerrainManager::setProjection(projection);
+    TerrainManager::render(projectionView, view, player->getX(), player->getY(), player->getZ());
+    ChunkBorderManager::setProjection(projection);
+    if(wireFrame)
+    ChunkBorderManager::render(view);
     if (alt) {
         alt = false;
         Shader::unbind();
-        shader->reload();
-        std::cout << shader->getErrorMessage();
-        shader->setUniformMatrix4f("projection", projection.getBuffer());
-        shader->setUniform3f("lightPos", 10, 5000, 10);
-        shader->setUniformBool("blinn", true);
-        shader->setUniformMatrix4f("model", model.getBuffer());
+        TerrainManager::shader->reload();
+        std::cout << TerrainManager::shader->getErrorMessage();
+        TerrainManager::shader->setUniformMatrix4f("projection", projection.getBuffer());
+        TerrainManager::shader->setUniform3f("lightPos", 10, 5000, 10);
+        TerrainManager::shader->setUniformBool("blinn", true);
+        TerrainManager::shader->setUniformMatrix4f("model", TerrainManager::model.getBuffer());
     }
 }
 
