@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Buffer.h>
-#include <Util/Vector.h>
 
 class Model2D {
 public:

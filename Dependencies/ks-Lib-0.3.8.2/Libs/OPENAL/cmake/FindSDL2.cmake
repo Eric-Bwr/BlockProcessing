@@ -42,7 +42,7 @@
 # Added a search for threads which is needed by some platforms.
 # Added needed compile switches for MinGW.
 #
-# On OSX, this will prefer the Engine version (if found) over others.
+# On OSX, this will prefer the Framework version (if found) over others.
 # People will have to manually change the cache values of
 # SDL2_LIBRARY to override this selection or set the CMake environment
 # CMAKE_INCLUDE_PATH to modify the search paths.
