@@ -10,7 +10,7 @@ Transform3D::Transform3D(float x, float y, float z, float angle, float axisX, fl
     updateMatrix();
 }
 
-Transform3D::Transform3D(float x, float y, float z, float angle, const Vector3f &axis, float size)
+Transform3D::Transform3D(float x, float y, float z, float angle, const Vec3f &axis, float size)
         : x(x), y(y), z(z), angle(angle), axisX(axis.x), axisY(axis.y), axisZ(axis.z), sizeX(size), sizeY(size), sizeZ(size) {
     updateMatrix();
 }
@@ -25,22 +25,22 @@ Transform3D::Transform3D(float x, float y, float z, float size)
     updateMatrix();
 }
 
-Transform3D::Transform3D(const Vector3f &position, float angle, float axisX, float axisY, float axisZ, float size)
+Transform3D::Transform3D(const Vec3f &position, float angle, float axisX, float axisY, float axisZ, float size)
 : x(position.x), y(position.y), z(position.z), angle(angle), axisX(axisX), axisY(axisY), axisZ(axisZ), sizeX(size), sizeY(size), sizeZ(size) {
     updateMatrix();
 }
 
-Transform3D::Transform3D(const Vector3f &position, float angle, const Vector3f &axis, float size)
+Transform3D::Transform3D(const Vec3f &position, float angle, const Vec3f &axis, float size)
 : x(position.x), y(position.y), z(position.z), angle(angle), axisX(axis.x), axisY(axis.y), axisZ(axis.z), sizeX(size), sizeY(size), sizeZ(size){
     updateMatrix();
 }
 
-Transform3D::Transform3D(const Vector3f &position, float size)
+Transform3D::Transform3D(const Vec3f &position, float size)
 : x(position.x), y(position.y), z(position.z), angle(0.0f), axisX(0.0f), axisY(0.0f), axisZ(0.0f), sizeX(size), sizeY(size), sizeZ(size) {
     updateMatrix();
 }
 
-Transform3D::Transform3D(const Vector3f &position, float sizeX, float sizeY, float sizeZ)
+Transform3D::Transform3D(const Vec3f &position, float sizeX, float sizeY, float sizeZ)
 : x(position.x), y(position.y), z(position.z), angle(0.0f), axisX(0.0f), axisY(0.0f), axisZ(0.0f), sizeX(sizeX), sizeY(sizeY), sizeZ(sizeZ) {
     updateMatrix();
 }
@@ -52,7 +52,7 @@ void Transform3D::setPosition(float x, float y, float z) {
     updateMatrix();
 }
 
-void Transform3D::setPosition(const Vector3f &position) {
+void Transform3D::setPosition(const Vec3f &position) {
     this->x = position.x;
     this->y = position.y;
     this->z = position.z;
@@ -67,7 +67,7 @@ void Transform3D::setRotation(float angle, float axisX, float axisY, float axisZ
     updateMatrix();
 }
 
-void Transform3D::setRotation(float angle, const Vector3f &axis) {
+void Transform3D::setRotation(float angle, const Vec3f &axis) {
     this->angle = angle;
     this->axisX = axis.x;
     this->axisY = axis.y;

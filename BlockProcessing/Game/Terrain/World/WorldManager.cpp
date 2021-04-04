@@ -196,7 +196,7 @@ void WorldManager::setChunkBlock(ChunkBlock &chunkBlock, int64_t x, int64_t y, i
     }
 }
 
-void WorldManager::render(Matrix4f &projectionView) {
+void WorldManager::render(Mat4f &projectionView) {
     frustum.update(projectionView);
     for (auto&[coord, chunk] : chunks) {
         if (chunk->render)

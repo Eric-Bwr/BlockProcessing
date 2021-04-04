@@ -33,8 +33,8 @@ void Player::place() {
 }
 
 void Player::castRay() {
-    Vector3f direction = front;
-    normalize(direction);
+    Vec3f direction = front;
+    direction.norm();
     float endX = 0, endY = 0, endZ = 0;
     while (std::sqrt(endX * endX + endY * endY + endZ * endZ) <= PLAYER_BLOCK_DISTANCE) {
         endX += direction.x * (float) PLAYER_STEP_SIZE;

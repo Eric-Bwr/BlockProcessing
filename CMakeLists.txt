@@ -14,7 +14,7 @@ set(dir ${CMAKE_CURRENT_SOURCE_DIR})
 
 include_directories(Dependencies)
 include_directories(${PROJECT_NAME} "Dependencies/OpenGL/include")
-include_directories(${PROJECT_NAME} "Dependencies/MathExtension/include")
+include_directories(${PROJECT_NAME} "Dependencies/Math/include")
 include_directories(${PROJECT_NAME} "Dependencies/GLFW/include")
 include_directories(${PROJECT_NAME} "Dependencies/FastNoise")
 include_directories(${PROJECT_NAME})
@@ -30,6 +30,6 @@ target_link_libraries(${PROJECT_NAME}
         ${CMAKE_CURRENT_LIST_DIR}/Dependencies/ks-Lib-0.3.8.2/libLib.a
         ${CMAKE_CURRENT_LIST_DIR}/Dependencies/GLFW/libglfw3.a
         ${CMAKE_CURRENT_LIST_DIR}/Dependencies/OpenGL/OpenGL.a
-        ${CMAKE_CURRENT_LIST_DIR}/Dependencies/MathExtension/MathExtension.a
+        ${CMAKE_CURRENT_LIST_DIR}/Dependencies/Math/Math.a
         OpenAL
         )

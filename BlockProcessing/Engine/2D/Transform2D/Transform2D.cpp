@@ -10,7 +10,7 @@ Transform2D::Transform2D(float x, float y, float angle, float axisX, float axisY
     updateMatrix();
 }
 
-Transform2D::Transform2D(float x, float y, float angle, const Vector3f &axis, float size)
+Transform2D::Transform2D(float x, float y, float angle, const Vec3f &axis, float size)
         : x(x), y(y), angle(angle), axisX(axis.x), axisY(axis.y), axisZ(axis.z), sizeX(size), sizeY(size) {
     updateMatrix();
 }
@@ -25,22 +25,22 @@ Transform2D::Transform2D(float x, float y, float size)
     updateMatrix();
 }
 
-Transform2D::Transform2D(const Vector2f &position, float angle, float axisX, float axisY, float axisZ, float size)
+Transform2D::Transform2D(const Vec2f &position, float angle, float axisX, float axisY, float axisZ, float size)
         : x(position.x), y(position.y), angle(angle), axisX(axisX), axisY(axisY), axisZ(axisZ), sizeX(size), sizeY(size) {
     updateMatrix();
 }
 
-Transform2D::Transform2D(const Vector2f &position, float angle, const Vector3f &axis, float size)
+Transform2D::Transform2D(const Vec2f &position, float angle, const Vec3f &axis, float size)
         : x(position.x), y(position.y), angle(angle), axisX(axis.x), axisY(axis.y), axisZ(axis.z), sizeX(size), sizeY(size) {
     updateMatrix();
 }
 
-Transform2D::Transform2D(const Vector2f &position, float size)
+Transform2D::Transform2D(const Vec2f &position, float size)
         : x(position.x), y(position.y), angle(0.0f), axisX(0.0f), axisY(0.0f), axisZ(0.0f), sizeX(size), sizeY(size) {
     updateMatrix();
 }
 
-Transform2D::Transform2D(const Vector2f &position, float sizeX, float sizeY)
+Transform2D::Transform2D(const Vec2f &position, float sizeX, float sizeY)
         : x(position.x), y(position.y), angle(0.0f), axisX(0.0f), axisY(0.0f), axisZ(0.0f), sizeX(sizeX), sizeY(sizeY) {
     updateMatrix();
 }
@@ -51,7 +51,7 @@ void Transform2D::setPosition(float x, float y) {
     updateMatrix();
 }
 
-void Transform2D::setPosition(const Vector2f &position) {
+void Transform2D::setPosition(const Vec2f &position) {
     this->x = position.x;
     this->y = position.y;
     updateMatrix();
@@ -65,7 +65,7 @@ void Transform2D::setRotation(float angle, float axisX, float axisY, float axisZ
     updateMatrix();
 }
 
-void Transform2D::setRotation(float angle, const Vector3f &axis) {
+void Transform2D::setRotation(float angle, const Vec3f &axis) {
     this->angle = angle;
     this->axisX = axis.x;
     this->axisY = axis.y;

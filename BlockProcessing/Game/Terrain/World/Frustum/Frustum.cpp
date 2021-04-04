@@ -8,7 +8,7 @@ float Plane::distanceToPoint(Coord point) const {
     return (point.tileX * normal.x + point.tileY * normal.y + point.tileZ * normal.z) + distanceToOrigin;
 }
 
-void Frustum::update(Matrix4f& projectionView) {
+void Frustum::update(Mat4f& projectionView) {
     planes[Planes::Left].normal.x = projectionView.m03 + projectionView.m00;
     planes[Planes::Left].normal.y = projectionView.m13 + projectionView.m10;
     planes[Planes::Left].normal.z = projectionView.m23 + projectionView.m20;
@@ -40,8 +40,10 @@ void Frustum::update(Matrix4f& projectionView) {
     planes[Planes::Far].distanceToOrigin = projectionView.m33 - projectionView.m32;
 
     for (auto &plane : planes) {
-        float length = plane.normal.length();
-        plane.normal /= length;
+        float length = plane.normal.len();
+        plane.normal.x /= length;
+        plane.normal.y /= length;
+        plane.normal.z /= length;
         plane.distanceToOrigin /= length;
     }
 }
@@ -58,7 +60,7 @@ bool Frustum::isInside(const Coord& coord) {
     return result;
 }
 
-Coord Frustum::getVN(Vector3f &normal, const Coord& coord) {
+Coord Frustum::getVN(Vec3f &normal, const Coord& coord) {
     Coord copyCoord = coord;
     copyCoord.tileX *= WORLD_SIZE;
     copyCoord.tileY *= WORLD_SIZE;
@@ -75,7 +77,7 @@ Coord Frustum::getVN(Vector3f &normal, const Coord& coord) {
     return coord;
 }
 
-Coord Frustum::getVP(Vector3f &normal, const Coord& coord) {
+Coord Frustum::getVP(Vec3f &normal, const Coord& coord) {
     Coord copyCoord = coord;
     copyCoord.tileX *= WORLD_SIZE;
     copyCoord.tileY *= WORLD_SIZE;

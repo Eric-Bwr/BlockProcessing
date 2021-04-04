@@ -47,9 +47,9 @@ private:
     amples* d;
 
     float fov = 45.0f;
-    Matrix4f projection;
-    Matrix4f view;
-    Matrix4f projectionView;
+    Mat4f projection;
+    Mat4f view;
+    Mat4f projectionView;
 private:
     virtual void preInit() = 0;
     void _preInit();

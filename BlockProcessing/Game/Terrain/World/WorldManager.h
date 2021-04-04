@@ -32,7 +32,7 @@ public:
     static void getDefaultChunkBlock(ChunkBlock& chunkBlock, int64_t x, int64_t y, int64_t z);
     static void getChunkBlock(ChunkBlock& chunkBlock, int64_t x, int64_t y, int64_t z);
     static void setChunkBlock(ChunkBlock& chunkBlock, int64_t x, int64_t y, int64_t z);
-    static void render(Matrix4f& projectionView);
+    static void render(Mat4f& projectionView);
     ~WorldManager();
 public:
     static FastNoise* fastNoise;

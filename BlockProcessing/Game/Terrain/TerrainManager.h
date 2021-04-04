@@ -14,14 +14,14 @@ class TerrainManager {
 public:
     static void init(int seed, FastNoise::NoiseType noiseType, float frequency, int octaves);
     static void generate(int64_t tileX, int64_t tileY, int64_t tileZ);
-    static void render(Matrix4f& projectionView, Matrix4f& view, float x, float y, float z);
-    static void setProjection(Matrix4f& projection);
+    static void render(Mat4f& projectionView, Mat4f& view, float x, float y, float z);
+    static void setProjection(Mat4f& projection);
     static void setLightPosition(float x, float y, float z);
     static int64_t getChunkPosition(float coord);
     static int getTerrainHeight(int64_t x, int64_t z);
     ~TerrainManager();
 public:
-    static Matrix4f model;
+    static Mat4f model;
     static Shader* shader;
     static Texture* texture;
     static FastNoise* fastNoise;

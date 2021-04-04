@@ -1,13 +1,13 @@
 #pragma once
 
 #include <GLFW/glfw3.h>
-#include <Matrix/Matrix4f.h>
-#include <Vector/Vector3f.h>
+#include <Math/Matrix.h>
+#include <Math/Vector.h>
 #include <EventSystem/EventSystem.h>
 
 class CameraFirstPerson {
 public:
-    CameraFirstPerson(const Vector3f& position, float movementSpeed, float mouseSensitivity, float yaw, float pitch);
+    CameraFirstPerson(const Vec3f& position, float movementSpeed, float mouseSensitivity, float yaw, float pitch);
     CameraFirstPerson(float x, float y, float z, float movementSpeed, float mouseSensitivity, float yaw, float pitch);
     void onEvent(es::Event& e);
     void update();
@@ -26,10 +26,10 @@ public:
     inline void setMinPitch(float minPitch) { this->minPitch = minPitch; }
     inline void setMovementSpeed(float speed) { moveSpeed = speed; }
     inline void setMouseSensitivity(float sensitivity) { mouseSensitivity = sensitivity; }
-    inline void setRightVector(const Vector3f& right) { this->right = right; calculateCam(); }
-    inline void setWorldUpVector(const Vector3f& worldUp) { this->worldUp = worldUp; calculateCam(); }
-    inline void setViewMatrix(const Matrix4f& view) { this->view = view; }
-    inline void setPosition(const Vector3f& position) { this->camPos = position; calculateCam(); }
+    inline void setRightVector(const Vec3f& right) { this->right = right; calculateCam(); }
+    inline void setWorldUpVector(const Vec3f& worldUp) { this->worldUp = worldUp; calculateCam(); }
+    inline void setViewMatrix(const Mat4f& view) { this->view = view; }
+    inline void setPosition(const Vec3f& position) { this->camPos = position; calculateCam(); }
     inline void setX(const float& x) { this->camPos.x = x; calculateCam(); }
     inline void setY(const float& y) { this->camPos.y = y; calculateCam(); }
     inline void setZ(const float& z) { this->camPos.z = z; calculateCam(); }
@@ -41,19 +41,19 @@ public:
     inline float getPitch() const { return pitch; }
     inline float getMovementSpeed() const { return moveSpeed; }
     inline float getMouseSensitivity() const { return mouseSensitivity; }
-    inline Vector3f& getPosition() { return camPos; }
+    inline Vec3f& getPosition() { return camPos; }
     inline float& getX() { return camPos.x; }
     inline float& getY() { return camPos.y; }
     inline float& getZ() { return camPos.z; }
-    Matrix4f& getViewMatrix();
+    Mat4f& getViewMatrix();
     int keyForward = GLFW_KEY_W;
     int keyBackward = GLFW_KEY_S;
     int keyLeft = GLFW_KEY_A;
     int keyRight = GLFW_KEY_D;
     int keyUp = GLFW_KEY_SPACE;
     int keyDown = GLFW_KEY_LEFT_SHIFT;
-    Matrix4f view;
-    Vector3f camPos, front, up, right, worldUp;
+    Mat4f view;
+    Vec3f camPos, front, up, right, worldUp;
 protected:
     float yaw, pitch, moveSpeed, mouseSensitivity, zoom = 45.0f, zoomSpeed = 1.0f;
     float maxPitch = 89.0f, minPitch = -89.0f, maxZoom = 45.0f, minZoom = 1.0f;

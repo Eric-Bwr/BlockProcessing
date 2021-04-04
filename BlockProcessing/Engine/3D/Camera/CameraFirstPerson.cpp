@@ -1,21 +1,25 @@
 #include "CameraFirstPerson.h"
 
+#define radians 0.01745329251994329576923690768489f
+
 CameraFirstPerson::CameraFirstPerson(float x, float y, float z, float moveSpeed, float mouseSensitivity, float yaw, float pitch) :
         CameraFirstPerson({x, y, z}, moveSpeed, mouseSensitivity, yaw, pitch) {}
 
-CameraFirstPerson::CameraFirstPerson(const Vector3f& position, float moveSpeed, float mouseSensitivity, float yaw, float pitch)
+CameraFirstPerson::CameraFirstPerson(const Vec3f& position, float moveSpeed, float mouseSensitivity, float yaw, float pitch)
 : worldUp(0, 1, 0), front(0, 0, -1), camPos(position), yaw(yaw), pitch(pitch), moveSpeed(moveSpeed), mouseSensitivity(mouseSensitivity) {
     view.identity();
     calculateCam();
 }
 
+#include "iostream"
+
 void CameraFirstPerson::calculateCam() {
     front.x = std::cos(yaw * radians) * std::cos(pitch * radians);
     front.y = std::sin(pitch * radians);
     front.z = std::sin(yaw * radians) * std::cos(pitch * radians);
-    front.normalize();
-    right.cross(front, worldUp).normalize();
-    up.cross(right, front).normalize();
+    front.norm();
+    right = front.cross(worldUp).norm();
+    up = (right.cross(front)).norm();
 }
 
 void CameraFirstPerson::update() {
@@ -148,6 +152,6 @@ bool CameraFirstPerson::onMouseMoved(es::CursorPositionEvent& e) {
     return false;
 }
 
-Matrix4f& CameraFirstPerson::getViewMatrix() {
+Mat4f& CameraFirstPerson::getViewMatrix(){
     return view.lookAt(camPos, camPos + front, up);
 }

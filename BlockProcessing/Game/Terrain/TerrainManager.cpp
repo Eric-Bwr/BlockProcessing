@@ -1,6 +1,6 @@
 #include "TerrainManager.h"
 
-Matrix4f TerrainManager::model;
+Mat4f TerrainManager::model;
 Shader* TerrainManager::shader;
 Texture* TerrainManager::texture;
 FastNoise* TerrainManager::fastNoise;
@@ -35,7 +35,7 @@ void TerrainManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
     WorldManager::generate(tileX, tileY, tileZ);
 }
 
-void TerrainManager::render(Matrix4f& projectionView, Matrix4f& view, float x, float y, float z) {
+void TerrainManager::render(Mat4f& projectionView, Mat4f& view, float x, float y, float z) {
     shader->bind();
     shader->setUniformMatrix4f("view", view.getBuffer());
     shader->setUniform3f("viewPos", x, y, z);
@@ -43,7 +43,7 @@ void TerrainManager::render(Matrix4f& projectionView, Matrix4f& view, float x, f
     WorldManager::render(projectionView);
 }
 
-void TerrainManager::setProjection(Matrix4f &projection) {
+void TerrainManager::setProjection(Mat4f &projection) {
     shader->bind();
     shader->setUniformMatrix4f("projection", projection.getBuffer());
 }
