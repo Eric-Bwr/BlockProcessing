@@ -2,7 +2,8 @@
 
 ChunkBorder::ChunkBorder() {
     layout = new VertexBufferObjectLayout();
-    vertices = new float[576]{
+    std::vector<float> faceData;
+    auto vertices = new float[576]{
             0, 0, 0, 0,
             WORLD_SIZE, 0, 0, 0,
             WORLD_SIZE, 0, 0, 0,
@@ -278,6 +279,8 @@ ChunkBorder::ChunkBorder() {
     vao = new VertexArrayObject();
     vbo = new VertexBufferObject(faceData.data(), layout->getStride() * vertexCount, GL_STATIC_DRAW);
     vao->addBuffer(*vbo, *layout);
+    faceData.clear();
+    delete[] vertices;
 }
 
 void ChunkBorder::render() {
@@ -290,7 +293,5 @@ ChunkBorder::~ChunkBorder() {
     VertexBufferObject::unbind();
     delete vao;
     delete vbo;
-    faceData.clear();
-    delete[] vertices;
     delete layout;
 }

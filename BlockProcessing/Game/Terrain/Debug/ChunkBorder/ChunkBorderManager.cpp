@@ -13,11 +13,11 @@ void ChunkBorderManager::init() {
 }
 
 void ChunkBorderManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
-    model.identity();
     model.translate(WORLD_SIZE * tileX, WORLD_SIZE * tileY, WORLD_SIZE * tileZ);
 }
 
 void ChunkBorderManager::render(Mat4f& view) {
+    glLineWidth(CHUNK_BORDER_WIDTH);
     shader->bind();
     shader->setUniformMatrix4f("view", view.getBuffer());
     shader->setUniformMatrix4f("model", model.getBuffer());

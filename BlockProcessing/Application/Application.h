@@ -13,6 +13,7 @@
 #include "Engine/3D/Camera/CameraFirstPerson.h"
 #include "Engine/PostProcess/PostProcessManager.h"
 #include "Engine/3D/Model3D/Model3D.h"
+#include "Game/Terrain/Octree/OctreeManager.h"
 
 class App {
 private:

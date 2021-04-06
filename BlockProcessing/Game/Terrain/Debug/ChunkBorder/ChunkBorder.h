@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Buffer.h>
+#include <Shader.h>
 #include <memory.h>
 #include "../../TerrainDefines.h"
 
@@ -13,7 +14,5 @@ private:
     VertexBufferObjectLayout *layout;
     VertexArrayObject *vao;
     VertexBufferObject *vbo;
-    std::vector<float> faceData;
     uint64_t vertexCount;
-    float* vertices;
 };

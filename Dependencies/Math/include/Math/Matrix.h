@@ -22,7 +22,7 @@ public:
     float m31 = 0.0f;
     float m32 = 0.0f;
     float m33 = 0.0f;
-    float* buffer = nullptr;
+    float* buffer = new float[16] {m00, m01, m02, m03, m10, m11, m12, m13, m20, m21, m22, m23, m30, m31, m32, m33};
 
     Mat4f() = default;
     explicit Mat4f(float v);

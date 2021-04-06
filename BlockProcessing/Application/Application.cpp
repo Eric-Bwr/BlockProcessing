@@ -53,6 +53,8 @@ void App::_init() {
     ChunkBorderManager::init();
     ChunkBorderManager::setProjection(projection);
     glEnable(GL_DEPTH_TEST);
+
+    OctreeManager::init();
 }
 
 void App::_update(double &gameTime) {
@@ -74,7 +76,14 @@ void App::_update(double &gameTime) {
     TerrainManager::generate(player->getXChunk(), player->getYChunk(), player->getZChunk());
     ChunkBorderManager::generate(player->getXChunk(), player->getYChunk(), player->getZChunk());
     player->updatePlayer();
+    if(leftControl)
+    OctreeManager::update(player->getXChunk(), player->getYChunk(), player->getZChunk());
 }
+
+/*
+OLD SYS
+Time difference = 2000000[ns]
+ */
 
 void App::_render(double &gameTime) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -83,7 +92,14 @@ void App::_render(double &gameTime) {
     projectionView = projectionView.multiply(projection, view);
     render(gameTime);
     TerrainManager::setProjection(projection);
-    TerrainManager::render(projectionView, view, player->getX(), player->getY(), player->getZ());
+    OctreeManager::setProjection(projection);
+   // std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+   // TerrainManager::render(projectionView, view, player->getX(), player->getY(), player->getZ());
+
+   // std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+   // std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count() << "[ns]" << std::endl;
+    OctreeManager::render(view);
+    OctreeManager::visualize(view);
     ChunkBorderManager::setProjection(projection);
     if(wireFrame)
     ChunkBorderManager::render(view);
