@@ -25,11 +25,11 @@ void ChunkManager::initChunk(Chunk *chunk) {
 void ChunkManager::generateChunkDefaultBlockData(Chunk *chunk) {
     ChunkBlock chunkBlock;
     for (int x = 0; x < CHUNK_SIZE; x++) {
-        int64_t posX = chunk->coord.tileX * CHUNK_SIZE + x;
+        int64_t posX = chunk->tileX * CHUNK_SIZE + x;
         for (int y = 0; y < CHUNK_SIZE; y++) {
-            int64_t posY = chunk->coord.tileY * CHUNK_SIZE + y;
+            int64_t posY = chunk->tileY * CHUNK_SIZE + y;
             for (int z = 0; z < CHUNK_SIZE; z++) {
-                int64_t posZ = chunk->coord.tileZ * CHUNK_SIZE + z;
+                int64_t posZ = chunk->tileZ * CHUNK_SIZE + z;
                 WorldManager::getDefaultChunkBlock(chunkBlock, posX, posY, posZ);
                 chunk->blockData[z * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + x] = chunkBlock;
             }
@@ -42,11 +42,11 @@ void ChunkManager::generateChunkDefaultFaceData(Chunk *chunk) {
     ChunkBlock neighbor;
     ChunkBlock chunkBlock;
     for (int x = 0; x < CHUNK_SIZE; x++) {
-        int64_t posX = chunk->coord.tileX * CHUNK_SIZE + x;
+        int64_t posX = chunk->tileX * CHUNK_SIZE + x;
         for (int y = 0; y < CHUNK_SIZE; y++) {
-            int64_t posY = chunk->coord.tileY * CHUNK_SIZE + y;
+            int64_t posY = chunk->tileY * CHUNK_SIZE + y;
             for (int z = 0; z < CHUNK_SIZE; z++) {
-                int64_t posZ = chunk->coord.tileZ * CHUNK_SIZE + z;
+                int64_t posZ = chunk->tileZ * CHUNK_SIZE + z;
                 chunkBlock = chunk->blockData[z * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + x];
                 if (chunkBlock.id != BLOCK_AIR) {
                     block = BlockManager::getBlockByID(chunkBlock.id);
@@ -126,18 +126,18 @@ void ChunkManager::generateChunkFaceData(Chunk *chunk) {
     Block *block;
     ChunkBlock neighbor;
     ChunkBlock chunkBlock;
-    auto neighborChunkTop = WorldManager::getChunkInChunkCoords(chunk->coord.tileX, chunk->coord.tileY + 1, chunk->coord.tileZ);
-    auto neighborChunkBottom = WorldManager::getChunkInChunkCoords(chunk->coord.tileX, chunk->coord.tileY - 1, chunk->coord.tileZ);
-    auto neighborChunkRight = WorldManager::getChunkInChunkCoords(chunk->coord.tileX + 1, chunk->coord.tileY, chunk->coord.tileZ);
-    auto neighborChunkLeft = WorldManager::getChunkInChunkCoords(chunk->coord.tileX - 1, chunk->coord.tileY, chunk->coord.tileZ);
-    auto neighborChunkFront = WorldManager::getChunkInChunkCoords(chunk->coord.tileX, chunk->coord.tileY, chunk->coord.tileZ - 1);
-    auto neighborChunkBack = WorldManager::getChunkInChunkCoords(chunk->coord.tileX, chunk->coord.tileY, chunk->coord.tileZ + 1);
+    auto neighborChunkTop = WorldManager::getChunkInChunkCoords(chunk->tileX, chunk->tileY + 1, chunk->tileZ);
+    auto neighborChunkBottom = WorldManager::getChunkInChunkCoords(chunk->tileX, chunk->tileY - 1, chunk->tileZ);
+    auto neighborChunkRight = WorldManager::getChunkInChunkCoords(chunk->tileX + 1, chunk->tileY, chunk->tileZ);
+    auto neighborChunkLeft = WorldManager::getChunkInChunkCoords(chunk->tileX - 1, chunk->tileY, chunk->tileZ);
+    auto neighborChunkFront = WorldManager::getChunkInChunkCoords(chunk->tileX, chunk->tileY, chunk->tileZ - 1);
+    auto neighborChunkBack = WorldManager::getChunkInChunkCoords(chunk->tileX, chunk->tileY, chunk->tileZ + 1);
     for (int x = 0; x < CHUNK_SIZE; x++) {
-        int64_t posX = chunk->coord.tileX * CHUNK_SIZE + x;
+        int64_t posX = chunk->tileX * CHUNK_SIZE + x;
         for (int y = 0; y < CHUNK_SIZE; y++) {
-            int64_t posY = chunk->coord.tileY * CHUNK_SIZE + y;
+            int64_t posY = chunk->tileY * CHUNK_SIZE + y;
             for (int z = 0; z < CHUNK_SIZE; z++) {
-                int64_t posZ = chunk->coord.tileZ * CHUNK_SIZE + z;
+                int64_t posZ = chunk->tileZ * CHUNK_SIZE + z;
                 chunkBlock = chunk->blockData[z * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + x];
                 block = BlockManager::getBlockByID(chunkBlock.id);
                 if (chunkBlock.id != BLOCK_AIR) {

@@ -1,4 +1,6 @@
 #include "Frustum.h"
+#include "../../Octree/OctreeNodeObject.h"
+#include "../../TerrainDefines.h"
 
 enum Planes {
     Near, Far, Left, Right, Top, Bottom

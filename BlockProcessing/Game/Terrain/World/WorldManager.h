@@ -11,6 +11,7 @@
 #include "../Block/BlockManager.h"
 #include "Frustum/Frustum.h"
 #include "../Util/CoordinateHelper.h"
+#include "../Octree/OctreeNode.h"
 
 struct Hash {
     int operator()(const Coord &coord) const {
@@ -36,9 +37,9 @@ public:
     ~WorldManager();
 public:
     static FastNoise* fastNoise;
-    static std::unordered_map<Coord, Chunk*, Hash, Compare> chunks;
-    static std::unordered_set<Coord, Hash, Compare> modifiedChunks;
-    static std::unordered_set<Coord, Hash, Compare> chunksGenerating;
-    static std::vector<Coord> chunkCandidatesForGenerating;
+    static std::unordered_map<Coord, OctreeNode*, Hash, Compare> octrees;
+    static std::unordered_set<Coord, Hash, Compare> modifiedOctrees;
+    static std::unordered_set<Coord, Hash, Compare> octreesGenerating;
+    static std::vector<Coord> octreeCandidatesForGenerating;
     static Frustum frustum;
 };

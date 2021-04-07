@@ -13,7 +13,8 @@
 #include "Engine/3D/Camera/CameraFirstPerson.h"
 #include "Engine/PostProcess/PostProcessManager.h"
 #include "Engine/3D/Model3D/Model3D.h"
-#include "Game/Terrain/Octree/OctreeManager.h"
+#include "Game/Terrain/Debug/Octree/OctreeVisualizer.h"
+#include "Game/Terrain/Octree/OctreeNode.h"
 
 class App {
 private:
@@ -46,6 +47,7 @@ private:
     Player* player;
 
     amples* d;
+    OctreeNode* testNode;
 
     float fov = 45.0f;
     Mat4f projection;

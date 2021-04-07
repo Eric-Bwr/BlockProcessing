@@ -1,8 +1,9 @@
 #pragma once
 
 #include <Math/Matrix.h>
-#include "../../Chunk/Chunk.h"
 #include <array>
+
+class Coord;
 
 struct Plane {
 public:
