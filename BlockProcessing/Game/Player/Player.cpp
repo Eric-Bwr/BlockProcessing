@@ -20,15 +20,16 @@ void Player::updatePlayer() {
     chunkX = getChunkFromBlock(playerX);
     chunkY = getChunkFromBlock(playerY);
     chunkZ = getChunkFromBlock(playerZ);
-    castRay();
 }
 
 void Player::dig() {
+    castRay();
     if (lookingAtChunkBlock.id != BLOCK_AIR)
         WorldManager::setChunkBlock(airBlock, playerX + lookedAtBlockOffsetX, playerY + lookedAtBlockOffsetY, playerZ + lookedAtBlockOffsetZ);
 }
 
 void Player::place() {
+    castRay();
     dos = !dos;
 }
 

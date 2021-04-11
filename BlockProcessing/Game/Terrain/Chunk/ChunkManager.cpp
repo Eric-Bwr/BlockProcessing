@@ -126,12 +126,12 @@ void ChunkManager::generateChunkFaceData(Chunk *chunk) {
     Block *block;
     ChunkBlock neighbor;
     ChunkBlock chunkBlock;
-    auto neighborChunkTop = WorldManager::getChunkInChunkCoords(chunk->tileX, chunk->tileY + 1, chunk->tileZ);
-    auto neighborChunkBottom = WorldManager::getChunkInChunkCoords(chunk->tileX, chunk->tileY - 1, chunk->tileZ);
-    auto neighborChunkRight = WorldManager::getChunkInChunkCoords(chunk->tileX + 1, chunk->tileY, chunk->tileZ);
-    auto neighborChunkLeft = WorldManager::getChunkInChunkCoords(chunk->tileX - 1, chunk->tileY, chunk->tileZ);
-    auto neighborChunkFront = WorldManager::getChunkInChunkCoords(chunk->tileX, chunk->tileY, chunk->tileZ - 1);
-    auto neighborChunkBack = WorldManager::getChunkInChunkCoords(chunk->tileX, chunk->tileY, chunk->tileZ + 1);
+    auto neighborChunkTop = WorldManager::getChunkFromChunkCoords(chunk->tileX, chunk->tileY + 1, chunk->tileZ);
+    auto neighborChunkBottom = WorldManager::getChunkFromChunkCoords(chunk->tileX, chunk->tileY - 1, chunk->tileZ);
+    auto neighborChunkRight = WorldManager::getChunkFromChunkCoords(chunk->tileX + 1, chunk->tileY, chunk->tileZ);
+    auto neighborChunkLeft = WorldManager::getChunkFromChunkCoords(chunk->tileX - 1, chunk->tileY, chunk->tileZ);
+    auto neighborChunkFront = WorldManager::getChunkFromChunkCoords(chunk->tileX, chunk->tileY, chunk->tileZ - 1);
+    auto neighborChunkBack = WorldManager::getChunkFromChunkCoords(chunk->tileX, chunk->tileY, chunk->tileZ + 1);
     for (int x = 0; x < CHUNK_SIZE; x++) {
         int64_t posX = chunk->tileX * CHUNK_SIZE + x;
         for (int y = 0; y < CHUNK_SIZE; y++) {

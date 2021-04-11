@@ -1,5 +1,6 @@
 #include "Application.h"
 #include <Engine/3D/Transform3D/Transform3D.h>
+#include "Game/Terrain/Octree/OctreeLeaf.h"
 
 App::App() = default;
 
@@ -56,7 +57,13 @@ void App::_init() {
 
     OctreeVisualizer::init();
 
-    testNode = new OctreeNode(OCTREE_MAX_LEVEL, pow(2, OCTREE_MAX_LEVEL), {0,0,0});
+    testNode = new OctreeNode(OCTREE_MAX_LEVEL, pow(2, OCTREE_MAX_LEVEL), {0,OCTREE_LENGTH,0});
+    //testNode->load();
+    //int64_t wantX = 2;
+    //int64_t wantY = 4;
+    //int64_t wantZ = 2;
+    //OctreeLeaf* leaf = testNode->getLeafNode({wantX, wantY, wantZ});
+    //leaf->chunk.render = false;
 }
 
 void App::_update(double &gameTime) {
@@ -93,7 +100,9 @@ void App::_render(double &gameTime) {
     render(gameTime);
     TerrainManager::setProjection(projection);
     OctreeVisualizer::setProjection(projection);
-    OctreeVisualizer::visualize(view, testNode);
+   // OctreeVisualizer::visualize(view, testNode);
+    TerrainManager::render(projectionView, view, player->getX(), player->getY(), player->getZ());
+           // testNode->render();
    // std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
    // TerrainManager::render(projectionView, view, player->getX(), player->getY(), player->getZ());
 

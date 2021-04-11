@@ -1,8 +1,6 @@
 #include "OctreeLeaf.h"
 #include "../Chunk/ChunkManager.h"
 
-
-#include "iostream"
 OctreeLeaf::OctreeLeaf(Coord coord) {
     this->coord = coord;
     this->level = 0;

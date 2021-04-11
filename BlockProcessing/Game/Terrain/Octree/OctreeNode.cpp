@@ -35,10 +35,10 @@ void OctreeNode::load() {
 }
 
 void OctreeNode::render() {
-    if (WorldManager::frustum.isInside(coord)) {
+    if (true) { //FRUSTUM CULLING
         if (level == 1) {
             for (auto child : children)
-                ((OctreeLeaf *) child)->load();
+                ((OctreeLeaf *) child)->render();
         } else {
             for (auto child : children)
                 ((OctreeNode *) child)->render();
@@ -49,18 +49,25 @@ void OctreeNode::render() {
 OctreeLeaf *OctreeNode::getLeafNode(Coord coord) {
     if (level == 1) {
         for (auto child : children) {
-            if (Coord::isEqual(child->coord, coord))
+            if (Coord::isEqual(child->coord, coord)) {
                 return (OctreeLeaf *) child;
+            }
         }
     }else{
         for (auto child : children) {
-            if (Coord::isEqual(child->coord, coord))
-                return (OctreeLeaf *) child;
+            if (Coord::isEqual(child->coord, {findLowerValue(coord.tileX, level), findLowerValue(coord.tileY, level), findLowerValue(coord.tileZ, level)}))
+                return ((OctreeNode *) child)->getLeafNode(coord);
         }
     }
+    return nullptr;
 }
 
 OctreeNode::~OctreeNode() {
-    for (auto child : children)
-        delete child;
+    if(level == 1){
+        for (auto child : children)
+            delete (OctreeLeaf*)child;
+    }else {
+        for (auto child : children)
+            delete (OctreeNode*)child;
+    }
 }

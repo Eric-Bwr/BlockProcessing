@@ -29,7 +29,8 @@ class WorldManager {
 public:
     static void init();
     static void generate(int64_t tileX, int64_t tileY, int64_t tileZ);
-    static Chunk* getChunkInChunkCoords(int64_t x, int64_t y, int64_t z);
+    static Chunk* getChunkFromBlockCoords(int64_t x, int64_t y, int64_t z);
+    static Chunk* getChunkFromChunkCoords(int64_t x, int64_t y, int64_t z);
     static void getDefaultChunkBlock(ChunkBlock& chunkBlock, int64_t x, int64_t y, int64_t z);
     static void getChunkBlock(ChunkBlock& chunkBlock, int64_t x, int64_t y, int64_t z);
     static void setChunkBlock(ChunkBlock& chunkBlock, int64_t x, int64_t y, int64_t z);
@@ -38,7 +39,7 @@ public:
 public:
     static FastNoise* fastNoise;
     static std::unordered_map<Coord, OctreeNode*, Hash, Compare> octrees;
-    static std::unordered_set<Coord, Hash, Compare> modifiedOctrees;
+    static std::unordered_set<Coord, Hash, Compare> modifiedChunks;
     static std::unordered_set<Coord, Hash, Compare> octreesGenerating;
     static std::vector<Coord> octreeCandidatesForGenerating;
     static Frustum frustum;

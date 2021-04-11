@@ -1,8 +1,10 @@
 #pragma once
 
+#include "cmath"
+
 #define TERRAIN_SIZE 20
 #define TERRAIN_AMPLIFIER 200
-#define CHUNK_SIZE 30
+#define CHUNK_SIZE 22
 #define CHUNKING_RADIUS 8
 #define CHUNKING_THREADS 4
 #define CHUNKING_DELETION_OFFSET 2
@@ -28,7 +30,7 @@ const float OCTREE_VISUALIZING_COLORS[(OCTREE_MAX_LEVEL + 1) * 3]{
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-#define WORLD_SIZE (CHUNK_SIZE * TERRAIN_SIZE)
-#define CHUNKING_DELETION_RADIUS (CHUNKING_RADIUS + CHUNKING_DELETION_OFFSET)
-#define CHUNK_CUBIC_SIZE (CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE)
-#define OCTREE_LENGTH pow(2, OCTREE_MAX_LEVEL)
+const int WORLD_SIZE = (CHUNK_SIZE * TERRAIN_SIZE);
+const int CHUNKING_DELETION_RADIUS = (CHUNKING_RADIUS + CHUNKING_DELETION_OFFSET);
+const int CHUNK_CUBIC_SIZE = (CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE);
+const int OCTREE_LENGTH = pow(2, OCTREE_MAX_LEVEL);
