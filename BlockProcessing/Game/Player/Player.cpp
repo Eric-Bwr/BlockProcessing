@@ -10,7 +10,6 @@ Player::Player(float x, float y, float z, float movementSpeed, float mouseSensit
 }
 
 #include "iostream"
-
 bool dos = false;
 
 void Player::updatePlayer() {

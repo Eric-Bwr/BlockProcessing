@@ -24,7 +24,7 @@ include_directories(${PROJECT_NAME} "Dependencies/ks-Lib-0.3.8.2/Libs")
 include_directories(${PROJECT_NAME} "Dependencies/ks-Lib-0.3.8.2/Libs/OPENAL/include")
 add_subdirectory(Dependencies/ks-Lib-0.3.8.2/Libs/OPENAL)
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} Dependencies/FastNoise/FastNoise.h Dependencies/FastNoise/FastNoise.cpp BlockProcessing/Game/Terrain/Octree/OctreeNode.cpp BlockProcessing/Game/Terrain/Octree/OctreeNode.h BlockProcessing/Game/Terrain/Octree/OctreeLeaf.cpp BlockProcessing/Game/Terrain/Octree/OctreeLeaf.h BlockProcessing/Game/Terrain/Octree/OctreeNodeObject.h BlockProcessing/Game/Terrain/Debug/Octree/OctreeVisualizer.cpp BlockProcessing/Game/Terrain/Debug/Octree/OctreeVisualizer.h)
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} Dependencies/FastNoise/FastNoise.h Dependencies/FastNoise/FastNoise.cpp BlockProcessing/Game/Debug/Performance/SpeedTester.h)
 
 target_link_libraries(${PROJECT_NAME}
         ${CMAKE_CURRENT_LIST_DIR}/Dependencies/ks-Lib-0.3.8.2/libLib.a

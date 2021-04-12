@@ -102,7 +102,7 @@ static const struct NameValuePair {
 
     { "", "" }
 }, resamplerList[] = {
-    { "Point", "point" },
+    { "Line", "point" },
     { "Linear", "linear" },
     { "Default (Linear)", "" },
     { "Cubic Spline", "cubic" },

@@ -8,7 +8,7 @@ static VertexBufferObjectLayout *layout;
 static Mat4f model;
 
 void OctreeVisualizer::init() {
-    shader = new Shader(SHADER_OCTREE_VISUALIZE);
+    shader = new Shader(SHADER_LINE);
     auto vertices = new float[72]{
             0, 0, 0,
             0, WORLD_SIZE, 0,
@@ -59,11 +59,15 @@ static void visualizeNode(OctreeNodeObject* octreeNodeObject){
     }
 }
 
-void OctreeVisualizer::visualize(Mat4f& view, OctreeNodeObject* octreeNodeObject) {
+void OctreeVisualizer::visualize(OctreeNodeObject* octreeNodeObject) {
     shader->bind();
-    shader->setUniformMatrix4f("view", view.getBuffer());
     vao->bind();
     visualizeNode(octreeNodeObject);
+}
+
+void OctreeVisualizer::setView(Mat4f& view) {
+    shader->bind();
+    shader->setUniformMatrix4f("view", view.getBuffer());
 }
 
 void OctreeVisualizer::setProjection(Mat4f& projection) {
@@ -72,6 +76,8 @@ void OctreeVisualizer::setProjection(Mat4f& projection) {
 }
 
 OctreeVisualizer::~OctreeVisualizer() {
+    VertexArrayObject::unbind();
+    VertexBufferObject::unbind();
     delete vao;
     delete vbo;
     delete layout;

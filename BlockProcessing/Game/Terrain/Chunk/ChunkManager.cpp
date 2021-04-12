@@ -196,7 +196,7 @@ void ChunkManager::generateChunkFaceData(Chunk *chunk) {
                         getChunkBlock(neighborChunkBack, neighbor, posX, posY, posZ + 1, x, y, 0);
                         if (neighbor.id == BLOCK_AIR)
                             CubeManager::addFace(chunk->faceData, block, posX, posY, posZ, CHUNK_FACE_FRONT);
-                        neighbor = chunk->blockData[(z - 1)* CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + x];
+                        neighbor = chunk->blockData[(z - 1) * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + x];
                         if (neighbor.id == BLOCK_AIR)
                             CubeManager::addFace(chunk->faceData, block, posX, posY, posZ, CHUNK_FACE_BACK);
                     } else {
@@ -221,16 +221,20 @@ void ChunkManager::getChunkBlock(Chunk *chunk, ChunkBlock &chunkBlock, int64_t x
 }
 
 void ChunkManager::loadChunkData(Chunk *chunk) {
-    chunk->faceDataSize = chunk->faceData.size();
-    chunk->vertexCount = chunk->faceDataSize / 9;
-    glBindBuffer(GL_ARRAY_BUFFER, chunk->vbo);
-    glBufferData(GL_ARRAY_BUFFER, CubeManager::layout->getStride() * chunk->vertexCount, nullptr, GL_STREAM_DRAW);
-    glBufferSubData(GL_ARRAY_BUFFER, 0, CubeManager::layout->getStride() * chunk->vertexCount, chunk->faceData.data());
+        chunk->faceDataSize = chunk->faceData.size();
+        chunk->vertexCount = chunk->faceDataSize / 9;
+    if (chunk->vertexCount != 0) {
+        glBindBuffer(GL_ARRAY_BUFFER, chunk->vbo);
+        glBufferData(GL_ARRAY_BUFFER, CubeManager::layout->getStride() * chunk->vertexCount, nullptr, GL_STREAM_DRAW);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, CubeManager::layout->getStride() * chunk->vertexCount, chunk->faceData.data());
+    }
 }
 
 void ChunkManager::renderChunk(Chunk *chunk) {
-    glBindVertexArray(chunk->vao);
-    glDrawArrays(GL_TRIANGLES, 0, chunk->vertexCount);
+    if (chunk->vertexCount != 0) {
+        glBindVertexArray(chunk->vao);
+        glDrawArrays(GL_TRIANGLES, 0, chunk->vertexCount);
+    }
 }
 
 void ChunkManager::unloadChunk(Chunk *chunk) {

@@ -5,7 +5,7 @@
 #include <OpenGL/include/Shader.h>
 #include <Game/Player/Player.h>
 #include "Buffer.h"
-#include "../../TerrainDefines.h"
+#include "Game/Terrain/TerrainDefines.h"
 #include "ChunkBorder.h"
 
 class ChunkBorderManager {

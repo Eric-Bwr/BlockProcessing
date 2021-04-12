@@ -57,6 +57,8 @@ void App::_init() {
 
     OctreeVisualizer::init();
 
+    LinePoint::init();
+
     testNode = new OctreeNode(OCTREE_MAX_LEVEL, pow(2, OCTREE_MAX_LEVEL), {0,OCTREE_LENGTH,0});
     //testNode->load();
     //int64_t wantX = 2;
@@ -89,8 +91,11 @@ void App::_update(double &gameTime) {
 
 /*
 OLD SYS
-Time difference = 2000000[ns]
+2000000[ns]
+CHANGED SOME DISTANCE VALUES AND NO FRUSTUM CULLING
+6500000[ns]
  */
+#include "../Game/Debug/Performance/SpeedTester.h"
 
 void App::_render(double &gameTime) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -100,17 +105,18 @@ void App::_render(double &gameTime) {
     render(gameTime);
     TerrainManager::setProjection(projection);
     OctreeVisualizer::setProjection(projection);
-   // OctreeVisualizer::visualize(view, testNode);
+    LinePoint::setProjection(projection);
     TerrainManager::render(projectionView, view, player->getX(), player->getY(), player->getZ());
-           // testNode->render();
-   // std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-   // TerrainManager::render(projectionView, view, player->getX(), player->getY(), player->getZ());
-
-   // std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-   // std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds>(end - begin).count() << "[ns]" << std::endl;
+    OctreeVisualizer::setView(view);
+    for (auto&[coord, octree] : WorldManager::octrees) {
+       // OctreeVisualizer::visualize(octree);
+    }
     ChunkBorderManager::setProjection(projection);
     if(wireFrame)
-    ChunkBorderManager::render(view);
+        ChunkBorderManager::render(view);
+    LinePoint::setView(view);
+    player->castRayVis();
+
     if (alt) {
         alt = false;
         Shader::unbind();

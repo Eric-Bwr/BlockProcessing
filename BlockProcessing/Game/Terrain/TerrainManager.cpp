@@ -1,4 +1,4 @@
-#include <Game/Terrain/Debug/Octree/OctreeVisualizer.h>
+#include "../Debug/Octree/OctreeVisualizer.h"
 #include "TerrainManager.h"
 
 Mat4f TerrainManager::model;
@@ -42,11 +42,6 @@ void TerrainManager::render(Mat4f& projectionView, Mat4f& view, float x, float y
     shader->setUniform3f("viewPos", x, y, z);
     texture->bind();
     WorldManager::render(projectionView);
-
-
-    for (auto&[coord, octree] : WorldManager::octrees) {
-        OctreeVisualizer::visualize(view, octree);
-    }
 }
 
 void TerrainManager::setProjection(Mat4f &projection) {

@@ -3,7 +3,7 @@
 #include <Buffer.h>
 #include <Shader.h>
 #include <memory.h>
-#include "../../TerrainDefines.h"
+#include "Game/Terrain/TerrainDefines.h"
 
 class ChunkBorder {
 public:

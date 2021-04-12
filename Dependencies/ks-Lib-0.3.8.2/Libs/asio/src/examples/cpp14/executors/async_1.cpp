@@ -40,7 +40,7 @@ int main()
   async_getline(std::cin,
       bind_executor(pool, [](std::string line)
         {
-          std::cout << "Line: " << line << "\n";
+          std::cout << "LinePoint: " << line << "\n";
         }));
 
   pool.join();

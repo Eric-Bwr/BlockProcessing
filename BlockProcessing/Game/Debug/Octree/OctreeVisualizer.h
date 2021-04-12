@@ -3,13 +3,14 @@
 #include <Shader.h>
 #include <Buffer.h>
 #include <Math/Matrix.h>
-#include "../../Octree/OctreeNode.h"
-#include "../../TerrainDefines.h"
+#include "Game/Terrain/Octree/OctreeNode.h"
+#include "Game/Terrain/TerrainDefines.h"
 
 class OctreeVisualizer {
 public:
     static void init();
-    static void visualize(Mat4f& view, OctreeNodeObject* octreeNodeObject);
+    static void visualize(OctreeNodeObject* octreeNodeObject);
+    static void setView(Mat4f& view);
     static void setProjection(Mat4f& projection);
     ~OctreeVisualizer();
 };

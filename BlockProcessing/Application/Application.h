@@ -9,12 +9,13 @@
 #include <Game/Terrain/Chunk/ChunkManager.h>
 #include <Game/Player/Player.h>
 #include <Game/Event/Events/amples.h>
-#include <Game/Terrain/Debug/ChunkBorder/ChunkBorderManager.h>
+#include <Game/Debug/ChunkBorder/ChunkBorderManager.h>
 #include "Engine/3D/Camera/CameraFirstPerson.h"
 #include "Engine/PostProcess/PostProcessManager.h"
 #include "Engine/3D/Model3D/Model3D.h"
-#include "Game/Terrain/Debug/Octree/OctreeVisualizer.h"
+#include "Game/Debug/Octree/OctreeVisualizer.h"
 #include "Game/Terrain/Octree/OctreeNode.h"
+#include "Game/Debug/LinePoint/LinePoint.h"
 
 class App {
 private:
