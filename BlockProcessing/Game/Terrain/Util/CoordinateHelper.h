@@ -2,6 +2,7 @@
 
 #include <cstdint>
 #include <cmath>
+#include <Math/Vector.h>
 #include "../TerrainDefines.h"
 
 int64_t getBlockFromCamera(float camera);

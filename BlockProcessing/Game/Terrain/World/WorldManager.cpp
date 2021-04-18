@@ -38,8 +38,6 @@ void WorldManager::init() {
     }
 }
 
-#include "iostream"
-
 void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
     octreeCandidatesForGenerating.clear();
     int64_t octreeX = getOctreeFromChunk(tileX);

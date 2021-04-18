@@ -18,7 +18,6 @@ public:
     static void setProjection(Mat4f& projection);
     static void setLightPosition(float x, float y, float z);
     static int64_t getChunkPosition(float coord);
-    static int getTerrainHeight(int64_t x, int64_t z);
     ~TerrainManager();
 public:
     static Mat4f model;

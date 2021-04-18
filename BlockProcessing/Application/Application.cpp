@@ -34,8 +34,7 @@ void App::_init() {
 
     timer.setTimedBoolDuration(1.0f);
 
-    player = new Player(0.0f, 0.0f, -20.0f, 7.0f, 0.025f, 90.0f, 0.0f);
-
+    Player::init(0, 0, 0, 90, 0);
     glfwSetInputMode(appWindow->getWindow(), GLFW_STICKY_KEYS, GLFW_TRUE);
     glfwSetInputMode(appWindow->getWindow(), GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
     glfwSetInputMode(appWindow->getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
@@ -54,39 +53,25 @@ void App::_init() {
     ChunkBorderManager::init();
     ChunkBorderManager::setProjection(projection);
     glEnable(GL_DEPTH_TEST);
-
     OctreeVisualizer::init();
-
     LinePoint::init();
-
-    testNode = new OctreeNode(OCTREE_MAX_LEVEL, pow(2, OCTREE_MAX_LEVEL), {0,OCTREE_LENGTH,0});
-    //testNode->load();
-    //int64_t wantX = 2;
-    //int64_t wantY = 4;
-    //int64_t wantZ = 2;
-    //OctreeLeaf* leaf = testNode->getLeafNode({wantX, wantY, wantZ});
-    //leaf->chunk.render = false;
 }
 
 void App::_update(double &gameTime) {
     update(gameTime);
-    fov = player->getZoom();
+    fov = zoomLevel;
     if (zoom)
         projection.perspective(fov, (float) width, (float) height, 1.0f, 20000.0f);
-    else
-        player->setMovementSpeed(cameraSpeed);
-    player->update();
-    auto terrainHeight = (float) TerrainManager::getTerrainHeight((int64_t) player->getX(), (int64_t) player->getZ());
-    if (collision) {
-        incr = terrainHeight - (player->getY() - offset);
-        span += incr / 3;
-        player->setPosition(player->getX(), span + offset, player->getZ());
-    } else
-        span = terrainHeight;
-    TerrainManager::setLightPosition(player->getX(), player->getY() + 1000, player->getZ());
-    TerrainManager::generate(player->getXChunk(), player->getYChunk(), player->getZChunk());
-    ChunkBorderManager::generate(player->getXChunk(), player->getYChunk(), player->getZChunk());
-    player->updatePlayer();
+    //else
+        //PLAYER_MOVE_SPEED = cameraSpeed;
+    TerrainManager::setLightPosition(Player::getX(), Player::getY() + 1000, Player::getZ());
+    TerrainManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
+    ChunkBorderManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
+    Player::updatePlayer();
+    if(collision) {
+        Player::gameMode = !Player::gameMode;
+        collision = false;
+    }
 }
 
 /*
@@ -100,22 +85,21 @@ CHANGED SOME DISTANCE VALUES AND NO FRUSTUM CULLING
 void App::_render(double &gameTime) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.8, 0.9, 0.9, 1.0);
-    view = player->getViewMatrix();
+    view = Player::getViewMatrix();
     projectionView = projectionView.multiply(projection, view);
     render(gameTime);
     TerrainManager::setProjection(projection);
     OctreeVisualizer::setProjection(projection);
     LinePoint::setProjection(projection);
-    TerrainManager::render(projectionView, view, player->getX(), player->getY(), player->getZ());
+    TerrainManager::render(projectionView, view, Player::getX(), Player::getY(), Player::getZ());
     OctreeVisualizer::setView(view);
-    for (auto&[coord, octree] : WorldManager::octrees) {
-       // OctreeVisualizer::visualize(octree);
-    }
+    //for (auto&[coord, octree] : WorldManager::octrees) {
+    //    OctreeVisualizer::visualize(octree);
+    //}
     ChunkBorderManager::setProjection(projection);
-    if(wireFrame)
+    if (wireFrame)
         ChunkBorderManager::render(view);
     LinePoint::setView(view);
-    player->castRayVis();
 
     if (alt) {
         alt = false;

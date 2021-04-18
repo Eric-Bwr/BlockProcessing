@@ -24,7 +24,7 @@ include_directories(${PROJECT_NAME} "Dependencies/ks-Lib-0.3.8.2/Libs")
 include_directories(${PROJECT_NAME} "Dependencies/ks-Lib-0.3.8.2/Libs/OPENAL/include")
 add_subdirectory(Dependencies/ks-Lib-0.3.8.2/Libs/OPENAL)
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} Dependencies/FastNoise/FastNoise.h Dependencies/FastNoise/FastNoise.cpp BlockProcessing/Game/Debug/Performance/SpeedTester.h)
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} Dependencies/FastNoise/FastNoise.h Dependencies/FastNoise/FastNoise.cpp)
 
 target_link_libraries(${PROJECT_NAME}
         ${CMAKE_CURRENT_LIST_DIR}/Dependencies/ks-Lib-0.3.8.2/libLib.a

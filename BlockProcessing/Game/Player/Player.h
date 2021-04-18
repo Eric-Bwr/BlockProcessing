@@ -1,31 +1,33 @@
 #pragma once
 
-#include "Engine/3D/Camera/CameraFirstPerson.h"
 #include "../Event/EventManager.h"
 #include "../Terrain/Chunk/ChunkBlock.h"
 #include "../Terrain/Util/CoordinateHelper.h"
+#include "PlayerCamera.h"
 
-class Player : public CameraFirstPerson{
+class Player : public PlayerCamera{
 public:
-    Player(float x, float y, float z, float movementSpeed, float mouseSensitivity, float yaw, float pitch);
-    void updatePlayer();
-    void dig();
-    void place();
-    int64_t getXChunk() const;
-    int64_t getYChunk() const;
-    int64_t getZChunk() const;
-    int64_t getXBlock() const;
-    int64_t getYBlock() const;
-    int64_t getZBlock() const;
+    static void init(float x, float y, float z, float yaw, float pitch);
+    static void updatePlayer();
+    static void dig();
+    static void place();
+    static int8_t gameMode;
+    static int64_t blockX, chunkX;
+    static int64_t blockY, chunkY;
+    static int64_t blockZ, chunkZ;
 private:
-    void castRay();
-    int64_t playerX = 0, chunkX = 0;
-    int64_t playerY = 0, chunkY = 0;
-    int64_t playerZ = 0, chunkZ = 0;
-    int lookedAtBlockOffsetX = 0;
-    int lookedAtBlockOffsetY = 0;
-    int lookedAtBlockOffsetZ = 0;
-    PlayerDigEvent playerDigEvent;
-    ChunkBlock lookingAtChunkBlock;
-    ChunkBlock airBlock;
+    static void calculateMove();
+    static void calculateGravity();
+    static void castRay();
+    static int lookedAtBlockOffsetX;
+    static int lookedAtBlockOffsetY;
+    static int lookedAtBlockOffsetZ;
+    static ChunkBlock lookingAtChunkBlock;
+    static ChunkBlock airBlock;
+    static ChunkBlock collisionBlock;
+    static bool shouldFloat;
+    static bool doublePress;
+    static bool doublePressLastState;
+    static float doublePressSpan;
+    static float doublePressIgnoreSpan;
 };

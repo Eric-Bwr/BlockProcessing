@@ -11,9 +11,6 @@
 
 const int OCTREE_MAX_LEVEL = 2;
 
-const float PLAYER_BLOCK_DISTANCE = 15.0;
-const float PLAYER_STEP_SIZE = 0.03;
-
 #define TEXTURE_ATLAS_TILE_SIZE 32
 #define TEXTURE_ATLAS_ROW_COUNT 16
 #define TEXTURE_ATLAS_LOD_BIAS -2
@@ -27,7 +24,6 @@ const float OCTREE_VISUALIZING_COLORS[(OCTREE_MAX_LEVEL + 1) * 3]{
         1.0, 0.0, 0.0,
         0.0, 1.0, 0.0,
 };
-
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #include "cmath"
 const int WORLD_SIZE = (CHUNK_SIZE * TERRAIN_SIZE);

@@ -58,10 +58,6 @@ int64_t TerrainManager::getChunkPosition(float coord) {
     return (int64_t) (floorf((coord / TERRAIN_SIZE) / CHUNK_SIZE));
 }
 
-int TerrainManager::getTerrainHeight(int64_t x, int64_t z) {
-    return (int) (floorf(((fastNoise->GetNoise(x / TERRAIN_SIZE, z / TERRAIN_SIZE) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER) * TERRAIN_SIZE);
-}
-
 TerrainManager::~TerrainManager() {
     delete fastNoise;
 }

@@ -35,7 +35,7 @@ void OctreeNode::load() {
 }
 
 void OctreeNode::render() {
-    if (true) { //FRUSTUM CULLING
+    if (true) {
         if (level == 1) {
             for (auto child : children)
                 ((OctreeLeaf *) child)->render();
@@ -53,7 +53,7 @@ OctreeLeaf *OctreeNode::getLeafNode(Coord coord) {
                 return (OctreeLeaf *) child;
             }
         }
-    }else{
+    } else {
         for (auto child : children) {
             if (Coord::isEqual(child->coord, {findLowerValue(coord.tileX, level), findLowerValue(coord.tileY, level), findLowerValue(coord.tileZ, level)}))
                 return ((OctreeNode *) child)->getLeafNode(coord);
@@ -63,11 +63,11 @@ OctreeLeaf *OctreeNode::getLeafNode(Coord coord) {
 }
 
 OctreeNode::~OctreeNode() {
-    if(level == 1){
+    if (level == 1) {
         for (auto child : children)
-            delete (OctreeLeaf*)child;
-    }else {
+            delete (OctreeLeaf *) child;
+    } else {
         for (auto child : children)
-            delete (OctreeNode*)child;
+            delete (OctreeNode *) child;
     }
 }

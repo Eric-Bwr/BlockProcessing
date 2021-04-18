@@ -1,7 +1,7 @@
 #include "OctreeVisualizer.h"
 #include "Paths.h"
 
-static Shader* shader;
+static Shader *shader;
 static VertexArrayObject *vao;
 static VertexBufferObject *vbo;
 static VertexBufferObjectLayout *layout;
@@ -45,7 +45,7 @@ void OctreeVisualizer::init() {
     delete[] vertices;
 }
 
-static void visualizeNode(OctreeNodeObject* octreeNodeObject){
+static void visualizeNode(OctreeNodeObject *octreeNodeObject) {
     glLineWidth(OCTREE_LINE_WIDTH + octreeNodeObject->level * OCTREE_LINE_WIDTH_AMPLIFIER);
     model.identity();
     model.translate(octreeNodeObject->coord.tileX * WORLD_SIZE, octreeNodeObject->coord.tileY * WORLD_SIZE, octreeNodeObject->coord.tileZ * WORLD_SIZE);
@@ -53,24 +53,24 @@ static void visualizeNode(OctreeNodeObject* octreeNodeObject){
     shader->setUniformMatrix4f("model", model.getBuffer());
     shader->setUniform3f("color", OCTREE_VISUALIZING_COLORS[octreeNodeObject->level * 3 + 0], OCTREE_VISUALIZING_COLORS[octreeNodeObject->level * 3 + 1], OCTREE_VISUALIZING_COLORS[octreeNodeObject->level * 3 + 2]);
     glDrawArrays(GL_LINES, 0, 24);
-    if(octreeNodeObject->level > 0){
-        for (auto child : ((OctreeNode*)octreeNodeObject)->children)
+    if (octreeNodeObject->level > 0) {
+        for (auto child : ((OctreeNode *) octreeNodeObject)->children)
             visualizeNode(child);
     }
 }
 
-void OctreeVisualizer::visualize(OctreeNodeObject* octreeNodeObject) {
+void OctreeVisualizer::visualize(OctreeNodeObject *octreeNodeObject) {
     shader->bind();
     vao->bind();
     visualizeNode(octreeNodeObject);
 }
 
-void OctreeVisualizer::setView(Mat4f& view) {
+void OctreeVisualizer::setView(Mat4f &view) {
     shader->bind();
     shader->setUniformMatrix4f("view", view.getBuffer());
 }
 
-void OctreeVisualizer::setProjection(Mat4f& projection) {
+void OctreeVisualizer::setProjection(Mat4f &projection) {
     shader->bind();
     shader->setUniformMatrix4f("projection", projection.getBuffer());
 }

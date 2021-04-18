@@ -12,17 +12,16 @@ void App::_onEvent(es::Event &e) {
     dispatcher.dispatchMFunc<es::MouseUpScrollEvent>(BIND_FUNC(App::onMouseUpWheel));
     dispatcher.dispatchMFunc<es::MouseDownScrollEvent>(BIND_FUNC(App::onMouseDownWheel));
     dispatcher.dispatchMFunc<es::CharEvent>(BIND_FUNC(App::onChar));
-    player->onEvent(e);
 }
 
-bool App::onWindowClose(es::WindowCloseEvent& e) {
+bool App::onWindowClose(es::WindowCloseEvent &e) {
     running = false;
     return true;
 }
 
-bool App::onWindowResize(es::WindowSizeEvent& e) {
+bool App::onWindowResize(es::WindowSizeEvent &e) {
     glViewport(0, 0, e.getWidth(), e.getHeight());
-    if(e.getWidth() == 0 || e.getHeight() == 0)
+    if (e.getWidth() == 0 || e.getHeight() == 0)
         windowMinimized = true;
     windowMinimized = false;
     width = e.getWidth();
@@ -30,166 +29,209 @@ bool App::onWindowResize(es::WindowSizeEvent& e) {
     return false;
 }
 
-bool App::onKeyPressed(es::KeyPressedEvent& e) {
-    if(e.getKey() == GLFW_KEY_ESCAPE)
+bool App::onKeyPressed(es::KeyPressedEvent &e) {
+    if (e.getKey() == GLFW_KEY_ESCAPE)
         running = false;
-    if(e.getKey() == GLFW_KEY_RIGHT_SHIFT){
+    if (e.getKey() == GLFW_KEY_RIGHT_SHIFT) {
         mode = !mode;
-        if(mode)
+        if (mode)
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
         else
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
-    if(e.getKey() == GLFW_KEY_M){
+    if (e.getKey() == GLFW_KEY_M) {
         modeGui = !modeGui;
         modeCursor = modeGui;
-        if(modeGui)
+        if (modeGui)
             glfwSetInputMode(appWindow->getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         else
             glfwSetInputMode(appWindow->getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
-    if(e.getKey() == GLFW_KEY_X){
+    if (e.getKey() == GLFW_KEY_X) {
         modeCursor = !modeCursor;
-        player->setAttached(!modeCursor);
-        if(modeCursor)
+        if (modeCursor)
             glfwSetInputMode(appWindow->getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         else
             glfwSetInputMode(appWindow->getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
-    if(e.getKey() == GLFW_KEY_C){
+    if (e.getKey() == GLFW_KEY_C) {
         collision = !collision;
     }
-    if(e.getKey() == GLFW_KEY_K){
+    if (e.getKey() == GLFW_KEY_K) {
         showCoords = !showCoords;
     }
-    if(e.getKey() == GLFW_KEY_LEFT_CONTROL){
+    if (e.getKey() == GLFW_KEY_LEFT_CONTROL) {
         leftControl = true;
     }
-    if(e.getKey() == GLFW_KEY_LEFT_ALT){
+    if (e.getKey() == GLFW_KEY_LEFT_ALT) {
         alt = true;
     }
-    if(e.getKey() == GLFW_KEY_N){
+    if (e.getKey() == GLFW_KEY_N) {
         wireFrame = !wireFrame;
     }
-    if(e.getKey() == GLFW_KEY_Y){
+    if (e.getKey() == GLFW_KEY_Y) {
         zoom = !zoom;
     }
+    if (e.getKey() == GLFW_KEY_SPACE)
+        Player::shouldMoveUp = true;
+    if (e.getKey() == GLFW_KEY_LEFT_SHIFT)
+        Player::shouldMoveDown = true;
+    if (e.getKey() == GLFW_KEY_W)
+        Player::shouldMoveForward = true;
+    if (e.getKey() == GLFW_KEY_S)
+        Player::shouldMoveBackward = true;
+    if (e.getKey() == GLFW_KEY_A)
+        Player::shouldMoveLeft = true;
+    if (e.getKey() == GLFW_KEY_D)
+        Player::shouldMoveRight = true;
     return false;
 }
 
 bool App::onKeyReleased(es::KeyReleasedEvent &e) {
-    if(e.getKey() == GLFW_KEY_LEFT_CONTROL){
+    if (e.getKey() == GLFW_KEY_LEFT_CONTROL) {
         leftControl = false;
     }
-    if(e.getKey() == GLFW_KEY_LEFT_ALT){
+    if (e.getKey() == GLFW_KEY_LEFT_ALT) {
         alt = false;
     }
+    if (e.getKey() == GLFW_KEY_SPACE)
+        Player::shouldMoveUp = false;
+    if (e.getKey() == GLFW_KEY_LEFT_SHIFT)
+        Player::shouldMoveDown = false;
+    if (e.getKey() == GLFW_KEY_W)
+        Player::shouldMoveForward = false;
+    if (e.getKey() == GLFW_KEY_S)
+        Player::shouldMoveBackward = false;
+    if (e.getKey() == GLFW_KEY_A)
+        Player::shouldMoveLeft = false;
+    if (e.getKey() == GLFW_KEY_D)
+        Player::shouldMoveRight = false;
     return false;
 }
 
-bool App::onMouseButtonPressed(es::MouseButtonPressedEvent& e){
-    if(e.getButton() == GLFW_MOUSE_BUTTON_2){
-        player->dig();
+bool App::onMouseButtonPressed(es::MouseButtonPressedEvent &e) {
+    if (e.getButton() == GLFW_MOUSE_BUTTON_2) {
+        Player::dig();
     }
-    if(e.getButton() == GLFW_MOUSE_BUTTON_1){
-        player->place();
+    if (e.getButton() == GLFW_MOUSE_BUTTON_1) {
+        Player::place();
     }
     return false;
 }
 
-bool App::onMouseButtonReleased(es::MouseButtonReleasedEvent& e){
+bool App::onMouseButtonReleased(es::MouseButtonReleasedEvent &e) {
     return false;
 }
 
-bool App::onMouseMove(es::CursorPositionEvent& e){
+bool App::onMouseMove(es::CursorPositionEvent &e) {
+    Player::moveMouse(e.getPosX(), e.getPosY());
     return false;
 }
 
-bool App::onMouseUpWheel(es::MouseUpScrollEvent& e) {
+bool App::onMouseUpWheel(es::MouseUpScrollEvent &e) {
     cameraSpeed -= 0.2;
+    if (zoom) {
+        zoomLevel += zoomSpeed;
+        if (zoomLevel <= minZoom)
+            zoomLevel = minZoom;
+        if (zoomLevel >= maxZoom)
+            zoomLevel = maxZoom;
+    }
     return false;
 }
 
-bool App::onMouseDownWheel(es::MouseDownScrollEvent& e) {
+bool App::onMouseDownWheel(es::MouseDownScrollEvent &e) {
     cameraSpeed += 0.2;
+    if (zoom) {
+        zoomLevel -= zoomSpeed;
+        if (zoomLevel <= minZoom)
+            zoomLevel = minZoom;
+        if (zoomLevel >= maxZoom)
+            zoomLevel = maxZoom;
+    }
     return false;
 }
 
-bool App::onChar(es::CharEvent& e) {
+bool App::onChar(es::CharEvent &e) {
     return false;
 }
 
 void App::setGLFWCallacks() {
     glfwSetInputMode(appWindow->getWindow(), GLFW_STICKY_KEYS, GLFW_TRUE);
 
-    glfwSetWindowCloseCallback(appWindow->getWindow(), [](GLFWwindow* window) {
-        std::shared_ptr<cs::BasicCallback<void, es::Event&>>* callback = (std::shared_ptr<cs::BasicCallback<void, es::Event&>>*)glfwGetWindowUserPointer(window);
+    glfwSetWindowCloseCallback(appWindow->getWindow(), [](GLFWwindow *window) {
+        std::shared_ptr<cs::BasicCallback<void, es::Event &>> *callback = (std::shared_ptr<cs::BasicCallback<void, es::Event &>> *) glfwGetWindowUserPointer(window);
         es::WindowCloseEvent event;
         callback->get()->pushCall(event);
     });
-    glfwSetKeyCallback(appWindow->getWindow(), [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-        std::shared_ptr<cs::BasicCallback<void, es::Event&>>* callback = (std::shared_ptr<cs::BasicCallback<void, es::Event&>>*)glfwGetWindowUserPointer(window);
+    glfwSetKeyCallback(appWindow->getWindow(), [](GLFWwindow *window, int key, int scancode, int action, int mods) {
+        std::shared_ptr<cs::BasicCallback<void, es::Event &>> *callback = (std::shared_ptr<cs::BasicCallback<void, es::Event &>> *) glfwGetWindowUserPointer(window);
 
-        switch(action){
-            case GLFW_PRESS:{
+        switch (action) {
+            case GLFW_PRESS: {
                 es::KeyPressedEvent event(key, scancode, mods);
                 callback->get()->pushCall(event);
-            } break;
-            case GLFW_RELEASE:{
+            }
+                break;
+            case GLFW_RELEASE: {
                 es::KeyReleasedEvent event(key, scancode, mods);
                 callback->get()->pushCall(event);
-            } break;
-            case GLFW_REPEAT:{
+            }
+                break;
+            case GLFW_REPEAT: {
                 es::KeyRepeatEvent event(key, scancode, mods);
                 callback->get()->pushCall(event);
-            } break;
+            }
+                break;
         }
     });
-    glfwSetMouseButtonCallback(appWindow->getWindow(), [](GLFWwindow* window, int button, int action, int mods){
-        std::shared_ptr<cs::BasicCallback<void, es::Event&>>* callback = (std::shared_ptr<cs::BasicCallback<void, es::Event&>>*)glfwGetWindowUserPointer(window);
-        switch(action){
-            case GLFW_PRESS:{
+    glfwSetMouseButtonCallback(appWindow->getWindow(), [](GLFWwindow *window, int button, int action, int mods) {
+        std::shared_ptr<cs::BasicCallback<void, es::Event &>> *callback = (std::shared_ptr<cs::BasicCallback<void, es::Event &>> *) glfwGetWindowUserPointer(window);
+        switch (action) {
+            case GLFW_PRESS: {
                 es::MouseButtonPressedEvent event(button, mods);
                 callback->get()->pushCall(event);
-            } break;
-            case GLFW_RELEASE:{
+            }
+                break;
+            case GLFW_RELEASE: {
                 es::MouseButtonReleasedEvent event(button, mods);
                 callback->get()->pushCall(event);
-            } break;
+            }
+                break;
         }
     });
-    glfwSetCursorPosCallback(appWindow->getWindow(), [](GLFWwindow* window, double xOffset, double yOffset){
-        std::shared_ptr<cs::BasicCallback<void, es::Event&>>* callback = (std::shared_ptr<cs::BasicCallback<void, es::Event&>>*)glfwGetWindowUserPointer(window);
+    glfwSetCursorPosCallback(appWindow->getWindow(), [](GLFWwindow *window, double xOffset, double yOffset) {
+        std::shared_ptr<cs::BasicCallback<void, es::Event &>> *callback = (std::shared_ptr<cs::BasicCallback<void, es::Event &>> *) glfwGetWindowUserPointer(window);
         es::CursorPositionEvent event(xOffset, yOffset);
         callback->get()->pushCall(event);
     });
-    glfwSetScrollCallback(appWindow->getWindow(), [](GLFWwindow* window, double xOffset, double yOffset){
-        std::shared_ptr<cs::BasicCallback<void, es::Event&>>* callback = (std::shared_ptr<cs::BasicCallback<void, es::Event&>>*)glfwGetWindowUserPointer(window);
-        if(yOffset == -1) {
+    glfwSetScrollCallback(appWindow->getWindow(), [](GLFWwindow *window, double xOffset, double yOffset) {
+        std::shared_ptr<cs::BasicCallback<void, es::Event &>> *callback = (std::shared_ptr<cs::BasicCallback<void, es::Event &>> *) glfwGetWindowUserPointer(window);
+        if (yOffset == -1) {
             es::MouseUpScrollEvent event;
             callback->get()->pushCall(event);
-        } else if(yOffset == 1) {
+        } else if (yOffset == 1) {
             es::MouseDownScrollEvent event;
             callback->get()->pushCall(event);
         }
 
     });
-    glfwSetCursorEnterCallback(appWindow->getWindow(), [](GLFWwindow *window, int entered){
-        std::shared_ptr<cs::BasicCallback<void, es::Event&>>* callback = (std::shared_ptr<cs::BasicCallback<void, es::Event&>>*)glfwGetWindowUserPointer(window);
+    glfwSetCursorEnterCallback(appWindow->getWindow(), [](GLFWwindow *window, int entered) {
+        std::shared_ptr<cs::BasicCallback<void, es::Event &>> *callback = (std::shared_ptr<cs::BasicCallback<void, es::Event &>> *) glfwGetWindowUserPointer(window);
     });
-    glfwSetCharCallback(appWindow->getWindow(), [](GLFWwindow* window, unsigned int keycode){
-        std::shared_ptr<cs::BasicCallback<void, es::Event&>>* callback = (std::shared_ptr<cs::BasicCallback<void, es::Event&>>*)glfwGetWindowUserPointer(window);
+    glfwSetCharCallback(appWindow->getWindow(), [](GLFWwindow *window, unsigned int keycode) {
+        std::shared_ptr<cs::BasicCallback<void, es::Event &>> *callback = (std::shared_ptr<cs::BasicCallback<void, es::Event &>> *) glfwGetWindowUserPointer(window);
         es::CharEvent event(keycode);
         callback->get()->pushCall(event);
     });
-    glfwSetFramebufferSizeCallback(appWindow->getWindow(), [](GLFWwindow *window, int width, int height){
-        std::shared_ptr<cs::BasicCallback<void, es::Event&>>* callback = (std::shared_ptr<cs::BasicCallback<void, es::Event&>>*)glfwGetWindowUserPointer(window);
+    glfwSetFramebufferSizeCallback(appWindow->getWindow(), [](GLFWwindow *window, int width, int height) {
+        std::shared_ptr<cs::BasicCallback<void, es::Event &>> *callback = (std::shared_ptr<cs::BasicCallback<void, es::Event &>> *) glfwGetWindowUserPointer(window);
         es::WindowSizeEvent event(width, height);
         callback->get()->pushCall(event);
 
     });
-    glfwSetWindowSizeCallback(appWindow->getWindow(), [](GLFWwindow* window, int width, int height) {
-        std::shared_ptr<cs::BasicCallback<void, es::Event&>>* callback = (std::shared_ptr<cs::BasicCallback<void, es::Event&>>*)glfwGetWindowUserPointer(window);
+    glfwSetWindowSizeCallback(appWindow->getWindow(), [](GLFWwindow *window, int width, int height) {
+        std::shared_ptr<cs::BasicCallback<void, es::Event &>> *callback = (std::shared_ptr<cs::BasicCallback<void, es::Event &>> *) glfwGetWindowUserPointer(window);
         //WindowResizeEvent event(width, height);
         //callback->PushEvent(event);
     });

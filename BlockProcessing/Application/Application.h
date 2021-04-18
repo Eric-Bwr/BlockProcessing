@@ -10,7 +10,6 @@
 #include <Game/Player/Player.h>
 #include <Game/Event/Events/amples.h>
 #include <Game/Debug/ChunkBorder/ChunkBorderManager.h>
-#include "Engine/3D/Camera/CameraFirstPerson.h"
 #include "Engine/PostProcess/PostProcessManager.h"
 #include "Engine/3D/Model3D/Model3D.h"
 #include "Game/Debug/Octree/OctreeVisualizer.h"
@@ -43,12 +42,10 @@ private:
     bool zoom = true;
     bool wireFrame = false;
     float span = 0.0f;
-    float incr = 1.0f;
     float offset = 4.5 * TERRAIN_SIZE;
-    Player* player;
-
+    float zoomLevel = 45.0f, zoomSpeed = 1.0f;
+    float maxZoom = 45.0f, minZoom = 1.0f;
     amples* d;
-    OctreeNode* testNode;
 
     float fov = 45.0f;
     Mat4f projection;
