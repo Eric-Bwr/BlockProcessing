@@ -9,19 +9,25 @@ OctreeLeaf::OctreeLeaf(Coord coord) {
     chunk.tileY = coord.tileY;
     chunk.tileZ = coord.tileZ;
     chunk.render = false;
+}
+
+void OctreeLeaf::generate(){
     ChunkManager::generateChunkDefaultBlockData(&chunk);
     ChunkManager::generateChunkDefaultFaceData(&chunk);
 }
 
-void OctreeLeaf::load() {
+void OctreeLeaf::load(){
     ChunkManager::initChunk(&chunk);
     ChunkManager::loadChunkData(&chunk);
     chunk.render = true;
 }
 
+#include "iostream"
 void OctreeLeaf::render() {
-    if(chunk.render)
+    if(chunk.render) {
         ChunkManager::renderChunk(&chunk);
+        //std::cout << "Less go\n";
+    }
 }
 
 OctreeLeaf::~OctreeLeaf() {

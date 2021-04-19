@@ -40,7 +40,7 @@ public:
     static FastNoise* fastNoise;
     static std::unordered_map<Coord, OctreeNode*, Hash, Compare> octrees;
     static std::unordered_set<Coord, Hash, Compare> modifiedChunks;
-    static std::unordered_set<Coord, Hash, Compare> octreesGenerating;
-    static std::vector<Coord> octreeCandidatesForGenerating;
+    static std::unordered_set<Coord, Hash, Compare> chunksGenerating;
+    static std::vector<Coord> chunkCandidatesForGenerating;
     static Frustum frustum;
 };

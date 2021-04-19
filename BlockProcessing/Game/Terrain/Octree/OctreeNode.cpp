@@ -24,16 +24,6 @@ OctreeNode::OctreeNode(int level, int scaling, Coord coord) {
     }
 }
 
-void OctreeNode::load() {
-    if (level == 1) {
-        for (auto child : children)
-            ((OctreeLeaf *) child)->load();
-    } else {
-        for (auto child : children)
-            ((OctreeNode *) child)->load();
-    }
-}
-
 void OctreeNode::render() {
     if (true) {
         if (level == 1) {
@@ -42,6 +32,41 @@ void OctreeNode::render() {
         } else {
             for (auto child : children)
                 ((OctreeNode *) child)->render();
+        }
+    }
+}
+
+void OctreeNode::checkUnload(int64_t tileX, int64_t tileY, int64_t tileZ) {
+    if(_abs64(tileX - coord.tileX) > CHUNKING_DELETION_RADIUS ||
+        _abs64(tileY - coord.tileY) > CHUNKING_DELETION_RADIUS ||
+        _abs64(tileZ - coord.tileZ) > CHUNKING_DELETION_RADIUS){
+        if (level == 1) {
+            for (auto child : children) {
+                if (Coord::isEqual(child->coord, coord)) {
+                    ChunkManager::unloadChunk(&((OctreeLeaf *) child)->chunk);
+                }
+            }
+        } else {
+            //CHECK ALL THIS
+            for (auto child : children) {
+                if (Coord::isEqual(child->coord, {findLowerValue(coord.tileX, level), findLowerValue(coord.tileY, level), findLowerValue(coord.tileZ, level)}))
+                    return ((OctreeNode *) child)->unload();
+            }
+        }
+    }
+}
+
+void OctreeNode::unload() {
+    if (level == 1) {
+        for (auto child : children) {
+            if (Coord::isEqual(child->coord, coord)) {
+                return (OctreeLeaf *) child;
+            }
+        }
+    } else {
+        for (auto child : children) {
+            if (Coord::isEqual(child->coord, {findLowerValue(coord.tileX, level), findLowerValue(coord.tileY, level), findLowerValue(coord.tileZ, level)}))
+                return ((OctreeNode *) child)->getLeafNode(coord);
         }
     }
 }

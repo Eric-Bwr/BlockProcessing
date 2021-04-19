@@ -6,6 +6,7 @@
 class OctreeLeaf : public OctreeNodeObject {
 public:
     explicit OctreeLeaf(Coord coord);
+    void generate();
     void load();
     void render();
     ~OctreeLeaf();

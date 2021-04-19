@@ -17,7 +17,6 @@ public:
     static void render(Mat4f& projectionView, Mat4f& view, float x, float y, float z);
     static void setProjection(Mat4f& projection);
     static void setLightPosition(float x, float y, float z);
-    static int64_t getChunkPosition(float coord);
     ~TerrainManager();
 public:
     static Mat4f model;

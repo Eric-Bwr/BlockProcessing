@@ -54,10 +54,6 @@ void TerrainManager::setLightPosition(float x, float y, float z) {
     shader->setUniform3f("lightPos", x, y, z);
 }
 
-int64_t TerrainManager::getChunkPosition(float coord) {
-    return (int64_t) (floorf((coord / TERRAIN_SIZE) / CHUNK_SIZE));
-}
-
 TerrainManager::~TerrainManager() {
     delete fastNoise;
 }

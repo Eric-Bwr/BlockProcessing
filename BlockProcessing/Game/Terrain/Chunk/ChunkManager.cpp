@@ -221,8 +221,8 @@ void ChunkManager::getChunkBlock(Chunk *chunk, ChunkBlock &chunkBlock, int64_t x
 }
 
 void ChunkManager::loadChunkData(Chunk *chunk) {
-        chunk->faceDataSize = chunk->faceData.size();
-        chunk->vertexCount = chunk->faceDataSize / 9;
+    chunk->faceDataSize = chunk->faceData.size();
+    chunk->vertexCount = chunk->faceDataSize / 9;
     if (chunk->vertexCount != 0) {
         glBindBuffer(GL_ARRAY_BUFFER, chunk->vbo);
         glBufferData(GL_ARRAY_BUFFER, CubeManager::layout->getStride() * chunk->vertexCount, nullptr, GL_STREAM_DRAW);

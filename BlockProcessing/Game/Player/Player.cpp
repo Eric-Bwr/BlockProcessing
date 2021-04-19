@@ -14,7 +14,6 @@ ChunkBlock Player::airBlock;
 ChunkBlock Player::collisionBlock;
 bool Player::shouldFloat = false;
 bool Player::doublePress = false;
-bool Player::blockCheck = false;
 float Player::doublePressSpan = 0.0f;
 float Player::doublePressIgnoreSpan = 0.0f;
 
@@ -85,18 +84,17 @@ void Player::calculateMove() {
             if (shouldMoveUp)
                 camPos.y += PLAYER_MOVE_SPEED;
         }
-        int timefornextclickinms = 50;
+       // int timefornextclickinms = 50;
 
+       // if(shouldMoveUp)
+       //     doublePress = true;
 
-        if(shouldMoveUp)
-            doublePress = true;
+       //if(doublePress && elapsed < timefornextclickinms && shouldMoveUp)
+       //    shouldFloat = true;
 
-        if(doublePress && elapsed < timefornextclickinms && shouldMoveUp)
-            shouldFloat = true;
+       //if(elapsed >  timefornextclickinms)
+       //    doublePress = false;
 
-        if(elapsed >  timefornextclickinms)
-            doublePress = false;
-        /*
         //doublePressLastState -> use to fix hold down issue
         if (shouldMoveUp) {
             if (doublePress && doublePressIgnoreSpan < 0) {
@@ -112,7 +110,7 @@ void Player::calculateMove() {
             doublePress = false;
         else
             doublePressSpan--;
-            */
+
         if (shouldMoveDown)
             camPos.y -= PLAYER_MOVE_SPEED;
     } else if (gameMode == GAMEMODE_SURVIVAL) {
