@@ -67,3 +67,28 @@ public:
 	float dot(Vec3f const &a) const;
 	float len() const;
 };
+
+class Vec4f {
+public:
+    float x, y, z, w;
+
+	Vec4f() = default;
+    explicit Vec4f(float v);
+    Vec4f(float x, float y, float z, float w);
+
+    friend Vec4f operator+ (const Vec4f &a, const Vec4f &b);
+    friend Vec4f operator+ (const Vec4f &a, float b);
+    friend Vec4f operator- (const Vec4f &a, const Vec4f &b);
+    friend Vec4f operator- (const Vec4f &a, float b);
+    friend Vec4f operator* (const Vec4f &a, const Vec4f &b);
+    friend Vec4f operator* (const Vec4f &a, float b);
+    friend Vec4f operator/ (const Vec4f &a, const Vec4f &b);
+    friend Vec4f operator/ (const Vec4f &a, float b);
+
+    Vec4f &operator+= (const Vec4f &a);
+    Vec4f &operator-= (const Vec4f &a);
+    Vec4f &operator*= (float v);
+
+    bool operator== (Vec4f &a) const;
+    bool operator!= (Vec4f &a) const;
+};

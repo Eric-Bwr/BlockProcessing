@@ -37,7 +37,9 @@ private:
 
 class VertexBufferObject {
 public:
+    VertexBufferObject();
     VertexBufferObject(const void* data, uint64_t size, unsigned int drawMode);
+    void init(const void* data, uint64_t size, unsigned int drawMode);
     void subData(const void* data, uint64_t size, unsigned int offset, unsigned int drawMode) const;
     void bind() const;
     static void unbind() ;
@@ -51,7 +53,7 @@ public:
     VertexArrayObject();
     void addBuffer(const VertexBufferObject& vbo, const VertexBufferObjectLayout& vertexArrayObjectLayout) const;
     void bind() const;
-    static void unbind();
+    static void unbind() ;
     inline unsigned int getVertexArray() const { return vao; }
     ~VertexArrayObject();
 private:

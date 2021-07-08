@@ -7,10 +7,12 @@ bool App::onWindowResize(es::WindowSizeEvent &e) {
     windowMinimized = false;
     width = e.getWidth();
     height = e.getHeight();
+    uiManager.setSize(e.getWidth(), e.getHeight());
     return false;
 }
 
 bool App::onKeyPressed(es::KeyPressedEvent &e) {
+    uiManager.keyInput(e.getKey(), INPUT_PRESSED, e.getMods());
     if (e.getKey() == GLFW_KEY_ESCAPE)
         running = false;
     if (e.getKey() == GLFW_KEY_RIGHT_SHIFT) {
@@ -69,6 +71,7 @@ bool App::onKeyPressed(es::KeyPressedEvent &e) {
 }
 
 bool App::onKeyReleased(es::KeyReleasedEvent &e) {
+    uiManager.keyInput(e.getKey(), INPUT_RELEASED, e.getMods());
     if (e.getKey() == GLFW_KEY_LEFT_CONTROL) {
         leftControl = false;
     }
@@ -91,6 +94,7 @@ bool App::onKeyReleased(es::KeyReleasedEvent &e) {
 }
 
 bool App::onMouseButtonPressed(es::MouseButtonPressedEvent &e) {
+    uiManager.mouseButtonInput(e.getButton(), INPUT_PRESSED);
     if (e.getButton() == GLFW_MOUSE_BUTTON_2) {
         Player::dig();
     }
@@ -101,11 +105,13 @@ bool App::onMouseButtonPressed(es::MouseButtonPressedEvent &e) {
 }
 
 bool App::onMouseButtonReleased(es::MouseButtonReleasedEvent &e) {
+    uiManager.mouseButtonInput(e.getButton(), INPUT_RELEASED);
     return false;
 }
 
 bool App::onMouseMove(es::CursorPositionEvent &e) {
     Player::moveMouse(e.getPosX(), e.getPosY());
+    uiManager.mousePositionInput(e.getPosX(), e.getPosY());
     return false;
 }
 

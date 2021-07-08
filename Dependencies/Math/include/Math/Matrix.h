@@ -44,11 +44,10 @@ public:
     Mat4f &lookAt(const Vec3f &eye, const Vec3f &center, const Vec3f &up);
 
     char *toString() const;
-
     float* getBuffer() const;
-    ~Mat4f();
-
     void updateBuffer();
+
+    ~Mat4f();
 };
 
 Mat4f identityMatrix();
