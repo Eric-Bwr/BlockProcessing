@@ -1,50 +1,67 @@
-/*
-void App::_init() {
-    init();
-    glfwMakeContextCurrent(appWindow->getWindow());
-    width = appWindow->getWindowSettings()->getWidth();
-    height = appWindow->getWindowSettings()->getHeight();
-    float aspectRatio = width / height;
-    glfwSetWindowUserPointer(appWindow->getWindow(), &eventCallback);
-    setGLFWCallacks();
-    projection.perspective(fov, width, height, 1.0f, 20000.0f);
+#include "Application.h"
 
-    targetTicks = actualTicks = 60;
-    targetFrames = actualFrames = 60;
-    timeScale = 10000;
+Application application;
 
-    timer.setTimedBoolDuration(1.0f);
+int main(){
+    application = Application();
+    application.init();
+}
 
-    Player::init(0, 0, 0, 90, 0);
-    glfwSetInputMode(appWindow->getWindow(), GLFW_STICKY_KEYS, GLFW_TRUE);
-    glfwSetInputMode(appWindow->getWindow(), GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
-    glfwSetInputMode(appWindow->getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    glfwSetCursorPos(appWindow->getWindow(), width / 2, height / 2);
+void Application::init() {
+    auto windowSettings = new WindowSettings;
+    windowSettings->setTitle("BlockProcessing");
+    windowSettings->setSampleSize(2);
+    windowSettings->setShouldMultiSample(true);
+    windowSettings->setTransparent(false);
+    windowSettings->setWidth(1600);
+    windowSettings->setHeight(800);
+    windowSettings->setCentered(true);
+    windowSettings->setSwapInterval(1);
+    windowSettings->setProfile(GLFW_OPENGL_CORE_PROFILE);
+    window.init(windowSettings);
+    initCallbacks();
+    width = windowSettings->getWidth();
+    height = windowSettings->getHeight();
 
+    glfwSetInputMode(window.getWindow(), GLFW_STICKY_KEYS, GLFW_TRUE);
+    glfwSetInputMode(window.getWindow(), GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
+    glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    glfwSetCursorPos(window.getWindow(), width / 2, height / 2);
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     //------------------------------------------------------------------------------------------------------------------------------------------
 
+    projection.perspective(fov, width, height, 1.0f, 20000.0f);
+
+    Player::init(0, 0, 0, 90, 0);
     TerrainManager::init(rand(), FastNoise::PerlinFractal, 0.009, 6);
     TerrainManager::setProjection(projection);
     projectionView.identity();
-    d = new amples;
-    EventManager::bind(d);
+//    EventManager::bind(d);
     ChunkBorderManager::init();
     ChunkBorderManager::setProjection(projection);
     glEnable(GL_DEPTH_TEST);
     OctreeVisualizer::init();
     LinePoint::init();
+    run();
 }
 
-void App::_update(double &gameTime) {
-    update(gameTime);
+void Application::run() {
+    while(window.windowIsAlive()){
+        window.updateWindow();
+        update();
+        render();
+    }
+    end();
+}
+
+void Application::update() {
     fov = zoomLevel;
     if (zoom)
         projection.perspective(fov, (float) width, (float) height, 1.0f, 20000.0f);
     //else
-        //PLAYER_MOVE_SPEED = cameraSpeed;
+    //PLAYER_MOVE_SPEED = cameraSpeed;
     TerrainManager::setLightPosition(Player::getX(), Player::getY() + 1000, Player::getZ());
     TerrainManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
     ChunkBorderManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
@@ -55,20 +72,13 @@ void App::_update(double &gameTime) {
     }
 }
 
-/*
-OLD SYS
-2000000[ns]
-CHANGED SOME DISTANCE VALUES AND NO FRUSTUM CULLING
-6500000[ns]
- */
 #include "../Game/Debug/Performance/SpeedTester.h"
-/*
-void App::_render(double &gameTime) {
+
+void Application::render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.8, 0.9, 0.9, 1.0);
     view = Player::getViewMatrix();
     projectionView = projectionView.multiply(projection, view);
-    render(gameTime);
     TerrainManager::setProjection(projection);
     OctreeVisualizer::setProjection(projection);
     LinePoint::setProjection(projection);
@@ -94,4 +104,6 @@ void App::_render(double &gameTime) {
     }
 }
 
-*/
+void Application::end() {
+    window.destroyWindow();
+}

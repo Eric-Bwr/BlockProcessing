@@ -33,5 +33,6 @@ private:
     void setIcon();
     char* glVersion;
     bool windowShouldClose = false;
+    bool windowClosed = false;
     int errorCode = 0;
 };

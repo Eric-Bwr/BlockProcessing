@@ -21,6 +21,7 @@ enum UIComponentType {
 	UISPLITPANE,
 	UISCROLLBAR,
 	UILAYOUT,
+	UISWITCH
 };
 
 class UIComponent {

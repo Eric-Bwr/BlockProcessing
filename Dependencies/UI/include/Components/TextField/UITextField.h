@@ -18,7 +18,7 @@ public:
     void setPosition(float positionX, float positionY) override;
     void setSize(float width, float height);
 	void setBounds(float positionX, float positionY, float width, float height) override;
-	void setText(char* text);
+	void setText(const char* text);
     void setFont(Font *font);
 	void setFontSize(int fontSize);
 	void setMaxCharacter(int maxCharacter);

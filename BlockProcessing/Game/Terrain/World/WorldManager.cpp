@@ -17,10 +17,11 @@ public:
 };
 
 static ChunkGenerator *chunkGenerators[CHUNKING_THREADS];
-
+//ONLY GEN IF CHUNK COORDS CHANGED
 static void chunkGenerationLoop(ChunkGenerator *chunkGenerator) {
     while (chunkGenerator->isAlive) {
         if (chunkGenerator->isBusy) {
+            //ONLY BORDER NOT ALL CHUNKS IN REGION
             Coord octreeCoord {getOctreeFromChunk(chunkGenerator->coord.tileX), getOctreeFromChunk(chunkGenerator->coord.tileY), getOctreeFromChunk(chunkGenerator->coord.tileZ)};
             if(WorldManager::octrees.find(octreeCoord) == WorldManager::octrees.end()){
                 auto node = new OctreeNode(OCTREE_MAX_LEVEL, OCTREE_LENGTH, octreeCoord);

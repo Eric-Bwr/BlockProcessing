@@ -24,11 +24,12 @@ public:
 
     void setPosition(float positionX, float positionY) override;
     void setSize(float width, float height);
-	void setBounds(float, float, float, float) override;
-    void setText(char* text);
+	void setBounds(float positionX, float positionY, float width, float height) override;
+    void setText(const char* text);
     void setFont(Font* font);
     void setFontSize(int fontSize);
     void setMode(int mode);
+    void setLineAdvance(float lineAdvance);
 
     inline int getFontSize() { return fontSize; }
     inline const char* getText() { return text.data(); }
@@ -37,6 +38,7 @@ public:
 
     std::string text;
     int fontSize, mode;
+    float lineAdvance;
     Font* font;
     FontType* fontType;
     TextMesh textMesh;

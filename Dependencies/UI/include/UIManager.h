@@ -11,9 +11,11 @@
 #include "Components/TextField/UITextField.h"
 #include "Components/TextArea/UITextArea.h"
 #include "Components/Button/UIButton.h"
+#include "Components/Image/UIImage.h"
 #include "Components/Slider/UISlider.h"
 #include "Components/SplitPane/UISplitPane.h"
 #include "Components/Scrollbar/UIScrollbar.h"
+#include "Components/Switch/UISwitch.h"
 #include "Layout/Layout.h"
 #include "Layout/FlowLayout.h"
 #include "Layout/BoxLayout.h"
@@ -32,6 +34,7 @@ public:
 	void mouseButtonInput(int button, int action);
 	void render();
     ~UIManager();
+private:
     Mat4f ortho;
     Shader* textShader;
     Shader* quadShader;

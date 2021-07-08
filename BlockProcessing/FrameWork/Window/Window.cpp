@@ -116,7 +116,9 @@ void Window::updateWindow() {
 
 void Window::destroyWindow() {
     windowShouldClose = true;
-    glfwDestroyWindow(window);
+    if(!windowClosed)
+        glfwDestroyWindow(window);
+    windowClosed = true;
 }
 
 Window::~Window() = default;
