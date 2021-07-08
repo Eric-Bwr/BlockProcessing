@@ -60,13 +60,14 @@ void OctreeNode::unload() {
     if (level == 1) {
         for (auto child : children) {
             if (Coord::isEqual(child->coord, coord)) {
-                return (OctreeLeaf *) child;
+               // return (OctreeLeaf *) child;
             }
         }
     } else {
         for (auto child : children) {
-            if (Coord::isEqual(child->coord, {findLowerValue(coord.tileX, level), findLowerValue(coord.tileY, level), findLowerValue(coord.tileZ, level)}))
-                return ((OctreeNode *) child)->getLeafNode(coord);
+            if (Coord::isEqual(child->coord, {findLowerValue(coord.tileX, level), findLowerValue(coord.tileY, level), findLowerValue(coord.tileZ, level)})){
+                //return ((OctreeNode *) child)->getLeafNode(coord);
+            }
         }
     }
 }

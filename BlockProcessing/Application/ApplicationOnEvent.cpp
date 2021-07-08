@@ -1,23 +1,4 @@
-#include "Application.h"
-
-void App::_onEvent(es::Event &e) {
-    es::EventDispatcher dispatcher(e);
-    dispatcher.dispatchMFunc<es::WindowCloseEvent>(BIND_FUNC(App::onWindowClose));
-    dispatcher.dispatchMFunc<es::WindowSizeEvent>(BIND_FUNC(App::onWindowResize));
-    dispatcher.dispatchMFunc<es::KeyPressedEvent>(BIND_FUNC(App::onKeyPressed));
-    dispatcher.dispatchMFunc<es::KeyReleasedEvent>(BIND_FUNC(App::onKeyReleased));
-    dispatcher.dispatchMFunc<es::MouseButtonPressedEvent>(BIND_FUNC(App::onMouseButtonPressed));
-    dispatcher.dispatchMFunc<es::MouseButtonReleasedEvent>(BIND_FUNC(App::onMouseButtonReleased));
-    dispatcher.dispatchMFunc<es::CursorPositionEvent>(BIND_FUNC(App::onMouseMove));
-    dispatcher.dispatchMFunc<es::MouseUpScrollEvent>(BIND_FUNC(App::onMouseUpWheel));
-    dispatcher.dispatchMFunc<es::MouseDownScrollEvent>(BIND_FUNC(App::onMouseDownWheel));
-    dispatcher.dispatchMFunc<es::CharEvent>(BIND_FUNC(App::onChar));
-}
-
-bool App::onWindowClose(es::WindowCloseEvent &e) {
-    running = false;
-    return true;
-}
+/*
 
 bool App::onWindowResize(es::WindowSizeEvent &e) {
     glViewport(0, 0, e.getWidth(), e.getHeight());
@@ -236,3 +217,4 @@ void App::setGLFWCallacks() {
         //callback->PushEvent(event);
     });
 }
+ */

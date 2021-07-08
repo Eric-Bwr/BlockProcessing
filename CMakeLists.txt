@@ -7,7 +7,6 @@ set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
 set(CMAKE_CXX_STANDARD 20)
 
-file (GLOB REQUIRED_DLLS "libs/ks-Lib-0.3.8.2/Libs/requiered_dll/*.dll")
 file(GLOB_RECURSE SOURCE_FILES "BlockProcessing/*.cpp" "BlockProcessing/*.h")
 
 set(dir ${CMAKE_CURRENT_SOURCE_DIR})
@@ -19,17 +18,10 @@ include_directories(${PROJECT_NAME} "Dependencies/GLFW/include")
 include_directories(${PROJECT_NAME} "Dependencies/FastNoise")
 include_directories(${PROJECT_NAME})
 
-include_directories(${PROJECT_NAME} "Dependencies/ks-Lib-0.3.8.2/include")
-include_directories(${PROJECT_NAME} "Dependencies/ks-Lib-0.3.8.2/Libs")
-include_directories(${PROJECT_NAME} "Dependencies/ks-Lib-0.3.8.2/Libs/OPENAL/include")
-add_subdirectory(Dependencies/ks-Lib-0.3.8.2/Libs/OPENAL)
-
 add_executable(${PROJECT_NAME} ${SOURCE_FILES} Dependencies/FastNoise/FastNoise.h Dependencies/FastNoise/FastNoise.cpp)
 
 target_link_libraries(${PROJECT_NAME}
-        ${CMAKE_CURRENT_LIST_DIR}/Dependencies/ks-Lib-0.3.8.2/libLib.a
         ${CMAKE_CURRENT_LIST_DIR}/Dependencies/GLFW/libglfw3.a
         ${CMAKE_CURRENT_LIST_DIR}/Dependencies/OpenGL/OpenGL.a
         ${CMAKE_CURRENT_LIST_DIR}/Dependencies/Math/Math.a
-        OpenAL
         )

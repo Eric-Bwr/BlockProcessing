@@ -1,65 +1,24 @@
-#include "Application/Application.h"
+#include "Game/Terrain/Cube/CubeManager.h"
+#include <FrameBuffer.h>
+#include <Game/Terrain/TerrainManager.h>
+#include <Game/Terrain/Chunk/ChunkManager.h>
+#include <Game/Player/Player.h>
+#include <Game/Event/Events/amples.h>
+#include <Game/Debug/ChunkBorder/ChunkBorderManager.h>
+#include "Engine/PostProcess/PostProcessManager.h"
+#include "Engine/3D/Model3D/Model3D.h"
+#include "Game/Debug/Octree/OctreeVisualizer.h"
+#include "Game/Terrain/Octree/OctreeNode.h"
+#include "Game/Debug/LinePoint/LinePoint.h"
 
-#define BLOCK_PROCESSING 1
-#ifdef BLOCK_PROCESSING
-
-class BlockProcessing : public App {
-public:
-    BlockProcessing() {}
-    ~BlockProcessing() {}
-    void preInit() override;
-    void init() override;
-    void onEvent(es::Event& e) override;
-    void update(double& gameTime) override;
-    void render(double& gameTime) override;
-    void save() override;
-    void load() override;
-};
-
-void BlockProcessing::preInit() {
-
-}
-
-void BlockProcessing::init() {
-    auto windowSettings = new WindowSettings;
-    windowSettings->setTitle("BlockProcessing");
-    windowSettings->setSampleSize(2);
-    windowSettings->setTransparent(false);
-    windowSettings->setWidth(1600);
-    windowSettings->setHeight(800);
-    windowSettings->setCentered(true);
-    windowSettings->setProfile(GLFW_OPENGL_CORE_PROFILE);
-    appWindow = new Window(windowSettings);
-}
-
-void BlockProcessing::onEvent(es::Event &e) {
-
-}
-
-void BlockProcessing::update(double &gameTime) {
-
-}
-
-void BlockProcessing::render(double &gameTime) {
-
-}
-
-void BlockProcessing::save() {
-
-}
-
-void BlockProcessing::load() {
-
-}
-
-App* CreateApplication() {
-    return new BlockProcessing();
-}
+#include "FrameWork/WindowHandler.h"
 
 int main() {
-    auto app = CreateApplication();
-    app->run();
-    delete app;
-}
+    WindowHandler windowHandler;
+    while (windowHandler.window.windowIsAlive()){
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-#endif
+        windowHandler.window.updateWindow();
+    }
+    windowHandler.window.destroyWindow();
+}

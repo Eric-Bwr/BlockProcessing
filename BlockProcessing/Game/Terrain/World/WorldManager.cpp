@@ -55,7 +55,8 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
             delete it->second;
             octrees.erase(it);
         }
-        it->second->unload(tileX, tileY, tileZ);
+        //it->second->unload(tileX, tileY, tileZ);
+        it->second->unload();
     }
     for (int64_t xx = tileX - CHUNKING_RADIUS; xx <= tileX + CHUNKING_RADIUS; xx++) {
         for (int64_t yy = tileY - CHUNKING_RADIUS; yy <= tileY + CHUNKING_RADIUS; yy++) {
@@ -73,9 +74,9 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
     std::sort(std::begin(chunkCandidatesForGenerating), std::end(chunkCandidatesForGenerating),
               [&](const Coord &coord1, const Coord &coord2) {
                   int64_t distance1 =
-                          Coord::distanceSquared(coord1, {octreeX, octreeY, octreeZ}) + (frustum.isInside(coord1) ? -10 : 10);
+                          Coord::distanceSquared(coord1, {tileX, tileY, tileZ}) + (frustum.isInside(coord1) ? -10 : 10);
                   int64_t distance2 =
-                          Coord::distanceSquared(coord2, {octreeX, octreeY, octreeZ}) + (frustum.isInside(coord2) ? -10 : 10);
+                          Coord::distanceSquared(coord2, {tileX, tileY, tileZ}) + (frustum.isInside(coord2) ? -10 : 10);
                   return distance1 - distance2 < 0;
               }
     );
@@ -143,7 +144,7 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
     }
     modifiedChunks.clear();
     for (auto &chunk : generatedChunks) {
-        chunksGenerating.erase(chunksGenerating.find(chunk->coord));
+        chunksGenerating.erase(chunksGenerating.find({chunk->tileX, chunk->tileY, chunk->tileZ}));
         ChunkManager::initChunk(chunk);
         ChunkManager::loadChunkData(chunk);
         chunk->render = true;

@@ -1,23 +1,4 @@
-#include "Application.h"
-#include <Engine/3D/Transform3D/Transform3D.h>
-#include "Game/Terrain/Octree/OctreeLeaf.h"
-
-App::App() = default;
-
-App::App(int argc, char **argv) : argc(argc), argv(argv) {}
-
-App::~App() = default;
-
-double App::timeScale = 0;
-
-void App::_preInit() {
-    eventCallback = std::make_shared<cs::BasicCallback<void, es::Event &>>();
-    eventCallback->bindMFunc(BIND_FUNC(App::_onEvent));
-    setErrorCallbacks();
-
-    preInit();
-}
-
+/*
 void App::_init() {
     init();
     glfwMakeContextCurrent(appWindow->getWindow());
@@ -81,7 +62,7 @@ CHANGED SOME DISTANCE VALUES AND NO FRUSTUM CULLING
 6500000[ns]
  */
 #include "../Game/Debug/Performance/SpeedTester.h"
-
+/*
 void App::_render(double &gameTime) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.8, 0.9, 0.9, 1.0);
@@ -113,23 +94,4 @@ void App::_render(double &gameTime) {
     }
 }
 
-void App::_save() {
-    save();
-}
-
-void App::_load() {
-    load();
-}
-
-void App::run() {
-    _preInit();
-    _load();
-    _init();
-
-    gameLoop();
-    _save();
-}
-
-void App::setErrorCallbacks() {
-    Model3D::setEventCallback(eventCallback);
-}
+*/

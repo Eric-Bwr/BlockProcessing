@@ -1,13 +1,9 @@
 #include "Model3D.h"
-#include <FileIOsystem/Filestream.h>
-
-std::shared_ptr<cs::BasicCallback<void, es::Event&>> Model3D::eventCallback;
-
-using namespace fios::binary;
 
 Model3D::Model3D(const char* path, const char* textureFolderPath, unsigned int drawMode) {
-    String newPath = path;
+    std::string newPath = path;
     newPath.append(".bmf");
+    /*
     BinaryBuffer binaryBuffer;
     BinaryBufferError errorCache = binaryBufferReadFromFile(&binaryBuffer, newPath.toString());
     if(errorCache == BBE_CANT_FIND_FILE) {
@@ -29,7 +25,7 @@ Model3D::Model3D(const char* path, const char* textureFolderPath, unsigned int d
         return;
     }
     auto numMaterials = binaryBufferPop64(&binaryBuffer);
-    Vector<Material> materials;
+    std::vector<Material> materials;
     materials.reserve(numMaterials);
     for(uint64_t i = 0; i < numMaterials; i++){
         Material material = {};
@@ -82,50 +78,51 @@ Model3D::Model3D(const char* path, const char* textureFolderPath, unsigned int d
         auto materialIndex = binaryBufferPop64(&binaryBuffer);
         auto numVertices = binaryBufferPop64(&binaryBuffer);
         auto numIndices = binaryBufferPop64(&binaryBuffer);
-        Vector<float> vertices;
-        Vector<unsigned int> indices;
+        std::vector<float> vertices;
+        std::vector<unsigned int> indices;
         vertices.reserve(numVertices);
         for(uint64_t vi = 0; vi < numVertices; vi++) {
-            vertices.append(binaryBufferPopFloat(&binaryBuffer));
-            vertices.append(binaryBufferPopFloat(&binaryBuffer));
-            vertices.append(binaryBufferPopFloat(&binaryBuffer));
-            vertices.append(binaryBufferPopFloat(&binaryBuffer));
-            vertices.append(binaryBufferPopFloat(&binaryBuffer));
-            vertices.append(binaryBufferPopFloat(&binaryBuffer));
-            vertices.append(binaryBufferPopFloat(&binaryBuffer));
-            vertices.append(binaryBufferPopFloat(&binaryBuffer));
-            vertices.append(binaryBufferPopFloat(&binaryBuffer));
-            vertices.append(binaryBufferPopFloat(&binaryBuffer));
-            vertices.append(binaryBufferPopFloat(&binaryBuffer));
-            vertices.append(binaryBufferPopFloat(&binaryBuffer));
-            vertices.append(binaryBufferPopFloat(&binaryBuffer));
-            vertices.append(binaryBufferPopFloat(&binaryBuffer));
+            vertices.emplace_back(binaryBufferPopFloat(&binaryBuffer));
+            vertices.emplace_back(binaryBufferPopFloat(&binaryBuffer));
+            vertices.emplace_back(binaryBufferPopFloat(&binaryBuffer));
+            vertices.emplace_back(binaryBufferPopFloat(&binaryBuffer));
+            vertices.emplace_back(binaryBufferPopFloat(&binaryBuffer));
+            vertices.emplace_back(binaryBufferPopFloat(&binaryBuffer));
+            vertices.emplace_back(binaryBufferPopFloat(&binaryBuffer));
+            vertices.emplace_back(binaryBufferPopFloat(&binaryBuffer));
+            vertices.emplace_back(binaryBufferPopFloat(&binaryBuffer));
+            vertices.emplace_back(binaryBufferPopFloat(&binaryBuffer));
+            vertices.emplace_back(binaryBufferPopFloat(&binaryBuffer));
+            vertices.emplace_back(binaryBufferPopFloat(&binaryBuffer));
+            vertices.emplace_back(binaryBufferPopFloat(&binaryBuffer));
+            vertices.emplace_back(binaryBufferPopFloat(&binaryBuffer));
         }
         indices.reserve(numIndices);
         for(uint64_t ii = 0; ii < numIndices; ii++) {
-            indices.append(binaryBufferPop64(&binaryBuffer));
+            indices.emplace_back(binaryBufferPop64(&binaryBuffer));
         }
         auto mesh = new Mesh3D(vertices.data(), vertices.size(), indices.data(), numIndices, drawMode);
         mesh->setMaterial(materials.at(materialIndex));
-        meshes.append(mesh);
+        meshes.emplace_back(mesh);
     }
     binaryBufferDestroy(&binaryBuffer);
+     */
 }
 
 Model3D::Model3D(const float* vertices, const uint64_t verticesSize, const unsigned int drawMode){
-    meshes.append(new Mesh3D(vertices, verticesSize, drawMode));
+    meshes.emplace_back(new Mesh3D(vertices, verticesSize, drawMode));
 }
 
 Model3D::Model3D(const float* vertices, const uint64_t verticesSize, const unsigned int* indices, const uint64_t indicesSize, const unsigned int drawMode){
-    meshes.append(new Mesh3D(vertices, verticesSize, indices, indicesSize, drawMode));
+    meshes.emplace_back(new Mesh3D(vertices, verticesSize, indices, indicesSize, drawMode));
 }
 
-Model3D::Model3D(const Vector<float> &vertices, const unsigned int drawMode) {
-    meshes.append(new Mesh3D(vertices.data(), vertices.size(), drawMode));
+Model3D::Model3D(const std::vector<float> &vertices, const unsigned int drawMode) {
+    meshes.emplace_back(new Mesh3D(vertices.data(), vertices.size(), drawMode));
 }
 
-Model3D::Model3D(const Vector<float> &vertices, const Vector<unsigned int> &indices, const unsigned int drawMode){
-    meshes.append(new Mesh3D(vertices.data(), vertices.size(), indices.data(), indices.size(), drawMode));
+Model3D::Model3D(const std::vector<float> &vertices, const std::vector<unsigned int> &indices, const unsigned int drawMode){
+    meshes.emplace_back(new Mesh3D(vertices.data(), vertices.size(), indices.data(), indices.size(), drawMode));
 }
 
 Texture* Model3D::getTexture(const char* path) {
@@ -139,7 +136,7 @@ Texture* Model3D::getTexture(const char* path) {
     texture->magLinear();
     texture->repeat();
     texture->load();
-    loadedTextures.append(texture);
+    loadedTextures.emplace_back(texture);
     return texture;
 }
 

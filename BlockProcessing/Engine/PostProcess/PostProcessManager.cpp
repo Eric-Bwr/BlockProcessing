@@ -125,8 +125,8 @@ bool PostProcessManager::hasErrors() {
     return shader->hasError() || blurHorizontalShader->hasError() || blurVerticalShader->hasError() || colorBuffer->hasError() || blurVColorBuffer->hasError() || blurHColorBuffer->hasError();
 }
 
-const char* PostProcessManager::getErrorMessage() {
-    String result;
+std::string PostProcessManager::getErrorMessage() {
+    std::string result;
     if(hasErrors()){
         result.append("PostProcessManager: \n");
         if(shader->hasError())
@@ -143,7 +143,7 @@ const char* PostProcessManager::getErrorMessage() {
             result.append(blurHColorBuffer->getErrorMessage().c_str());
         result.append("\n");
     }
-    return result.toString();
+    return result;
 }
 
 void PostProcessManager::add(PostProcessEffect &effect) {
@@ -169,7 +169,7 @@ void PostProcessManager::add(PostProcessEffect &effect) {
         blurVerticalShader->bind();
         blurVerticalShader->setUniform1f("targetFrameBufferHeight", height / ((GaussianBlurEffect&)effect).getDivisor());
     }
-    effects.append(&effect);
+    effects.emplace_back(&effect);
 }
 
 void PostProcessManager::remove(PostProcessEffect &effect) {
@@ -189,7 +189,7 @@ void PostProcessManager::remove(PostProcessEffect &effect) {
     }
     for (int i = 0; i < effects.size(); i++) {
         if (&effect == effects.at(i))
-            effects.erase(i);
+            effects.erase(effects.begin() + i);
     }
 }
 

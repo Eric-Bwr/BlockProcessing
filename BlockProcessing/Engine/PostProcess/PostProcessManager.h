@@ -1,11 +1,9 @@
 #pragma once
 
-#include <Util/Vector.h>
-#include <Util/Map.h>
+#include <vector>
 #include <FrameBuffer.h>
 #include <Texture.h>
 #include <Shader.h>
-#include <ks-Lib-0.3.8.2/include/Util/String.h>
 #include "Engine/2D/Model2D/Model2D.h"
 #include "Effects/PostProcessEffect.h"
 #include "Effects/ScreenShakeEffect.h"
@@ -25,10 +23,10 @@ public:
     void remove(PostProcessEffect& effect);
     void resize(int width, int height);
     bool hasErrors();
-    const char* getErrorMessage();
+    std::string getErrorMessage();
     ~PostProcessManager();
 private:
-    Vector<PostProcessEffect*> effects;
+    std::vector<PostProcessEffect*> effects;
     FrameBuffer* frameBuffer;
     RenderBuffer* renderBuffer;
     Shader* shader;
