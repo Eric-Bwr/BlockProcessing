@@ -31,24 +31,18 @@ void Application::onKey(int key, int scancode, int action, int mods){
         else
             glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
-    if (key == GLFW_KEY_C) {
+    if (key == GLFW_KEY_C && action == GLFW_PRESS)
         collision = !collision;
-    }
-    if (key == GLFW_KEY_K) {
-        showCoords = !showCoords;
-    }
-    if (key == GLFW_KEY_LEFT_CONTROL) {
-        leftControl = action == GLFW_PRESS;
-    }
-    if (key == GLFW_KEY_LEFT_ALT) {
-        alt = action == GLFW_PRESS;
-    }
-    if (key == GLFW_KEY_N) {
+    if (key == GLFW_KEY_F3 && action == GLFW_PRESS)
+        debug = !debug;
+    if (key == GLFW_KEY_LEFT_CONTROL && action == GLFW_PRESS)
+        leftControl = !leftControl;
+    if (key == GLFW_KEY_LEFT_ALT && action == GLFW_PRESS)
+        alt = !alt;
+    if (key == GLFW_KEY_N && action == GLFW_PRESS)
         wireFrame = !wireFrame;
-    }
-    if (key == GLFW_KEY_Y) {
+    if (key == GLFW_KEY_Y  && action == GLFW_PRESS)
         zoom = !zoom;
-    }
     if(action == GLFW_PRESS || action == GLFW_REPEAT){
         if(key == GLFW_KEY_SPACE)
             Player::shouldMoveUp = true;

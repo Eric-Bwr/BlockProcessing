@@ -6,7 +6,7 @@
 #include "Game/Debug/ChunkBorder/ChunkBorderManager.h"
 #include "Game/Debug/Octree/OctreeVisualizer.h"
 #include "Game/Debug/LinePoint/LinePoint.h"
-#include <UIManager.h>
+#include "Game/Interface/DebugInterface.h"
 
 class Application {
 public:
@@ -33,7 +33,7 @@ private:
     bool leftControl = false;
     bool alt = false;
     bool collision = false;
-    bool showCoords = false;
+    bool debug = false;
     float width, height;
     float cameraSpeed = 7.0f;
     bool zoom = true;

@@ -413,7 +413,7 @@ FT_BEGIN_HEADER
 
   /**************************************************************************
    *
-   * Debug level
+   * DebugInterface level
    *
    *   FreeType can be compiled in debug or trace mode.  In debug mode,
    *   errors are reported through the 'ftdebug' component.  In trace mode,

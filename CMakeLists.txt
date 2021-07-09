@@ -20,7 +20,7 @@ include_directories(${PROJECT_NAME} "Dependencies/UI/include")
 include_directories(${PROJECT_NAME} "Dependencies/FastNoise")
 include_directories(${PROJECT_NAME})
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} Dependencies/FastNoise/FastNoise.h Dependencies/FastNoise/FastNoise.cpp BlockProcessing/FrameWork/Application.cpp BlockProcessing/FrameWork/Application.h BlockProcessing/FrameWork/ApplicationEvent.cpp)
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} Dependencies/FastNoise/FastNoise.h Dependencies/FastNoise/FastNoise.cpp)
 
 target_link_libraries(${PROJECT_NAME}
         ${CMAKE_CURRENT_LIST_DIR}/Dependencies/UI/UI.a

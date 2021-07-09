@@ -48,6 +48,7 @@ void Application::init() {
     LinePoint::init();
     LinePoint::setProjection(projection);
     ui.init(width, height);
+    DebugInterface::init(ui);
 }
 
 void Application::run() {
@@ -67,12 +68,13 @@ void Application::update() {
         LinePoint::setProjection(projection);
         ChunkBorderManager::setProjection(projection);
     }
-    //else
-    //PLAYER_MOVE_SPEED = cameraSpeed;
+    Player::updatePlayer();
     TerrainManager::setLightPosition(Player::getX(), Player::getY() + 1000, Player::getZ());
     TerrainManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
-    //ChunkBorderManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
-    Player::updatePlayer();
+    if(wireFrame)
+        ChunkBorderManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
+    if(debug)
+        DebugInterface::setXYZ(Player::getX(), Player::getY(), Player::getZ());
 }
 
 #include "../Game/Debug/Performance/SpeedTester.h"
@@ -103,7 +105,12 @@ void Application::render() {
         TerrainManager::shader->setUniformMatrix4f("model", TerrainManager::model.getBuffer());
     }
     glDisable(GL_CULL_FACE);
-    ui.render();
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    if(debug) {
+        DebugInterface::update();
+        ui.render();
+    }
     glEnable(GL_CULL_FACE);
 }
 
