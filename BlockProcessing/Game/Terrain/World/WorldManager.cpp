@@ -12,7 +12,7 @@ struct ChunkGenerator {
 public:
     std::atomic_bool isBusy = false;
     std::atomic_bool isAlive = true;
-    Chunk* chunk = nullptr;
+    OctreeLeaf* leaf = nullptr;
     Coord coord;
 };
 
@@ -27,9 +27,8 @@ static void chunkGenerationLoop(ChunkGenerator *chunkGenerator) {
                 auto node = new OctreeNode(OCTREE_MAX_LEVEL, OCTREE_LENGTH, octreeCoord);
                 WorldManager::octrees.insert(std::pair<Coord, OctreeNode *>(octreeCoord, node));
             }
-            auto leaf = WorldManager::octrees.find(octreeCoord)->second->getLeafNode({chunkGenerator->coord.tileX, chunkGenerator->coord.tileY, chunkGenerator->coord.tileZ});
-            ChunkManager::generateChunkDefaultBlockData(chunkGenerator->chunk);
-            ChunkManager::generateChunkDefaultFaceData(chunkGenerator->chunk);
+            chunkGenerator->leaf = WorldManager::octrees.find(octreeCoord)->second->getLeafNode({chunkGenerator->coord.tileX, chunkGenerator->coord.tileY, chunkGenerator->coord.tileZ});
+            chunkGenerator->leaf->generate();
             chunkGenerator->isBusy = false;
         } else {
             std::this_thread::sleep_for(std::chrono::milliseconds(16));
@@ -48,7 +47,7 @@ void WorldManager::init() {
 
 void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
     chunkCandidatesForGenerating.clear();
-    for (auto it = octrees.cbegin(), next_it = it; it != octrees.cend(); it = next_it) {
+   /* for (auto it = octrees.cbegin(), next_it = it; it != octrees.cend(); it = next_it) {
         ++next_it;
         if (_abs64(it->first.tileX - tileX) > CHUNKING_DELETION_RADIUS ||
             _abs64(it->first.tileY - tileY) > CHUNKING_DELETION_RADIUS ||
@@ -59,6 +58,7 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
         //it->second->unload(tileX, tileY, tileZ);
         it->second->unload();
     }
+    */
     for (int64_t xx = tileX - CHUNKING_RADIUS; xx <= tileX + CHUNKING_RADIUS; xx++) {
         for (int64_t yy = tileY - CHUNKING_RADIUS; yy <= tileY + CHUNKING_RADIUS; yy++) {
             for (int64_t zz = tileZ - CHUNKING_RADIUS; zz <= tileZ + CHUNKING_RADIUS; zz++) {
@@ -66,7 +66,7 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
                 if (it == octrees.end()) {
                     chunkCandidatesForGenerating.push_back({xx, yy, zz});
                 }else{
-                    if(!it->second->getLeafNode({xx, yy, zz})->chunk.render)
+                    if(!it->second->getLeafNode({xx, yy, zz})->generating)
                         chunkCandidatesForGenerating.push_back({xx, yy, zz});
                 }
             }
@@ -74,10 +74,8 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
     }
     std::sort(std::begin(chunkCandidatesForGenerating), std::end(chunkCandidatesForGenerating),
               [&](const Coord &coord1, const Coord &coord2) {
-                  int64_t distance1 =
-                          Coord::distanceSquared(coord1, {tileX, tileY, tileZ}) + (frustum.isInside(coord1) ? -10 : 10);
-                  int64_t distance2 =
-                          Coord::distanceSquared(coord2, {tileX, tileY, tileZ}) + (frustum.isInside(coord2) ? -10 : 10);
+                  int64_t distance1 = Coord::distanceSquared(coord1, {tileX, tileY, tileZ}) + (frustum.isInside(coord1) ? -10 : 10);
+                  int64_t distance2 = Coord::distanceSquared(coord2, {tileX, tileY, tileZ}) + (frustum.isInside(coord2) ? -10 : 10);
                   return distance1 - distance2 < 0;
               }
     );
@@ -87,9 +85,9 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
         if (chunkGenerator->isBusy) {
             continue;
         } else {
-            if (chunkGenerator->chunk != nullptr) {
-                generatedChunks.push_back(chunkGenerator->chunk);
-                chunkGenerator->chunk = nullptr;
+            if (chunkGenerator->leaf != nullptr) {
+                generatedChunks.push_back(&chunkGenerator->leaf->chunk);
+                chunkGenerator->leaf = nullptr;
             }
             while (chunkCoordIndex < chunkCandidatesForGenerating.size()) {
                 auto coord = chunkCandidatesForGenerating[chunkCoordIndex];
@@ -105,7 +103,7 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
             }
         }
     }
-    for (auto &coord : modifiedChunks) {
+   /* for (auto &coord : modifiedChunks) {
         auto chunk = getChunkFromChunkCoords(coord.tileX, coord.tileY, coord.tileZ);
         chunk->render = false;
         chunk->faceData.clear();
@@ -144,6 +142,7 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
         }
     }
     modifiedChunks.clear();
+    */
     for (auto &chunk : generatedChunks) {
         chunksGenerating.erase(chunksGenerating.find({chunk->tileX, chunk->tileY, chunk->tileZ}));
         ChunkManager::initChunk(chunk);

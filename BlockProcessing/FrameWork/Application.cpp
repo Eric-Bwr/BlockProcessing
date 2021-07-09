@@ -4,12 +4,13 @@ Application application;
 
 int main(){
     application = Application();
+    application.preInit();
     application.init();
     application.run();
     application.end();
 }
 
-void Application::init() {
+void Application::preInit() {
     auto windowSettings = new WindowSettings;
     windowSettings->setTitle("BlockProcessing");
     windowSettings->setSampleSize(2);
@@ -24,28 +25,28 @@ void Application::init() {
     initCallbacks();
     width = windowSettings->getWidth();
     height = windowSettings->getHeight();
-
-    glfwSetInputMode(window.getWindow(), GLFW_STICKY_KEYS, GLFW_TRUE);
-    glfwSetInputMode(window.getWindow(), GLFW_STICKY_MOUSE_BUTTONS, GLFW_TRUE);
     glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     glfwSetCursorPos(window.getWindow(), width / 2, height / 2);
+}
+
+void Application::init() {
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glEnable(GL_DEPTH_TEST);
-    //------------------------------------------------------------------------------------------------------------------------------------------
 
     projection.perspective(fov, width, height, 1.0f, 20000.0f);
+    projectionView.identity();
 
     Player::init(0, 0, 0, 90, 0);
     TerrainManager::init(rand(), FastNoise::PerlinFractal, 0.009, 6);
     TerrainManager::setProjection(projection);
-    projectionView.identity();
-//    EventManager::bind(d);
     ChunkBorderManager::init();
     ChunkBorderManager::setProjection(projection);
     OctreeVisualizer::init();
+    OctreeVisualizer::setProjection(projection);
     LinePoint::init();
+    LinePoint::setProjection(projection);
     ui.init(width, height);
 }
 
@@ -59,18 +60,19 @@ void Application::run() {
 
 void Application::update() {
     fov = zoomLevel;
-    if (zoom)
+    if (zoom && prevZoomLevel != zoomLevel) {
         projection.perspective(fov, (float) width, (float) height, 1.0f, 20000.0f);
+        TerrainManager::setProjection(projection);
+        OctreeVisualizer::setProjection(projection);
+        LinePoint::setProjection(projection);
+        ChunkBorderManager::setProjection(projection);
+    }
     //else
     //PLAYER_MOVE_SPEED = cameraSpeed;
     TerrainManager::setLightPosition(Player::getX(), Player::getY() + 1000, Player::getZ());
-    //TerrainManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
+    TerrainManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
     //ChunkBorderManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
     Player::updatePlayer();
-    if(collision) {
-        Player::gameMode = !Player::gameMode;
-        collision = false;
-    }
 }
 
 #include "../Game/Debug/Performance/SpeedTester.h"
@@ -81,15 +83,11 @@ void Application::render() {
 
     view = Player::getViewMatrix();
     projectionView = projectionView.multiply(projection, view);
-    TerrainManager::setProjection(projection);
-    OctreeVisualizer::setProjection(projection);
-    LinePoint::setProjection(projection);
     TerrainManager::render(projectionView, view, Player::getX(), Player::getY(), Player::getZ());
     OctreeVisualizer::setView(view);
-    //for (auto&[coord, octree] : WorldManager::octrees) {
-    //    OctreeVisualizer::visualize(octree);
-    //}
-    ChunkBorderManager::setProjection(projection);
+    if(collision)
+        for (auto&[coord, octree] : WorldManager::octrees)
+            OctreeVisualizer::visualize(octree);
     if (wireFrame)
         ChunkBorderManager::render(view);
     LinePoint::setView(view);

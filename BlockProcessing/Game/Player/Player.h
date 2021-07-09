@@ -5,7 +5,7 @@
 #include "../Terrain/Util/CoordinateHelper.h"
 #include "PlayerCamera.h"
 
-class Player : public PlayerCamera{
+class Player : public PlayerCamera {
 public:
     static void init(float x, float y, float z, float yaw, float pitch);
     static void updatePlayer();

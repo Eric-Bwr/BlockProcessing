@@ -12,21 +12,14 @@ OctreeLeaf::OctreeLeaf(Coord coord) {
 }
 
 void OctreeLeaf::generate(){
+    generating = true;
     ChunkManager::generateChunkDefaultBlockData(&chunk);
     ChunkManager::generateChunkDefaultFaceData(&chunk);
 }
 
-void OctreeLeaf::load(){
-    ChunkManager::initChunk(&chunk);
-    ChunkManager::loadChunkData(&chunk);
-    chunk.render = true;
-}
-
-#include "iostream"
 void OctreeLeaf::render() {
     if(chunk.render) {
         ChunkManager::renderChunk(&chunk);
-        //std::cout << "Less go\n";
     }
 }
 

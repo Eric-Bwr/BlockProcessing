@@ -10,6 +10,7 @@
 
 class Application {
 public:
+    void preInit();
     void init();
     void run();
     void update();
@@ -39,7 +40,7 @@ private:
     bool wireFrame = false;
     float span = 0.0f;
     float offset = 4.5 * TERRAIN_SIZE;
-    float zoomLevel = 45.0f, zoomSpeed = 1.0f;
+    float zoomLevel = 45.0f, prevZoomLevel = 45.0f, zoomSpeed = 1.0f;
     float maxZoom = 45.0f, minZoom = 1.0f;
 
     float fov = 45.0f;

@@ -2,7 +2,7 @@
 #include "Player.h"
 #include "PlayerDefines.h"
 
-int8_t Player::gameMode = 1;
+int8_t Player::gameMode = GAMEMODE_CREATIVE;
 int64_t Player::blockX = 0, Player::chunkX = 0;
 int64_t Player::blockY = 0, Player::chunkY = 0;
 int64_t Player::blockZ = 0, Player::chunkZ = 0;
@@ -80,10 +80,10 @@ void Player::calculateMove() {
             // if (collisionBlock.id != BLOCK_AIR)
             //    camPos += right * PLAYER_MOVE_SPEED;
         }
-        if (shouldFloat) {
+       // if (shouldFloat) {
             if (shouldMoveUp)
                 camPos.y += PLAYER_MOVE_SPEED;
-        }
+       // }
        // int timefornextclickinms = 50;
 
        // if(shouldMoveUp)
@@ -96,7 +96,7 @@ void Player::calculateMove() {
        //    doublePress = false;
 
         //doublePressLastState -> use to fix hold down issue
-        if (shouldMoveUp) {
+       /* if (shouldMoveUp) {
             if (doublePress && doublePressIgnoreSpan < 0) {
                 shouldFloat = !shouldFloat;
                 doublePress = false;
@@ -110,7 +110,9 @@ void Player::calculateMove() {
             doublePress = false;
         else
             doublePressSpan--;
-
+*/
+        if (shouldMoveUp)
+            camPos.y += PLAYER_MOVE_SPEED;
         if (shouldMoveDown)
             camPos.y -= PLAYER_MOVE_SPEED;
     } else if (gameMode == GAMEMODE_SURVIVAL) {
@@ -145,7 +147,7 @@ void Player::calculateMove() {
 void Player::calculateGravity() {
     WorldManager::getChunkBlock(collisionBlock, blockX, blockY - 2, blockZ);
     if (collisionBlock.id == BLOCK_AIR) {
-        camPos.y -= PLAYER_GRAVITY + 1;
+        camPos.y -= PLAYER_GRAVITY;
     }
 }
 

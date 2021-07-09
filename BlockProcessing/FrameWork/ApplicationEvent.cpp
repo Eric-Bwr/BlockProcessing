@@ -49,18 +49,33 @@ void Application::onKey(int key, int scancode, int action, int mods){
     if (key == GLFW_KEY_Y) {
         zoom = !zoom;
     }
-    if (key == GLFW_KEY_SPACE)
-        Player::shouldMoveUp = action == GLFW_PRESS;
-    if (key == GLFW_KEY_LEFT_SHIFT)
-        Player::shouldMoveDown = action == GLFW_PRESS;
-    if (key == GLFW_KEY_W)
-        Player::shouldMoveForward = action == GLFW_PRESS;
-    if (key == GLFW_KEY_S)
-        Player::shouldMoveBackward = action == GLFW_PRESS;
-    if (key == GLFW_KEY_A)
-        Player::shouldMoveLeft = action == GLFW_PRESS;
-    if (key == GLFW_KEY_D)
-        Player::shouldMoveRight = action == GLFW_PRESS;
+    if(action == GLFW_PRESS || action == GLFW_REPEAT){
+        if(key == GLFW_KEY_SPACE)
+            Player::shouldMoveUp = true;
+        if(key == GLFW_KEY_LEFT_SHIFT)
+            Player::shouldMoveDown = true;
+        if(key == GLFW_KEY_W)
+            Player::shouldMoveForward = true;
+        if(key == GLFW_KEY_S)
+            Player::shouldMoveBackward = true;
+        if(key == GLFW_KEY_A)
+            Player::shouldMoveLeft = true;
+        if(key == GLFW_KEY_D)
+            Player::shouldMoveRight = true;
+    }else if(action == GLFW_RELEASE){
+        if(key == GLFW_KEY_SPACE)
+            Player::shouldMoveUp = false;
+        if(key == GLFW_KEY_LEFT_SHIFT)
+            Player::shouldMoveDown = false;
+        if(key == GLFW_KEY_W)
+            Player::shouldMoveForward = false;
+        if(key == GLFW_KEY_S)
+            Player::shouldMoveBackward = false;
+        if(key == GLFW_KEY_A)
+            Player::shouldMoveLeft = false;
+        if(key == GLFW_KEY_D)
+            Player::shouldMoveRight = false;
+    }
 }
 
 void Application::onChar(unsigned int key){
@@ -98,7 +113,7 @@ static void frameBufferSize(GLFWwindow *window, int width, int height) {
 }
 
 static void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
-    application.onKey(key, scancode,action,mods);
+    application.onKey(key, scancode, action, mods);
 }
 
 static void charCallback(GLFWwindow *window, unsigned int key) {
