@@ -5,6 +5,8 @@ Application application;
 int main(){
     application = Application();
     application.init();
+    application.run();
+    application.end();
 }
 
 void Application::init() {
@@ -45,11 +47,6 @@ void Application::init() {
     OctreeVisualizer::init();
     LinePoint::init();
     ui.init(width, height);
-    image = new UIImage(200, 200, 400, 400);
-    image->setColor(COLOR_RED);
-    image->setTexture(texture);
-    ui.add(image);
-    run();
 }
 
 void Application::run() {
@@ -58,7 +55,6 @@ void Application::run() {
         update();
         render();
     }
-    end();
 }
 
 void Application::update() {
@@ -80,7 +76,7 @@ void Application::update() {
 #include "../Game/Debug/Performance/SpeedTester.h"
 
 void Application::render() {
-    glClear(GL_COLOR_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.8, 0.9, 0.9, 1.0);
 
     view = Player::getViewMatrix();
@@ -108,7 +104,9 @@ void Application::render() {
         TerrainManager::shader->setUniformBool("blinn", true);
         TerrainManager::shader->setUniformMatrix4f("model", TerrainManager::model.getBuffer());
     }
+    glDisable(GL_CULL_FACE);
     ui.render();
+    glEnable(GL_CULL_FACE);
 }
 
 void Application::end() {

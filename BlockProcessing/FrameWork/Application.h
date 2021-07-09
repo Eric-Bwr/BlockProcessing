@@ -26,8 +26,6 @@ public:
 private:
     Window window;
     UIManager ui;
-    UITexture* texture;
-    UIImage* image;
     bool mode = false;
     bool modeGui = false;
     bool modeCursor = false;
