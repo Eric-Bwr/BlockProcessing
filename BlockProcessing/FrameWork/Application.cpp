@@ -30,6 +30,7 @@ void Application::init() {
     glEnable(GL_MULTISAMPLE);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
+    glEnable(GL_DEPTH_TEST);
     //------------------------------------------------------------------------------------------------------------------------------------------
 
     projection.perspective(fov, width, height, 1.0f, 20000.0f);
@@ -41,9 +42,13 @@ void Application::init() {
 //    EventManager::bind(d);
     ChunkBorderManager::init();
     ChunkBorderManager::setProjection(projection);
-    glEnable(GL_DEPTH_TEST);
     OctreeVisualizer::init();
     LinePoint::init();
+    ui.init(width, height);
+    image = new UIImage(200, 200, 400, 400);
+    image->setColor(COLOR_RED);
+    image->setTexture(texture);
+    ui.add(image);
     run();
 }
 
@@ -63,8 +68,8 @@ void Application::update() {
     //else
     //PLAYER_MOVE_SPEED = cameraSpeed;
     TerrainManager::setLightPosition(Player::getX(), Player::getY() + 1000, Player::getZ());
-    TerrainManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
-    ChunkBorderManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
+    //TerrainManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
+    //ChunkBorderManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
     Player::updatePlayer();
     if(collision) {
         Player::gameMode = !Player::gameMode;
@@ -75,8 +80,9 @@ void Application::update() {
 #include "../Game/Debug/Performance/SpeedTester.h"
 
 void Application::render() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT);
     glClearColor(0.8, 0.9, 0.9, 1.0);
+
     view = Player::getViewMatrix();
     projectionView = projectionView.multiply(projection, view);
     TerrainManager::setProjection(projection);
@@ -102,6 +108,7 @@ void Application::render() {
         TerrainManager::shader->setUniformBool("blinn", true);
         TerrainManager::shader->setUniformMatrix4f("model", TerrainManager::model.getBuffer());
     }
+    ui.render();
 }
 
 void Application::end() {

@@ -6,6 +6,7 @@
 #include "Game/Debug/ChunkBorder/ChunkBorderManager.h"
 #include "Game/Debug/Octree/OctreeVisualizer.h"
 #include "Game/Debug/LinePoint/LinePoint.h"
+#include <UIManager.h>
 
 class Application {
 public:
@@ -24,6 +25,9 @@ public:
     void onMouseScroll(double x, double y);
 private:
     Window window;
+    UIManager ui;
+    UITexture* texture;
+    UIImage* image;
     bool mode = false;
     bool modeGui = false;
     bool modeCursor = false;
