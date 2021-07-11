@@ -17,11 +17,11 @@ public:
 };
 
 static ChunkGenerator *chunkGenerators[CHUNKING_THREADS];
-//ONLY GEN IF CHUNK COORDS CHANGED
+
+#include "iostream"
 static void chunkGenerationLoop(ChunkGenerator *chunkGenerator) {
     while (chunkGenerator->isAlive) {
         if (chunkGenerator->isBusy) {
-            //ONLY BORDER NOT ALL CHUNKS IN REGION
             Coord octreeCoord {getOctreeFromChunk(chunkGenerator->coord.tileX), getOctreeFromChunk(chunkGenerator->coord.tileY), getOctreeFromChunk(chunkGenerator->coord.tileZ)};
             if(WorldManager::octrees.find(octreeCoord) == WorldManager::octrees.end()){
                 auto node = new OctreeNode(OCTREE_MAX_LEVEL, OCTREE_LENGTH, octreeCoord);
@@ -38,16 +38,16 @@ static void chunkGenerationLoop(ChunkGenerator *chunkGenerator) {
 }
 
 void WorldManager::init() {
-    for (int i = 0; i < CHUNKING_THREADS; i++) {
-        chunkGenerators[i] = new ChunkGenerator();
-        std::thread t(chunkGenerationLoop, chunkGenerators[i]);
+    for (auto& chunkGenerator : chunkGenerators) {
+        chunkGenerator = new ChunkGenerator();
+        std::thread t(chunkGenerationLoop, chunkGenerator);
         t.detach();
     }
 }
 
 void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
     chunkCandidatesForGenerating.clear();
-   /* for (auto it = octrees.cbegin(), next_it = it; it != octrees.cend(); it = next_it) {
+    /*for (auto it = octrees.cbegin(), next_it = it; it != octrees.cend(); it = next_it) {
         ++next_it;
         if (_abs64(it->first.tileX - tileX) > CHUNKING_DELETION_RADIUS ||
             _abs64(it->first.tileY - tileY) > CHUNKING_DELETION_RADIUS ||
@@ -55,10 +55,8 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
             delete it->second;
             octrees.erase(it);
         }
-        //it->second->unload(tileX, tileY, tileZ);
-        it->second->unload();
-    }
-    */
+        it->second->checkUnload(tileX, tileY, tileZ);
+    }*/
     for (int64_t xx = tileX - CHUNKING_RADIUS; xx <= tileX + CHUNKING_RADIUS; xx++) {
         for (int64_t yy = tileY - CHUNKING_RADIUS; yy <= tileY + CHUNKING_RADIUS; yy++) {
             for (int64_t zz = tileZ - CHUNKING_RADIUS; zz <= tileZ + CHUNKING_RADIUS; zz++) {
@@ -66,8 +64,9 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
                 if (it == octrees.end()) {
                     chunkCandidatesForGenerating.push_back({xx, yy, zz});
                 }else{
-                    if(!it->second->getLeafNode({xx, yy, zz})->generating)
-                        chunkCandidatesForGenerating.push_back({xx, yy, zz});
+                    if(!it->second->childrenLoaded())
+                        if(!it->second->getLeafNode({xx, yy, zz})->generating)
+                            chunkCandidatesForGenerating.push_back({xx, yy, zz});
                 }
             }
         }
@@ -171,7 +170,7 @@ Chunk *WorldManager::getChunkFromChunkCoords(int64_t x, int64_t y, int64_t z) {
 }
 
 void WorldManager::getDefaultChunkBlock(ChunkBlock &chunkBlock, int64_t x, int64_t y, int64_t z) {
-    int height = int(((fastNoise->GetNoise(x, z) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER);
+    int height = int(((fastNoise->GetNoise(x, y, z) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER);
     if (y > height || y < 0) {
         chunkBlock.id = BlockManager::getBlockByID(BLOCK_AIR)->id;
     } else if (y == height) {

@@ -2,9 +2,9 @@
 #include "TerrainManager.h"
 
 Mat4f TerrainManager::model;
-Shader* TerrainManager::shader;
-Texture* TerrainManager::texture;
-FastNoise* TerrainManager::fastNoise;
+Shader *TerrainManager::shader;
+Texture *TerrainManager::texture;
+FastNoise *TerrainManager::fastNoise;
 
 void TerrainManager::init(int seed, FastNoise::NoiseType noiseType, float frequency, int octaves) {
     fastNoise = new FastNoise;
@@ -36,7 +36,7 @@ void TerrainManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
     WorldManager::generate(tileX, tileY, tileZ);
 }
 
-void TerrainManager::render(Mat4f& projectionView, Mat4f& view, float x, float y, float z) {
+void TerrainManager::render(Mat4f &projectionView, Mat4f &view, float x, float y, float z) {
     shader->bind();
     shader->setUniformMatrix4f("view", view.getBuffer());
     shader->setUniform3f("viewPos", x, y, z);

@@ -15,6 +15,7 @@ public:
     void checkUnload(int64_t tileX, int64_t tileY, int64_t tileZ);
     void unload();
     OctreeLeaf* getLeafNode(Coord coord);
+    bool childrenLoaded();
     ~OctreeNode();
     OctreeNodeObject* children[8];
 };

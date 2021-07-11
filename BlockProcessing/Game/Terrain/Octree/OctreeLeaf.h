@@ -8,6 +8,7 @@ public:
     explicit OctreeLeaf(Coord coord);
     void generate();
     void render();
+    void unload();
     ~OctreeLeaf();
     Chunk chunk;
     bool generating = false;

@@ -23,6 +23,12 @@ void OctreeLeaf::render() {
     }
 }
 
+void OctreeLeaf::unload() {
+    chunk.render = false;
+    ChunkManager::unloadChunk(&chunk);
+    generating = false;
+}
+
 OctreeLeaf::~OctreeLeaf() {
     ChunkManager::unloadChunk(&chunk);
 }

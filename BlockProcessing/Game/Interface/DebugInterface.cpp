@@ -17,10 +17,12 @@ void DebugInterface::setXYZ(float xIn, float yIn, float zIn) {
     y = yIn;
     z = zIn;
 }
+
 static float round(float var){
     float value = (int)(var * 100 + 0.5);
     return (float)value / 100;
 }
+
 void DebugInterface::update() {
     string.str("");
     string << "X: " << round(x) << " Y: " << round(y) << " Z: " << round(z);

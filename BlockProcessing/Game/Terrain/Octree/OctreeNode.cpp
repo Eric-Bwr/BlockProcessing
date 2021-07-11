@@ -37,20 +37,12 @@ void OctreeNode::render() {
 }
 
 void OctreeNode::checkUnload(int64_t tileX, int64_t tileY, int64_t tileZ) {
-    if(_abs64(tileX - coord.tileX) > CHUNKING_DELETION_RADIUS ||
-        _abs64(tileY - coord.tileY) > CHUNKING_DELETION_RADIUS ||
-        _abs64(tileZ - coord.tileZ) > CHUNKING_DELETION_RADIUS){
-        if (level == 1) {
-            for (auto child : children) {
-                if (Coord::isEqual(child->coord, coord)) {
-                    ChunkManager::unloadChunk(&((OctreeLeaf *) child)->chunk);
-                }
-            }
-        } else {
-            //CHECK ALL THIS
-            for (auto child : children) {
-                if (Coord::isEqual(child->coord, {findLowerValue(coord.tileX, level), findLowerValue(coord.tileY, level), findLowerValue(coord.tileZ, level)}))
-                    return ((OctreeNode *) child)->unload();
+    if (level != 1)  {
+        for (auto child : children) {
+            if (_abs64(tileX - child->coord.tileX) > CHUNKING_DELETION_RADIUS ||
+                _abs64(tileY - child->coord.tileY) > CHUNKING_DELETION_RADIUS ||
+                _abs64(tileZ - child->coord.tileZ) > CHUNKING_DELETION_RADIUS) {
+                ((OctreeNode *) child)->unload();
             }
         }
     }
@@ -60,14 +52,12 @@ void OctreeNode::unload() {
     if (level == 1) {
         for (auto child : children) {
             if (Coord::isEqual(child->coord, coord)) {
-               // return (OctreeLeaf *) child;
+                ((OctreeLeaf *) child)->unload();
             }
         }
     } else {
         for (auto child : children) {
-            if (Coord::isEqual(child->coord, {findLowerValue(coord.tileX, level), findLowerValue(coord.tileY, level), findLowerValue(coord.tileZ, level)})){
-                //return ((OctreeNode *) child)->getLeafNode(coord);
-            }
+            ((OctreeNode *) child)->unload();
         }
     }
 }
@@ -86,6 +76,18 @@ OctreeLeaf *OctreeNode::getLeafNode(Coord coord) {
         }
     }
     return nullptr;
+}
+
+bool OctreeNode::childrenLoaded() {
+    int add = 0;
+    if (level == 1) {
+        for (auto child : children)
+            add += ((OctreeLeaf *) child)->chunk.render;
+    } else {
+        for (auto child : children)
+            add += ((OctreeNode *) child)->childrenLoaded();
+    }
+    return add == 8;
 }
 
 OctreeNode::~OctreeNode() {
