@@ -52,6 +52,11 @@ void Application::init() {
     LinePoint::setProjection(projection);
     ui.init(width, height);
     DebugInterface::init(ui);
+
+    Player::camPos.y = ((int(WorldManager::fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER  + 4) * TERRAIN_SIZE;
+    Player::updatePlayer();
+
+    //TODO: ADD BLOCK OUTLINE
 }
 
 void Application::run() {
@@ -72,7 +77,7 @@ void Application::update() {
         ChunkBorderManager::setProjection(projection);
     }
     Player::updatePlayer();
-    TerrainManager::setLightPosition(Player::getX(), Player::getY() + 1000, Player::getZ());
+    TerrainManager::setLightPosition(Player::getCameraX(), Player::getCameraY() + 1000, Player::getCameraZ());
     TerrainManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
     if(wireFrame)
         ChunkBorderManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
@@ -88,7 +93,7 @@ void Application::render() {
 
     view = Player::getViewMatrix();
     projectionView = projectionView.multiply(projection, view);
-    TerrainManager::render(projectionView, view, Player::getX(), Player::getY(), Player::getZ());
+    TerrainManager::render(projectionView, view, Player::getCameraX(), Player::getCameraY(), Player::getCameraZ());
     OctreeVisualizer::setView(view);
     if(collision)
         for (auto&[coord, octree] : WorldManager::octrees)

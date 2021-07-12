@@ -17,8 +17,8 @@ const int OCTREE_MAX_LEVEL = 2;
 //----------------------------------------[DEBUG]----------------------------------------
 const float CHUNK_BORDER_WIDTH = 1.4;
 
-const float OCTREE_LINE_WIDTH = 4;
-const float OCTREE_LINE_WIDTH_AMPLIFIER = 3;
+const float OCTREE_LINE_WIDTH = 2;
+const float OCTREE_LINE_WIDTH_AMPLIFIER = 2;
 const float OCTREE_VISUALIZING_COLORS[(OCTREE_MAX_LEVEL + 1) * 3]{
         1.0, 1.0, 1.0,
         1.0, 0.0, 0.0,

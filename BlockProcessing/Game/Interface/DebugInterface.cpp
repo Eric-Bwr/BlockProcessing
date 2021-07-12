@@ -1,5 +1,6 @@
 #include "DebugInterface.h"
 #include <sstream>
+#include <iomanip>
 
 static UIText* text;
 static Font* font;
@@ -18,13 +19,8 @@ void DebugInterface::setXYZ(float xIn, float yIn, float zIn) {
     z = zIn;
 }
 
-static float round(float var){
-    float value = (int)(var * 100 + 0.5);
-    return (float)value / 100;
-}
-
 void DebugInterface::update() {
     string.str("");
-    string << "X: " << round(x) << " Y: " << round(y) << " Z: " << round(z);
+    string << std::fixed << std::setprecision(2) << "X: " << x << " Y: " << y << " Z: " << z;
     text->setText(string.str().data());
 }

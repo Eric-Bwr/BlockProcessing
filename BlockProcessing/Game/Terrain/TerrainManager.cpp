@@ -26,7 +26,7 @@ void TerrainManager::init(int seed, FastNoise::NoiseType noiseType, float freque
     texture->setMaxLevel(TEXTURE_ATLAS_TILE_SIZE);
     texture->setLodBias(TEXTURE_ATLAS_LOD_BIAS);
     texture->load();
-    glGenerateMipmap(GL_TEXTURE_2D);
+    texture->generateMipMap();
     model.identity();
     model.scale(TERRAIN_SIZE);
     shader->setUniformMatrix4f("model", model.getBuffer());

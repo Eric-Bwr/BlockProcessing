@@ -170,7 +170,7 @@ Chunk *WorldManager::getChunkFromChunkCoords(int64_t x, int64_t y, int64_t z) {
 }
 
 void WorldManager::getDefaultChunkBlock(ChunkBlock &chunkBlock, int64_t x, int64_t y, int64_t z) {
-    int height = int(((fastNoise->GetNoise(x, y, z) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER);
+    int height = int(((fastNoise->GetNoise(x, z) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER);
     if (y > height || y < 0) {
         chunkBlock.id = BlockManager::getBlockByID(BLOCK_AIR)->id;
     } else if (y == height) {

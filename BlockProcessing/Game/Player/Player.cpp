@@ -1,6 +1,7 @@
 #include "../Terrain/World/WorldManager.h"
 #include "Player.h"
-#include "PlayerDefines.h"
+
+#define radians 0.01745329251994329576923690768489f
 
 int8_t Player::gameMode = GAMEMODE_CREATIVE;
 int64_t Player::blockX = 0, Player::chunkX = 0;
@@ -34,10 +35,10 @@ void Player::updatePlayer() {
     chunkX = getChunkFromBlock(blockX);
     chunkY = getChunkFromBlock(blockY);
     chunkZ = getChunkFromBlock(blockZ);
+    castRay();
 }
 
 void Player::dig() {
-    castRay();
     if (lookingAtChunkBlock.id != BLOCK_AIR)
         WorldManager::setChunkBlock(airBlock, blockX + lookedAtBlockOffsetX, blockY + lookedAtBlockOffsetY, blockZ + lookedAtBlockOffsetZ);
 }
@@ -51,8 +52,8 @@ void Player::place() {
 void Player::calculateMove() {
     if (gameMode == GAMEMODE_CREATIVE) {
         if (shouldMoveForward) {
-            camPos.x += front.x * PLAYER_MOVE_SPEED;
-            camPos.z += front.z * PLAYER_MOVE_SPEED;
+            camPos.x += std::cos(yaw * radians) * PLAYER_MOVE_SPEED;
+            camPos.z += std::sin(yaw * radians) * PLAYER_MOVE_SPEED;
             //WorldManager::getChunkBlock(collisionBlock, getBlockFromCamera(camPos.x), getBlockFromCamera(camPos.y), getBlockFromCamera(camPos.z));
             //if (collisionBlock.id != BLOCK_AIR) {
             //    camPos.x -= front.x * PLAYER_MOVE_SPEED;
@@ -60,8 +61,8 @@ void Player::calculateMove() {
             //}
         }
         if (shouldMoveBackward) {
-            camPos.x -= front.x * PLAYER_MOVE_SPEED;
-            camPos.z -= front.z * PLAYER_MOVE_SPEED;
+            camPos.x -= std::cos(yaw * radians) * PLAYER_MOVE_SPEED;
+            camPos.z -= std::sin(yaw * radians) * PLAYER_MOVE_SPEED;
             //WorldManager::getChunkBlock(collisionBlock, getBlockFromCamera(camPos.x), getBlockFromCamera(camPos.y), getBlockFromCamera(camPos.z));
             //if (collisionBlock.id != BLOCK_AIR) {
             //    camPos.x += front.x * PLAYER_MOVE_SPEED;
@@ -81,8 +82,8 @@ void Player::calculateMove() {
             //    camPos += right * PLAYER_MOVE_SPEED;
         }
        // if (shouldFloat) {
-            if (shouldMoveUp)
-                camPos.y += PLAYER_MOVE_SPEED;
+            //if (shouldMoveUp)
+            //    camPos.y += PLAYER_MOVE_SPEED;
        // }
        // int timefornextclickinms = 50;
 
