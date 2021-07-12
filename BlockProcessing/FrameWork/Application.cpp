@@ -20,7 +20,10 @@ void Application::preInit() {
     windowSettings->setHeight(800);
     windowSettings->setCentered(true);
     windowSettings->setSwapInterval(1);
+    windowSettings->setVersionMinor(3);
+    windowSettings->setVersionMajor(4);
     windowSettings->setProfile(GLFW_OPENGL_CORE_PROFILE);
+    windowSettings->setCheckVersion(true);
     window.init(windowSettings);
     initCallbacks();
     width = windowSettings->getWidth();
