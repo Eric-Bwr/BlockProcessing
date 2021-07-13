@@ -2,7 +2,6 @@
 #include "../World/WorldManager.h"
 
 void ChunkManager::initChunk(Chunk *chunk) {
-    chunk->faceDataSize = 0;
     chunk->vertexCount = 0;
     glGenVertexArrays(1, &chunk->vao);
     glBindVertexArray(chunk->vao);
@@ -14,8 +13,7 @@ void ChunkManager::initChunk(Chunk *chunk) {
     for (unsigned int i = 0; i < elements.size(); ++i) {
         const auto &element = elements.at(i);
         glEnableVertexAttribArray(i);
-        glVertexAttribPointer(i, element.count, element.type, element.normalized, CubeManager::layout->getStride(),
-                              (const void *) offset);
+        glVertexAttribPointer(i, element.count, element.type, element.normalized, CubeManager::layout->getStride(), (const void *) offset);
         offset += element.count * sizeof(float);
         if (element.divided)
             glVertexAttribDivisor(i, 1);

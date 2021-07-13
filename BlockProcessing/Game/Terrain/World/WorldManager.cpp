@@ -19,14 +19,19 @@ public:
 static ChunkGenerator *chunkGenerators[CHUNKING_THREADS];
 
 #include "iostream"
+
+#include "Game/Debug/Performance/SpeedTester.h"
+
 static void chunkGenerationLoop(ChunkGenerator *chunkGenerator) {
     while (chunkGenerator->isAlive) {
         if (chunkGenerator->isBusy) {
-            Coord octreeCoord {getOctreeFromChunk(chunkGenerator->coord.tileX), getOctreeFromChunk(chunkGenerator->coord.tileY), getOctreeFromChunk(chunkGenerator->coord.tileZ)};
+            auto octreeCoord = getOctreeFromChunk(chunkGenerator->coord);
+            OctreeNode* node = nullptr;
             if(WorldManager::octrees.find(octreeCoord) == WorldManager::octrees.end()){
-                auto node = new OctreeNode(OCTREE_MAX_LEVEL, OCTREE_LENGTH, octreeCoord);
+                node = new OctreeNode(OCTREE_MAX_LEVEL, OCTREE_LENGTH, octreeCoord);
                 WorldManager::octrees.insert(std::pair<Coord, OctreeNode *>(octreeCoord, node));
-            }
+            }else
+                node = WorldManager::octrees.find(octreeCoord)->second;
             chunkGenerator->leaf = WorldManager::octrees.find(octreeCoord)->second->getLeafNode({chunkGenerator->coord.tileX, chunkGenerator->coord.tileY, chunkGenerator->coord.tileZ});
             chunkGenerator->leaf->generate();
             chunkGenerator->isBusy = false;
@@ -60,11 +65,11 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
     for (int64_t xx = tileX - CHUNKING_RADIUS; xx <= tileX + CHUNKING_RADIUS; xx++) {
         for (int64_t yy = tileY - CHUNKING_RADIUS; yy <= tileY + CHUNKING_RADIUS; yy++) {
             for (int64_t zz = tileZ - CHUNKING_RADIUS; zz <= tileZ + CHUNKING_RADIUS; zz++) {
-                auto it = octrees.find({getOctreeFromChunk(xx), getOctreeFromChunk(yy), getOctreeFromChunk(zz)});
+                auto it = octrees.find(getOctreeFromChunk({xx, yy, zz}));
                 if (it == octrees.end()) {
                     chunkCandidatesForGenerating.push_back({xx, yy, zz});
                 }else{
-                    if(!it->second->childrenLoaded())
+                    if(it->second->childrenLoaded != 8)
                         if(!it->second->getLeafNode({xx, yy, zz})->generating)
                             chunkCandidatesForGenerating.push_back({xx, yy, zz});
                 }
@@ -140,6 +145,7 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
             ChunkManager::loadChunkData(neighborChunkBack);
         }
     }
+    UPDATENEEDSRENDER
     modifiedChunks.clear();
     */
     for (auto &chunk : generatedChunks) {
@@ -147,6 +153,10 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
         ChunkManager::initChunk(chunk);
         ChunkManager::loadChunkData(chunk);
         chunk->render = true;
+        auto it = octrees.find(getOctreeFromChunk({chunk->tileX, chunk->tileY, chunk->tileZ}));
+        it->second->updateNeedsRendering();
+        it->second->updateChildrenLoaded();
+        std::cout << "LOADED\n";
     }
 }
 
@@ -154,7 +164,7 @@ Chunk *WorldManager::getChunkFromBlockCoords(int64_t x, int64_t y, int64_t z) {
     int64_t chunkX = getChunkFromBlock(x);
     int64_t chunkY = getChunkFromBlock(y);
     int64_t chunkZ = getChunkFromBlock(z);
-    auto it = octrees.find({getOctreeFromChunk(chunkX), getOctreeFromChunk(chunkY), getOctreeFromChunk(chunkZ)});
+    auto it = octrees.find(getOctreeFromChunk({chunkX, chunkY, chunkZ}));
     if (it == octrees.end())
         return nullptr;
     else
@@ -162,7 +172,7 @@ Chunk *WorldManager::getChunkFromBlockCoords(int64_t x, int64_t y, int64_t z) {
 }
 
 Chunk *WorldManager::getChunkFromChunkCoords(int64_t x, int64_t y, int64_t z) {
-    auto it = octrees.find({getOctreeFromChunk(x), getOctreeFromChunk(y), getOctreeFromChunk(z)});
+    auto it = octrees.find(getOctreeFromChunk({x, y, z}));
     if (it == octrees.end())
         return nullptr;
     else

@@ -55,8 +55,6 @@ void Application::init() {
 
     Player::camPos.y = ((int(WorldManager::fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER  + 4) * TERRAIN_SIZE;
     Player::updatePlayer();
-
-    //TODO: ADD BLOCK OUTLINE
 }
 
 void Application::run() {
@@ -93,7 +91,10 @@ void Application::render() {
 
     view = Player::getViewMatrix();
     projectionView = projectionView.multiply(projection, view);
+    beginSpeedTest();
     TerrainManager::render(projectionView, view, Player::getCameraX(), Player::getCameraY(), Player::getCameraZ());
+    endSpeedTest();
+   // printMicroSeconds();
     OctreeVisualizer::setView(view);
     if(collision)
         for (auto&[coord, octree] : WorldManager::octrees)
