@@ -4,9 +4,11 @@ void Application::onFrameBufferSize(int width, int height){
     glViewport(0, 0, width, height);
     this->width = width;
     this->height = height;
+    Interface::UI.setSize(width, height);
 }
 
 void Application::onKey(int key, int scancode, int action, int mods){
+    Interface::UI.keyInput(key, action, mods);
     if(key == GLFW_KEY_ESCAPE)
         window.destroyWindow();
     if (key == GLFW_KEY_RIGHT_SHIFT) {
@@ -40,6 +42,11 @@ void Application::onKey(int key, int scancode, int action, int mods){
     if (key == GLFW_KEY_T && action == GLFW_PRESS){
         command = !command;
         commandLine.display(command);
+        if(command)
+            glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+        else
+            glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glfwSetCursorPos(window.getWindow(), width / 2, height / 2);
     }
     if (key == GLFW_KEY_LEFT_CONTROL && action == GLFW_PRESS)
         leftControl = !leftControl;
@@ -79,14 +86,19 @@ void Application::onKey(int key, int scancode, int action, int mods){
 }
 
 void Application::onChar(unsigned int key){
-    
+    Interface::UI.charInput(key);
 }
 
-void Application::onMousePosition(double x, double y){
-    Player::moveMouse(x, y);
+void Application::onMousePosition(double x, double y) const{
+    Interface::UI.mousePositionInput(x, y);
+    if(!command)
+        Player::moveMouse(x, y);
+    else
+        Player::hasLastPos = false;
 }
 
 void Application::onMouseButton(int button, int action, int mods){
+    Interface::UI.mouseButtonInput(button, action);
     if(action == GLFW_PRESS) {
         if (button == GLFW_MOUSE_BUTTON_2) {
             Player::dig();

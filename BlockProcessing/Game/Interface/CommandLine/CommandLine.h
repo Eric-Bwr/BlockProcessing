@@ -5,6 +5,6 @@
 class CommandLine : Interface {
 public:
     void init();
-    void display(bool display);
+    void display(bool display) const;
     UITextField* textField;
 };

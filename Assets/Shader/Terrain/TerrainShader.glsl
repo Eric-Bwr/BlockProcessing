@@ -45,13 +45,15 @@ uniform vec3 viewPos;
 uniform bool blinn = true;
 uniform vec3 skyColor = vec3(0.8, 0.9, 0.9);
 
+const vec3 grassColor = vec3(0.2, 0.45, 0.2);
+
 out vec4 FragColor;
 
 void main(){
     vec3 color;
     if (blockID == 3){
         color = vec3(texture(image, textureCoords).rgb);
-        color *= vec3(0.2, 0.45, 0.2);
+        color *= grassColor;
     }else
         color = texture(image, textureCoords).rgb;
     // ambient

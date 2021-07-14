@@ -1,5 +1,6 @@
 #include "../Debug/Octree/OctreeVisualizer.h"
 #include "TerrainManager.h"
+#include "UITexture.h"
 
 Mat4f TerrainManager::model;
 Shader *TerrainManager::shader;
@@ -18,7 +19,7 @@ void TerrainManager::init(int seed, FastNoise::NoiseType noiseType, float freque
     WorldManager::init();
     shader = new Shader(SHADER_TERRAIN);
     shader->bind();
-    texture = new Texture(TEXTURE_TERRAIN_ATLAS);
+    texture = new UITexture(TEXTURE_TERRAIN_ATLAS);
     texture->bind();
     texture->clampEdge();
     texture->minLinearMipLinear();

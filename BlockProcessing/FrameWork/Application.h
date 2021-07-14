@@ -22,7 +22,7 @@ public:
     void onFrameBufferSize(int width, int height);
     void onKey(int key, int scancode, int action, int mods);
     void onChar(unsigned int key);
-    void onMousePosition(double x, double y);
+    void onMousePosition(double x, double y) const;
     void onMouseButton(int button, int action, int mods);
     void onMouseScroll(double x, double y);
 private:

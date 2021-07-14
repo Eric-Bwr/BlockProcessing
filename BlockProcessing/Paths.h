@@ -4,4 +4,4 @@
 #define SHADER_TERRAIN "../Assets/Shader/Terrain/TerrainShader.glsl"
 #define SHADER_LINE "../Assets/Shader/Terrain/LineShader.glsl"
 
-#define TEXTURE_TERRAIN_ATLAS "../Assets/Textures/Atlas"
+#define TEXTURE_TERRAIN_ATLAS "../Assets/Textures/Atlas.png"
