@@ -50,8 +50,9 @@ void Application::init() {
     OctreeVisualizer::setProjection(projection);
     LinePoint::init();
     LinePoint::setProjection(projection);
-    ui.init(width, height);
-    DebugInterface::init(ui);
+    Interface::init(width, height);
+    debugInterface.init();
+    commandLine.init();
 
     Player::camPos.y = ((int(WorldManager::fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER  + 4) * TERRAIN_SIZE;
     Player::updatePlayer();
@@ -79,8 +80,10 @@ void Application::update() {
     TerrainManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
     if(wireFrame)
         ChunkBorderManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
-    if(debug)
-        DebugInterface::setXYZ(Player::getX(), Player::getY(), Player::getZ());
+    if(debug) {
+        debugInterface.setXYZ(Player::getX(), Player::getY(), Player::getZ());
+        debugInterface.update();
+    }
 }
 
 #include "../Game/Debug/Performance/SpeedTester.h"
@@ -116,10 +119,7 @@ void Application::render() {
     glDisable(GL_CULL_FACE);
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    if(debug) {
-        DebugInterface::update();
-        ui.render();
-    }
+    Interface::render();
     glEnable(GL_CULL_FACE);
 }
 

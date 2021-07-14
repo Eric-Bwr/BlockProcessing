@@ -33,8 +33,14 @@ void Application::onKey(int key, int scancode, int action, int mods){
     }
     if (key == GLFW_KEY_C && action == GLFW_PRESS)
         collision = !collision;
-    if (key == GLFW_KEY_F3 && action == GLFW_PRESS)
+    if (key == GLFW_KEY_F3 && action == GLFW_PRESS){
         debug = !debug;
+        debugInterface.display(debug);
+    }
+    if (key == GLFW_KEY_T && action == GLFW_PRESS){
+        command = !command;
+        commandLine.display(command);
+    }
     if (key == GLFW_KEY_LEFT_CONTROL && action == GLFW_PRESS)
         leftControl = !leftControl;
     if (key == GLFW_KEY_LEFT_ALT && action == GLFW_PRESS)

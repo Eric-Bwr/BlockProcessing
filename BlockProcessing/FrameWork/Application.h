@@ -6,7 +6,8 @@
 #include "Game/Debug/ChunkBorder/ChunkBorderManager.h"
 #include "Game/Debug/Octree/OctreeVisualizer.h"
 #include "Game/Debug/LinePoint/LinePoint.h"
-#include "Game/Interface/DebugInterface.h"
+#include "Game/Interface/DebugInterface/DebugInterface.h"
+#include "Game/Interface/CommandLine/CommandLine.h"
 
 class Application {
 public:
@@ -26,7 +27,8 @@ public:
     void onMouseScroll(double x, double y);
 private:
     Window window;
-    UIManager ui;
+    CommandLine commandLine;
+    DebugInterface debugInterface;
     bool mode = false;
     bool modeGui = false;
     bool modeCursor = false;
@@ -34,6 +36,7 @@ private:
     bool alt = false;
     bool collision = false;
     bool debug = false;
+    bool command = false;
     float width, height;
     float cameraSpeed = 7.0f;
     bool zoom = true;

@@ -156,7 +156,7 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
         auto it = octrees.find(getOctreeFromChunk({chunk->tileX, chunk->tileY, chunk->tileZ}));
         it->second->updateNeedsRendering();
         it->second->updateChildrenLoaded();
-        std::cout << "LOADED\n";
+       // std::cout << "LOADED\n";
     }
 }
 
