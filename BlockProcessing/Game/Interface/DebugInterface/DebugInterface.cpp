@@ -1,24 +1,30 @@
 #include "DebugInterface.h"
+#include "Game/Player/Player.h"
 #include <sstream>
 #include <iomanip>
 
-static UIText* text;
+static UIText* textLeft;
+static UIText* textRight;
 static std::ostringstream string;
-static float x = 0, y = 0, z = 0;
+static std::string gl;
 
+//PARSE W H
 void DebugInterface::init() {
-    text = new UIText(string.str().data(), font, 40, 0, 0, 1000, 500, UITextMode::LEFT);
-}
-
-void DebugInterface::setXYZ(float xIn, float yIn, float zIn) {
-    x = xIn;
-    y = yIn;
-    z = zIn;
+    gl = (char*)glGetString(GL_VERSION);
+    gl += "\n";
+    gl += (char*)glGetString(GL_RENDERER);
+    gl += "\nGLSL: ";
+    gl += (char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
+    textLeft = new UIText(string.str().data(), font, 30, 0, 0, 2000, 500, UITextMode::LEFT);
+    textRight = new UIText(string.str().data(), font, 30, 0, 0, 2000, 500, UITextMode::RIGHT);
 }
 
 void DebugInterface::update() {
     string.str("");
-    string << std::fixed << std::setprecision(2) << "X: " << x << " Y: " << y << " Z: " << z;
+    string << std::fixed << std::setprecision(2) << "X: " << Player::getX() << " Y: " << Player::getY() << " Z: " << Player::getZ() << "\n";
+    string << "ChunkX: " << Player::chunkX << " ChunkY: " << Player::chunkY << " ChunkZ: " << Player::chunkZ << "\n";
+    string << "OctreeX: " << getOctreeFromChunk(Player::chunkX) << " OctreeY: " << getOctreeFromChunk(Player::chunkY) << " OctreeZ: " << getOctreeFromChunk(Player::chunkZ) << "\n";
+    string << gl << "\n";
     text->setText(string.str().data());
 }
 

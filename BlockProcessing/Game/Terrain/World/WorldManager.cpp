@@ -107,7 +107,7 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
             }
         }
     }
-   /* for (auto &coord : modifiedChunks) {
+    for (auto &coord : modifiedChunks) {
         auto chunk = getChunkFromChunkCoords(coord.tileX, coord.tileY, coord.tileZ);
         chunk->render = false;
         chunk->faceData.clear();
@@ -144,10 +144,12 @@ void WorldManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
             ChunkManager::generateChunkFaceData(neighborChunkBack);
             ChunkManager::loadChunkData(neighborChunkBack);
         }
+        auto it = octrees.find(getOctreeFromChunk({coord.tileX, coord.tileY, coord.tileZ}));
+        it->second->updateNeedsRendering();
+        it->second->updateChildrenLoaded();
     }
-    UPDATENEEDSRENDER
     modifiedChunks.clear();
-    */
+
     for (auto &chunk : generatedChunks) {
         chunksGenerating.erase(chunksGenerating.find({chunk->tileX, chunk->tileY, chunk->tileZ}));
         ChunkManager::initChunk(chunk);

@@ -83,10 +83,8 @@ void Application::update() {
     TerrainManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
     if(wireFrame)
         ChunkBorderManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
-    if(debug) {
-        debugInterface.setXYZ(Player::getX(), Player::getY(), Player::getZ());
+    if(debug)
         debugInterface.update();
-    }
 }
 
 #include "../Game/Debug/Performance/SpeedTester.h"

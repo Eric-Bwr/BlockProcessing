@@ -1,4 +1,5 @@
 #include "CommandTP.h"
+#include "Game/Player/Player.h"
 
 CommandTP::CommandTP(){
     prefix = "tp";

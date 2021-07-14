@@ -4,7 +4,7 @@
 
 class Interface {
 public:
-    static void init(int width, int height, bool scaleOnResize = false);
+    static void init(int width, int height);
     static void render();
     static UIManager UI;
     static Font *font;
