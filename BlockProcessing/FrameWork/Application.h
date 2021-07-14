@@ -7,7 +7,8 @@
 #include "Game/Debug/Octree/OctreeVisualizer.h"
 #include "Game/Debug/LinePoint/LinePoint.h"
 #include "Game/Interface/DebugInterface/DebugInterface.h"
-#include "Game/Interface/CommandLine/CommandLine.h"
+#include "Game/Interface/ChatInterface/ChatInterface.h"
+#include "Game/Command/CommandManager.h"
 
 class Application {
 public:
@@ -27,7 +28,7 @@ public:
     void onMouseScroll(double x, double y);
 private:
     Window window;
-    CommandLine commandLine;
+    ChatInterface chatInterface;
     DebugInterface debugInterface;
     bool mode = false;
     bool modeGui = false;
@@ -37,6 +38,7 @@ private:
     bool collision = false;
     bool debug = false;
     bool command = false;
+    bool allowCommand = true;
     float width, height;
     float cameraSpeed = 7.0f;
     bool zoom = true;

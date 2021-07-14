@@ -8,7 +8,6 @@ static float x = 0, y = 0, z = 0;
 
 void DebugInterface::init() {
     text = new UIText(string.str().data(), font, 40, 0, 0, 1000, 500, UITextMode::LEFT);
-    UI.add(text, 1);
 }
 
 void DebugInterface::setXYZ(float xIn, float yIn, float zIn) {
@@ -25,7 +24,7 @@ void DebugInterface::update() {
 
 void DebugInterface::display(bool display) {
     if(display)
-        UI.add(text);
+        UI.add(text, 2);
     else
         UI.remove(text);
 }

@@ -8,9 +8,43 @@ void Application::onFrameBufferSize(int width, int height){
 }
 
 void Application::onKey(int key, int scancode, int action, int mods){
+    if(key == GLFW_KEY_T && action == GLFW_RELEASE)
+        allowCommand = true;
+    else if(key == GLFW_KEY_T && action == GLFW_PRESS || key == GLFW_KEY_T && action == GLFW_REPEAT)
+        if(!command)
+            allowCommand = false;
     Interface::UI.keyInput(key, action, mods);
-    if(key == GLFW_KEY_ESCAPE)
+    if(key == GLFW_KEY_LEFT_ALT && action == GLFW_PRESS)
         window.destroyWindow();
+    if (key == GLFW_KEY_T && action == GLFW_PRESS){
+        if(!command) {
+            glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+            glfwSetCursorPos(window.getWindow(), width / 2, height / 2);
+            Player::hasLastPos = false;
+            command = true;
+            chatInterface.display(true);
+        }
+    }
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
+        if(command){
+            glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+            glfwSetCursorPos(window.getWindow(), width / 2, height / 2);
+            Player::hasLastPos = false;
+            command = false;
+            chatInterface.display(false);
+        }
+    }
+    if(key == GLFW_KEY_ENTER && action == GLFW_PRESS)
+        if(command)
+            chatInterface.enter();
+    if(command)
+        return;
+    if (key == GLFW_KEY_C && action == GLFW_PRESS)
+        collision = !collision;
+    if (key == GLFW_KEY_F3 && action == GLFW_PRESS){
+        debug = !debug;
+        debugInterface.display(debug);
+    }
     if (key == GLFW_KEY_RIGHT_SHIFT) {
         mode = !mode;
         if (mode)
@@ -32,21 +66,6 @@ void Application::onKey(int key, int scancode, int action, int mods){
             glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
         else
             glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    }
-    if (key == GLFW_KEY_C && action == GLFW_PRESS)
-        collision = !collision;
-    if (key == GLFW_KEY_F3 && action == GLFW_PRESS){
-        debug = !debug;
-        debugInterface.display(debug);
-    }
-    if (key == GLFW_KEY_T && action == GLFW_PRESS){
-        command = !command;
-        commandLine.display(command);
-        if(command)
-            glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-        else
-            glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        glfwSetCursorPos(window.getWindow(), width / 2, height / 2);
     }
     if (key == GLFW_KEY_LEFT_CONTROL && action == GLFW_PRESS)
         leftControl = !leftControl;
@@ -86,7 +105,8 @@ void Application::onKey(int key, int scancode, int action, int mods){
 }
 
 void Application::onChar(unsigned int key){
-    Interface::UI.charInput(key);
+    if(allowCommand)
+        Interface::UI.charInput(key);
 }
 
 void Application::onMousePosition(double x, double y) const{

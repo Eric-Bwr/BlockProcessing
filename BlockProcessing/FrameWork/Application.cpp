@@ -37,6 +37,8 @@ void Application::init() {
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     projection.perspective(fov, width, height, 1.0f, 20000.0f);
     projectionView.identity();
@@ -51,8 +53,9 @@ void Application::init() {
     LinePoint::init();
     LinePoint::setProjection(projection);
     Interface::init(width, height);
+    CommandManager::init();
     debugInterface.init();
-    commandLine.init();
+    chatInterface.init();
 
     Player::camPos.y = ((int(WorldManager::fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER  + 4) * TERRAIN_SIZE;
     Player::updatePlayer();
@@ -117,10 +120,10 @@ void Application::render() {
         TerrainManager::shader->setUniformMatrix4f("model", TerrainManager::model.getBuffer());
     }
     glDisable(GL_CULL_FACE);
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glDisable(GL_DEPTH_TEST);
     Interface::render();
     glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
 }
 
 void Application::end() {

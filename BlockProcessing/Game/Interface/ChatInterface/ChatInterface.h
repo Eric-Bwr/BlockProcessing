@@ -2,9 +2,10 @@
 
 #include "../Interface.h"
 
-class CommandLine : Interface {
+class ChatInterface : Interface {
 public:
     void init();
-    void display(bool display) const;
+    void display(bool display);
+    void enter() const;
     UITextField* textField;
 };
