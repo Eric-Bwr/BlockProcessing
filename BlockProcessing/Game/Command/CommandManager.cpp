@@ -1,10 +1,10 @@
 #include "CommandManager.h"
 #include "Commands/CommandTP.h"
 
-static std::vector<Command *> commands;
+static std::vector<Command> commands;
 
 void CommandManager::init() {
-    commands.emplace_back(new CommandTP());
+    commands.emplace_back(CommandTP());
 }
 
 std::vector<std::string> split(const std::string &txt) {
@@ -20,17 +20,16 @@ std::vector<std::string> split(const std::string &txt) {
     return arguments;
 }
 
-#include "iostream"
-void CommandManager::execute(std::string command) {
+void CommandManager::execute(std::string& command) {
     if (!command.empty()) {
         auto arguments = split(command);
         for(auto command : commands){
-            if(command->prefix == arguments.at(0)){
+            if(command.prefix == arguments.at(0)){
                 arguments.erase(arguments.begin());
-                command->execute(arguments);
+                command.execute(arguments.size(), arguments);
                 return;
             }
         }
     }
-    std::cout << "Unknown CMD\n";
+    ChatManager::append();
 }

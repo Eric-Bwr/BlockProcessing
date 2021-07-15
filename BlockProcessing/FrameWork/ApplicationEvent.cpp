@@ -4,40 +4,44 @@ void Application::onFrameBufferSize(int width, int height){
     glViewport(0, 0, width, height);
     this->width = width;
     this->height = height;
+    debugInterface.display(true);
+    chatInterface.display(true);
     Interface::UI.setSize(width, height);
+    debugInterface.display(debug);
+    chatInterface.display(chat);
 }
 
 void Application::onKey(int key, int scancode, int action, int mods){
     if(key == GLFW_KEY_T && action == GLFW_RELEASE)
         allowCommand = true;
     else if(key == GLFW_KEY_T && action == GLFW_PRESS || key == GLFW_KEY_T && action == GLFW_REPEAT)
-        if(!command)
+        if(!chat)
             allowCommand = false;
     Interface::UI.keyInput(key, action, mods);
     if(key == GLFW_KEY_LEFT_ALT && action == GLFW_PRESS)
         window.destroyWindow();
     if (key == GLFW_KEY_T && action == GLFW_PRESS){
-        if(!command) {
+        if(!chat) {
             glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             glfwSetCursorPos(window.getWindow(), width / 2, height / 2);
             Player::hasLastPos = false;
-            command = true;
+            chat = true;
             chatInterface.display(true);
         }
     }
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
-        if(command){
+        if(chat){
             glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             glfwSetCursorPos(window.getWindow(), width / 2, height / 2);
             Player::hasLastPos = false;
-            command = false;
+            chat = false;
             chatInterface.display(false);
         }
     }
     if(key == GLFW_KEY_ENTER && action == GLFW_PRESS)
-        if(command)
+        if(chat)
             chatInterface.enter();
-    if(command)
+    if(chat)
         return;
     if (key == GLFW_KEY_C && action == GLFW_PRESS)
         collision = !collision;
@@ -111,7 +115,7 @@ void Application::onChar(unsigned int key){
 
 void Application::onMousePosition(double x, double y) const{
     Interface::UI.mousePositionInput(x, y);
-    if(!command)
+    if(!chat)
         Player::moveMouse(x, y);
     else
         Player::hasLastPos = false;

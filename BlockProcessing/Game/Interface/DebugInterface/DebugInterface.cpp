@@ -5,32 +5,33 @@
 
 static UIText* textLeft;
 static UIText* textRight;
-static std::ostringstream string;
+static std::ostringstream stringLeft;
 static std::string gl;
 
-//PARSE W H
 void DebugInterface::init() {
     gl = (char*)glGetString(GL_VERSION);
     gl += "\n";
     gl += (char*)glGetString(GL_RENDERER);
     gl += "\nGLSL: ";
     gl += (char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
-    textLeft = new UIText(string.str().data(), font, 30, 0, 0, 2000, 500, UITextMode::LEFT);
-    textRight = new UIText(string.str().data(), font, 30, 0, 0, 2000, 500, UITextMode::RIGHT);
+    textLeft = new UIText("", font, 30, 0, 0, 2000, 500, UITextMode::LEFT);
+    textRight = new UIText(gl.data(), font, 30, 0, 0, UI.getWidth(), 500, UITextMode::RIGHT);
 }
 
 void DebugInterface::update() {
-    string.str("");
-    string << std::fixed << std::setprecision(2) << "X: " << Player::getX() << " Y: " << Player::getY() << " Z: " << Player::getZ() << "\n";
-    string << "ChunkX: " << Player::chunkX << " ChunkY: " << Player::chunkY << " ChunkZ: " << Player::chunkZ << "\n";
-    string << "OctreeX: " << getOctreeFromChunk(Player::chunkX) << " OctreeY: " << getOctreeFromChunk(Player::chunkY) << " OctreeZ: " << getOctreeFromChunk(Player::chunkZ) << "\n";
-    string << gl << "\n";
-    text->setText(string.str().data());
+    stringLeft.str("");
+    stringLeft << std::fixed << std::setprecision(2) << "X: " << Player::getX() << " Y: " << Player::getY() << " Z: " << Player::getZ() << "\n";
+    stringLeft << "ChunkX: " << Player::chunkX << " ChunkY: " << Player::chunkY << " ChunkZ: " << Player::chunkZ << "\n";
+    stringLeft << "OctreeX: " << getOctreeFromChunk(Player::chunkX) << " OctreeY: " << getOctreeFromChunk(Player::chunkY) << " OctreeZ: " << getOctreeFromChunk(Player::chunkZ) << "\n";
+    textLeft->setText(stringLeft.str().data());
 }
 
 void DebugInterface::display(bool display) {
-    if(display)
-        UI.add(text, 2);
-    else
-        UI.remove(text);
+    if(display) {
+        UI.add(textLeft, 2);
+        UI.add(textRight, 2);
+    } else {
+        UI.remove(textLeft);
+        UI.remove(textRight);
+    }
 }

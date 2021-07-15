@@ -4,8 +4,9 @@
 
 class ChatInterface : Interface {
 public:
-    void init();
-    void display(bool display);
-    void enter() const;
-    UITextField* textField;
+    static void init();
+    static void display(bool display);
+    static void enter();
+private:
+    static UITextField* textField;
 };

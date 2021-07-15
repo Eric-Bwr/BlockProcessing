@@ -4,5 +4,5 @@
 
 struct CommandTP : Command {
     CommandTP();
-    void execute(const std::vector<std::string>& arguments) override;
+    void execute(int length, const std::vector<std::string>& arguments) override;
 };

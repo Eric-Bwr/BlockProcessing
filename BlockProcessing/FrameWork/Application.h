@@ -37,7 +37,7 @@ private:
     bool alt = false;
     bool collision = false;
     bool debug = false;
-    bool command = false;
+    bool chat = false;
     bool allowCommand = true;
     float width, height;
     float cameraSpeed = 7.0f;

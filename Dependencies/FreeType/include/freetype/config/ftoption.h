@@ -723,7 +723,7 @@ FT_BEGIN_HEADER
    *
    * It is not expected that this value is ever modified by a configuring
    * script; instead, it gets surrounded with `#ifndef ... #endif` so that
-   * the value can be set as a preprocessor option on the compiler's command
+   * the value can be set as a preprocessor option on the compiler's chat
    * line.
    */
 #ifndef TT_CONFIG_OPTION_MAX_RUNNABLE_OPCODES
