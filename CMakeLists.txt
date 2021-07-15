@@ -20,7 +20,7 @@ include_directories(${PROJECT_NAME} "Dependencies/UI/include")
 include_directories(${PROJECT_NAME} "Dependencies/FastNoise")
 include_directories(${PROJECT_NAME})
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} Dependencies/FastNoise/FastNoise.h Dependencies/FastNoise/FastNoise.cpp BlockProcessing/Game/Command/Command.cpp BlockProcessing/Game/Interface/ChatInterface/ChatManager.cpp BlockProcessing/Game/Interface/ChatInterface/ChatManager.h BlockProcessing/Game/Interface/ChatInterface/ChatComponent.h BlockProcessing/Game/Interface/ChatInterface/ChatComponents/ChatComponentError.cpp BlockProcessing/Game/Interface/ChatInterface/ChatComponents/ChatComponentError.h)
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} Dependencies/FastNoise/FastNoise.h Dependencies/FastNoise/FastNoise.cpp BlockProcessing/Game/Interface/Messages.h)
 
 target_link_libraries(${PROJECT_NAME}
         ${CMAKE_CURRENT_LIST_DIR}/Dependencies/UI/UI.a

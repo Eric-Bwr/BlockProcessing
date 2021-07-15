@@ -7,6 +7,5 @@ public:
     static void init();
     static void display(bool display);
     static void enter();
-private:
     static UITextField* textField;
 };

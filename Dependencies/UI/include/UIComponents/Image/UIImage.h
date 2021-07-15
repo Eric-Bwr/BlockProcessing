@@ -2,7 +2,7 @@
 
 #include <Texture.h>
 #include "../UIComponent.h"
-#include "../../Structure/QuadMesh.h"
+#include "../../UIStructure/QuadMesh.h"
 #include "../Text/UIText.h"
 
 class UIImage : public UIComponent {

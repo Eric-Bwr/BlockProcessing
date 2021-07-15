@@ -4,7 +4,7 @@
 
 class DebugInterface : Interface {
 public:
-    void init();
-    void update();
-    void display(bool display);
+    static void init();
+    static void update();
+    static void display(bool display);
 };

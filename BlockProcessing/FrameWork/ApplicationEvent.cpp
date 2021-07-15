@@ -4,20 +4,20 @@ void Application::onFrameBufferSize(int width, int height){
     glViewport(0, 0, width, height);
     this->width = width;
     this->height = height;
-    debugInterface.display(true);
-    chatInterface.display(true);
+    DebugInterface::display(true);
+    ChatInterface::display(true);
     Interface::UI.setSize(width, height);
-    debugInterface.display(debug);
-    chatInterface.display(chat);
+    DebugInterface::display(debug);
+    ChatInterface::display(chat);
 }
 
 void Application::onKey(int key, int scancode, int action, int mods){
+    Interface::UI.keyInput(key, action, mods);
     if(key == GLFW_KEY_T && action == GLFW_RELEASE)
         allowCommand = true;
     else if(key == GLFW_KEY_T && action == GLFW_PRESS || key == GLFW_KEY_T && action == GLFW_REPEAT)
         if(!chat)
             allowCommand = false;
-    Interface::UI.keyInput(key, action, mods);
     if(key == GLFW_KEY_LEFT_ALT && action == GLFW_PRESS)
         window.destroyWindow();
     if (key == GLFW_KEY_T && action == GLFW_PRESS){
@@ -26,7 +26,7 @@ void Application::onKey(int key, int scancode, int action, int mods){
             glfwSetCursorPos(window.getWindow(), width / 2, height / 2);
             Player::hasLastPos = false;
             chat = true;
-            chatInterface.display(true);
+            ChatInterface::display(true);
         }
     }
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
@@ -35,19 +35,25 @@ void Application::onKey(int key, int scancode, int action, int mods){
             glfwSetCursorPos(window.getWindow(), width / 2, height / 2);
             Player::hasLastPos = false;
             chat = false;
-            chatInterface.display(false);
+            ChatInterface::display(false);
         }
     }
     if(key == GLFW_KEY_ENTER && action == GLFW_PRESS)
         if(chat)
-            chatInterface.enter();
+            ChatInterface::enter();
+    if(action == GLFW_PRESS && chat){
+        if(key == GLFW_KEY_UP)
+            Chat::revertUp();
+        else if(key == GLFW_KEY_DOWN)
+            Chat::revertDown();
+    }
     if(chat)
         return;
     if (key == GLFW_KEY_C && action == GLFW_PRESS)
         collision = !collision;
     if (key == GLFW_KEY_F3 && action == GLFW_PRESS){
         debug = !debug;
-        debugInterface.display(debug);
+        DebugInterface::display(debug);
     }
     if (key == GLFW_KEY_RIGHT_SHIFT) {
         mode = !mode;

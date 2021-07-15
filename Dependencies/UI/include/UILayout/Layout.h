@@ -1,7 +1,7 @@
 #pragma once
 
 #include <vector>
-#include "../Components/UIComponent.h"
+#include "../UIComponents/UIComponent.h"
 
 enum class LayoutDirection {
 	ROW = 0,

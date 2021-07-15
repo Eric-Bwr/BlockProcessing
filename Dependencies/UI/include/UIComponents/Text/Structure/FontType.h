@@ -2,7 +2,7 @@
 
 #include <map>
 #include <Texture.h>
-#include "Components/Text/Font.h"
+#include "UIComponents/Text/Font.h"
 
 const int FONT_CHAR_START = 32;
 const int FONT_CHAR_END = 126;

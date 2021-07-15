@@ -54,8 +54,8 @@ void Application::init() {
     LinePoint::setProjection(projection);
     Interface::init(width, height);
     CommandManager::init();
-    debugInterface.init();
-    chatInterface.init();
+    DebugInterface::init();
+    ChatInterface::init();
 
     Player::camPos.y = ((int(WorldManager::fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER  + 4) * TERRAIN_SIZE;
     Player::updatePlayer();
@@ -80,11 +80,11 @@ void Application::update() {
     }
     Player::updatePlayer();
     TerrainManager::setLightPosition(Player::getCameraX(), Player::getCameraY() + 1000, Player::getCameraZ());
-    TerrainManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
+    //TerrainManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
     if(wireFrame)
         ChunkBorderManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
     if(debug)
-        debugInterface.update();
+        DebugInterface::update();
 }
 
 #include "../Game/Debug/Performance/SpeedTester.h"

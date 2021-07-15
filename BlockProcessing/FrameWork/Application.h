@@ -28,8 +28,6 @@ public:
     void onMouseScroll(double x, double y);
 private:
     Window window;
-    ChatInterface chatInterface;
-    DebugInterface debugInterface;
     bool mode = false;
     bool modeGui = false;
     bool modeCursor = false;

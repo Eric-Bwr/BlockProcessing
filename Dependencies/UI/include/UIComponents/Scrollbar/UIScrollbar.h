@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../UIComponent.h"
-#include "../../Structure/QuadMesh.h"
+#include "../../UIStructure/QuadMesh.h"
 
 class UIScrollbar: public UIComponent {
 public:

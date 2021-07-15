@@ -5,22 +5,22 @@
 #include <chrono>
 
 #include "UITexture.h"
-#include "Components/UIComponent.h"
-#include "Components/Text/UIText.h"
-#include "Components/Text/Font.h"
-#include "Components/TextField/UITextField.h"
-#include "Components/TextArea/UITextArea.h"
-#include "Components/Button/UIButton.h"
-#include "Components/Image/UIImage.h"
-#include "Components/Slider/UISlider.h"
-#include "Components/SplitPane/UISplitPane.h"
-#include "Components/Scrollbar/UIScrollbar.h"
-#include "Components/Switch/UISwitch.h"
-#include "Layout/Layout.h"
-#include "Layout/FlowLayout.h"
-#include "Layout/BoxLayout.h"
-#include "Layout/GridLayout.h"
-#include "Layout/BorderLayout.h"
+#include "UIComponents/UIComponent.h"
+#include "UIComponents/Text/UIText.h"
+#include "UIComponents/Text/Font.h"
+#include "UIComponents/TextField/UITextField.h"
+#include "UIComponents/TextArea/UITextArea.h"
+#include "UIComponents/Button/UIButton.h"
+#include "UIComponents/Image/UIImage.h"
+#include "UIComponents/Slider/UISlider.h"
+#include "UIComponents/SplitPane/UISplitPane.h"
+#include "UIComponents/Scrollbar/UIScrollbar.h"
+#include "UIComponents/Switch/UISwitch.h"
+#include "UILayout/Layout.h"
+#include "UILayout/FlowLayout.h"
+#include "UILayout/BoxLayout.h"
+#include "UILayout/GridLayout.h"
+#include "UILayout/BorderLayout.h"
 
 class UIManager {
 public:
@@ -32,9 +32,9 @@ public:
 	void charInput(unsigned int key);
 	void mousePositionInput(double x, double y);
 	void mouseButtonInput(int button, int action);
-	inline int getWidth() { return width; }
-	inline int getHeight() { return height; }
 	void render();
+	int getWidth() { return width; }
+	int getHeight() { return height; }
     ~UIManager();
 private:
     Mat4f ortho;
@@ -44,6 +44,6 @@ private:
     double mouseX = 0, mouseY = 0;
 	std::map<int, std::vector<UIComponent *>*> components;
 	void renderComponent(UIComponent *);
-	bool cursor = true, scaleOnResize = false;
+	bool cursor = false, scaleOnResize = false;
     std::chrono::time_point<std::chrono::system_clock> start;
 };
