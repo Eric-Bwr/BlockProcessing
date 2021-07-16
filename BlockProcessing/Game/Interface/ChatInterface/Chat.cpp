@@ -35,7 +35,7 @@ void Chat::append(const std::string &input, const UIColor &textColor) {
     background->setSize(1000, texts.size() * 30);
     revertStep = texts.size() - 1;
 }
-WORK
+
 void Chat::revertUp(){
     if(!texts.empty()) {
         if (shouldDisplay && revertStep > 0) {

@@ -80,7 +80,7 @@ void Application::update() {
     }
     Player::updatePlayer();
     TerrainManager::setLightPosition(Player::getCameraX(), Player::getCameraY() + 1000, Player::getCameraZ());
-    //TerrainManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
+    TerrainManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
     if(wireFrame)
         ChunkBorderManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
     if(debug)
