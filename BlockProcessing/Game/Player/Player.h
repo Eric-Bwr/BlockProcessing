@@ -12,9 +12,10 @@ public:
     static void dig();
     static void place();
     static int8_t gameMode;
-    static int64_t blockX, chunkX;
-    static int64_t blockY, chunkY;
-    static int64_t blockZ, chunkZ;
+    static int64_t blockX, chunkX, octreeX;
+    static int64_t blockY, chunkY, octreeY;
+    static int64_t blockZ, chunkZ, octreeZ;
+    static Coord block, chunk, octree;
 private:
     static void calculateMove();
     static void calculateGravity();

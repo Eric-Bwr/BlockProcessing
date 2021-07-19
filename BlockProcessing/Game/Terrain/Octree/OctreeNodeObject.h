@@ -3,15 +3,15 @@
 #include <cstdint>
 
 struct Coord {
-    int64_t tileX, tileY, tileZ;
+    int64_t x, y, z;
     static int64_t distanceSquared(const Coord &coord1, const Coord &coord2) {
         return
-                (coord1.tileX - coord2.tileX) * (coord1.tileX - coord2.tileX) +
-                (coord1.tileY - coord2.tileY) * (coord1.tileY - coord2.tileY) +
-                (coord1.tileZ - coord2.tileZ) * (coord1.tileZ - coord2.tileZ);
+                (coord1.x - coord2.x) * (coord1.x - coord2.x) +
+                (coord1.y - coord2.y) * (coord1.y - coord2.y) +
+                (coord1.z - coord2.z) * (coord1.z - coord2.z);
     };
     static bool isEqual(const Coord &coord1, const Coord &coord2) {
-        return (coord1.tileX == coord2.tileX) & (coord1.tileY == coord2.tileY) & (coord1.tileZ == coord2.tileZ);
+        return (coord1.x == coord2.x) & (coord1.y == coord2.y) & (coord1.z == coord2.z);
     };
 };
 

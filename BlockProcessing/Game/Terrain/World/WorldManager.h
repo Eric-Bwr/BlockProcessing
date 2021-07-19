@@ -15,13 +15,13 @@
 
 struct Hash {
     int operator()(const Coord &coord) const {
-        return ((coord.tileX * 31 + coord.tileY) * 31 + coord.tileZ) * 31;
+        return ((coord.x * 31 + coord.y) * 31 + coord.z) * 31;
     }
 };
 
 struct Compare {
     bool operator()(const Coord &coord1, const Coord& coord2) const {
-        return coord1.tileX == coord2.tileX && coord1.tileY == coord2.tileY && coord1.tileZ == coord2.tileZ;
+        return coord1.x == coord2.x && coord1.y == coord2.y && coord1.z == coord2.z;
     }
 };
 

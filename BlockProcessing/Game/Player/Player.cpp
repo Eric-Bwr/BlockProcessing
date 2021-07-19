@@ -4,9 +4,10 @@
 #define radians 0.01745329251994329576923690768489f
 
 int8_t Player::gameMode = GAMEMODE_CREATIVE;
-int64_t Player::blockX = 0, Player::chunkX = 0;
-int64_t Player::blockY = 0, Player::chunkY = 0;
-int64_t Player::blockZ = 0, Player::chunkZ = 0;
+int64_t Player::blockX = 0, Player::chunkX = 0, Player::octreeX = 0;
+int64_t Player::blockY = 0, Player::chunkY = 0, Player::octreeY = 0;
+int64_t Player::blockZ = 0, Player::chunkZ = 0, Player::octreeZ = 0;
+Coord Player::block, Player::chunk, Player::octree;
 int Player::lookedAtBlockOffsetX = 0;
 int Player::lookedAtBlockOffsetY = 0;
 int Player::lookedAtBlockOffsetZ = 0;
@@ -29,12 +30,15 @@ bool dos = false;
 
 void Player::updatePlayer() {
     calculateMove();
-    blockX = getBlockFromCamera(camPos.x);
-    blockY = getBlockFromCamera(camPos.y);
-    blockZ = getBlockFromCamera(camPos.z);
-    chunkX = getChunkFromBlock(blockX);
-    chunkY = getChunkFromBlock(blockY);
-    chunkZ = getChunkFromBlock(blockZ);
+    block.x = blockX = getBlockFromCamera(camPos.x);
+    block.y = blockY = getBlockFromCamera(camPos.y);
+    block.z = blockZ = getBlockFromCamera(camPos.z);
+    chunk.x = chunkX = getChunkFromBlock(blockX);
+    chunk.y = chunkY = getChunkFromBlock(blockY);
+    chunk.z = chunkZ = getChunkFromBlock(blockZ);
+    octree.x = octreeX = getOctreeFromChunk(chunkX);
+    octree.y = octreeY = getOctreeFromChunk(chunkY);
+    octree.z = octreeZ = getOctreeFromChunk(chunkZ);
     castRay();
 }
 

@@ -20,16 +20,16 @@ int64_t getChunkFromBlock(int64_t block) {
 }
 
 Coord getOctreeFromChunk(Coord chunk) {
-    for (; true; chunk.tileX--) {
-        if(chunk.tileX % OCTREE_LENGTH == 0)
+    for (; true; chunk.x--) {
+        if(chunk.x % OCTREE_LENGTH == 0)
             break;
     }
-    for (; true; chunk.tileY--) {
-        if(chunk.tileY % OCTREE_LENGTH == 0)
+    for (; true; chunk.y--) {
+        if(chunk.y % OCTREE_LENGTH == 0)
             break;
     }
-    for (; true; chunk.tileZ--) {
-        if(chunk.tileZ % OCTREE_LENGTH == 0)
+    for (; true; chunk.z--) {
+        if(chunk.z % OCTREE_LENGTH == 0)
             break;
     }
     return chunk;
@@ -43,16 +43,16 @@ int64_t getOctreeFromChunk(int64_t chunk) {
 }
 
 Coord findLowerValue(Coord x, int step) {
-    for (; true; x.tileX--) {
-        if(x.tileX % step == 0)
+    for (; true; x.x--) {
+        if(x.x % step == 0)
             break;
     }
-    for (; true; x.tileY--) {
-        if(x.tileY % step == 0)
+    for (; true; x.y--) {
+        if(x.y % step == 0)
             break;
     }
-    for (; true; x.tileZ--) {
-        if(x.tileZ % step == 0)
+    for (; true; x.z--) {
+        if(x.z % step == 0)
             break;
     }
     return x;

@@ -7,7 +7,7 @@ enum Planes {
 };
 
 float Plane::distanceToPoint(Coord point) const {
-    return (point.tileX * normal.x + point.tileY * normal.y + point.tileZ * normal.z) + distanceToOrigin;
+    return (point.x * normal.x + point.y * normal.y + point.z * normal.z) + distanceToOrigin;
 }
 
 void Frustum::update(Mat4f& projectionView) {
@@ -64,34 +64,34 @@ bool Frustum::isInside(const Coord& coord) {
 
 Coord Frustum::getVN(Vec3f &normal, const Coord& coord) {
     Coord copyCoord = coord;
-    copyCoord.tileX *= WORLD_SIZE;
-    copyCoord.tileY *= WORLD_SIZE;
-    copyCoord.tileZ *= WORLD_SIZE;
+    copyCoord.x *= WORLD_SIZE;
+    copyCoord.y *= WORLD_SIZE;
+    copyCoord.z *= WORLD_SIZE;
     if (normal.x < 0) {
-        copyCoord.tileX += WORLD_SIZE;
+        copyCoord.x += WORLD_SIZE;
     }
     if (normal.y < 0) {
-        copyCoord.tileY += WORLD_SIZE;
+        copyCoord.y += WORLD_SIZE;
     }
     if (normal.z < 0) {
-        copyCoord.tileZ += WORLD_SIZE;
+        copyCoord.z += WORLD_SIZE;
     }
     return coord;
 }
 
 Coord Frustum::getVP(Vec3f &normal, const Coord& coord) {
     Coord copyCoord = coord;
-    copyCoord.tileX *= WORLD_SIZE;
-    copyCoord.tileY *= WORLD_SIZE;
-    copyCoord.tileZ *= WORLD_SIZE;
+    copyCoord.x *= WORLD_SIZE;
+    copyCoord.y *= WORLD_SIZE;
+    copyCoord.z *= WORLD_SIZE;
     if (normal.x > 0) {
-        copyCoord.tileX += WORLD_SIZE;
+        copyCoord.x += WORLD_SIZE;
     }
     if (normal.y > 0) {
-        copyCoord.tileY += WORLD_SIZE;
+        copyCoord.y += WORLD_SIZE;
     }
     if (normal.z > 0) {
-        copyCoord.tileZ += WORLD_SIZE;
+        copyCoord.z += WORLD_SIZE;
     }
     return copyCoord;
 }

@@ -1,12 +1,34 @@
 #include "Application.h"
+#include "iostream"
 
 void Application::onFrameBufferSize(int width, int height){
     glViewport(0, 0, width, height);
-    this->width = width;
-    this->height = height;
     DebugInterface::display(true);
     ChatInterface::display(true);
-    Interface::UI.setSize(width, height);
+
+    if(true) {
+        Interface::UI.setSize(width, height);
+        this->width = width;
+        this->height = height;
+    }else {
+        Interface::UI.ortho.orthographic(0.0f, width, height, 0.0, -1.0, 1.0);
+        Interface::UI.textShader->bind();
+        Interface::UI.textShader->setUniformMatrix4f("ortho", Interface::UI.ortho.getBuffer());
+        Interface::UI.quadShader->bind();
+        Interface::UI.quadShader->setUniformMatrix4f("ortho", Interface::UI.ortho.getBuffer());
+        if (width == 0 || height == 0)
+            return;
+        if (Interface::UI.scaleOnResize) {
+            float factorX = (float) width / (float) this->width;
+            float factorY = (float) height / (float) this->height;
+            std::cout << factorX << " " << factorY << "\n";
+            for (auto const &componentList : Interface::UI.components)
+                for (auto component : *componentList.second)
+                    component->setBounds(component->positionX * factorX, component->positionY * factorY, component->width * factorX, component->height * factorY);
+        }
+        this->width = width;
+        this->height = height;
+    }
     DebugInterface::display(debug);
     ChatInterface::display(chat);
 }

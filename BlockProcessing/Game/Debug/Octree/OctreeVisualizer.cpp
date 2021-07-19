@@ -48,7 +48,7 @@ void OctreeVisualizer::init() {
 static void visualizeNode(OctreeNodeObject *octreeNodeObject) {
     glLineWidth(OCTREE_LINE_WIDTH + octreeNodeObject->level * OCTREE_LINE_WIDTH_AMPLIFIER);
     model.identity();
-    model.translate(octreeNodeObject->coord.tileX * WORLD_SIZE, octreeNodeObject->coord.tileY * WORLD_SIZE, octreeNodeObject->coord.tileZ * WORLD_SIZE);
+    model.translate(octreeNodeObject->coord.x * WORLD_SIZE, octreeNodeObject->coord.y * WORLD_SIZE, octreeNodeObject->coord.z * WORLD_SIZE);
     model.scale(octreeNodeObject->scaling);
     shader->setUniformMatrix4f("model", model.getBuffer());
     shader->setUniform3f("color", OCTREE_VISUALIZING_COLORS[octreeNodeObject->level * 3 + 0], OCTREE_VISUALIZING_COLORS[octreeNodeObject->level * 3 + 1], OCTREE_VISUALIZING_COLORS[octreeNodeObject->level * 3 + 2]);
