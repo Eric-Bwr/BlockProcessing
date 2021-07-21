@@ -46,6 +46,4 @@ public:
 
 	float positionX, positionY;
 	float width, height;
-
-	float wO, hO;
 };
