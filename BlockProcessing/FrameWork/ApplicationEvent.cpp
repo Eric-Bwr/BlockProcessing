@@ -1,49 +1,31 @@
 #include "Application.h"
-#include "iostream"
 
-void Application::onFrameBufferSize(int width, int height){
+void Application::onFrameBufferSize(int width, int height) {
     glViewport(0, 0, width, height);
-    DebugInterface::display(true);
-    ChatInterface::display(true);
-
-    if(true) {
-        Interface::UI.setSize(width, height);
-        this->width = width;
-        this->height = height;
-    }else {
-        Interface::UI.ortho.orthographic(0.0f, width, height, 0.0, -1.0, 1.0);
-        Interface::UI.textShader->bind();
-        Interface::UI.textShader->setUniformMatrix4f("ortho", Interface::UI.ortho.getBuffer());
-        Interface::UI.quadShader->bind();
-        Interface::UI.quadShader->setUniformMatrix4f("ortho", Interface::UI.ortho.getBuffer());
-        if (width == 0 || height == 0)
-            return;
-        if (Interface::UI.scaleOnResize) {
-            float factorX = (float) width / (float) this->width;
-            float factorY = (float) height / (float) this->height;
-            std::cout << factorX << " " << factorY << "\n";
-            for (auto const &componentList : Interface::UI.components)
-                for (auto component : *componentList.second)
-                    component->setBounds(component->positionX * factorX, component->positionY * factorY, component->width * factorX, component->height * factorY);
-        }
-        this->width = width;
-        this->height = height;
-    }
-    DebugInterface::display(debug);
-    ChatInterface::display(chat);
+    if (!debug)
+        DebugInterface::display(true);
+    if (!chat)
+        ChatInterface::display(true);
+    Interface::UI.setSize(width, height);
+    this->width = width;
+    this->height = height;
+    if (!debug)
+        DebugInterface::display(false);
+    if (!chat)
+        ChatInterface::display(false);
 }
 
-void Application::onKey(int key, int scancode, int action, int mods){
+void Application::onKey(int key, int scancode, int action, int mods) {
     Interface::UI.keyInput(key, action, mods);
-    if(key == GLFW_KEY_T && action == GLFW_RELEASE)
+    if (key == GLFW_KEY_T && action == GLFW_RELEASE)
         allowCommand = true;
-    else if(key == GLFW_KEY_T && action == GLFW_PRESS || key == GLFW_KEY_T && action == GLFW_REPEAT)
-        if(!chat)
+    else if (key == GLFW_KEY_T && action == GLFW_PRESS || key == GLFW_KEY_T && action == GLFW_REPEAT)
+        if (!chat)
             allowCommand = false;
-    if(key == GLFW_KEY_LEFT_ALT && action == GLFW_PRESS)
+    if (key == GLFW_KEY_LEFT_ALT && action == GLFW_PRESS)
         window.destroyWindow();
-    if (key == GLFW_KEY_T && action == GLFW_PRESS){
-        if(!chat) {
+    if (key == GLFW_KEY_T && action == GLFW_PRESS) {
+        if (!chat) {
             glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_NORMAL);
             glfwSetCursorPos(window.getWindow(), width / 2, height / 2);
             Player::hasLastPos = false;
@@ -51,8 +33,8 @@ void Application::onKey(int key, int scancode, int action, int mods){
             ChatInterface::display(true);
         }
     }
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS){
-        if(chat){
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+        if (chat) {
             glfwSetInputMode(window.getWindow(), GLFW_CURSOR, GLFW_CURSOR_DISABLED);
             glfwSetCursorPos(window.getWindow(), width / 2, height / 2);
             Player::hasLastPos = false;
@@ -60,20 +42,20 @@ void Application::onKey(int key, int scancode, int action, int mods){
             ChatInterface::display(false);
         }
     }
-    if(key == GLFW_KEY_ENTER && action == GLFW_PRESS)
-        if(chat)
+    if (key == GLFW_KEY_ENTER && action == GLFW_PRESS)
+        if (chat)
             ChatInterface::enter();
-    if(action == GLFW_PRESS && chat){
-        if(key == GLFW_KEY_UP)
+    if (action == GLFW_PRESS && chat) {
+        if (key == GLFW_KEY_UP)
             Chat::revertUp();
-        else if(key == GLFW_KEY_DOWN)
+        else if (key == GLFW_KEY_DOWN)
             Chat::revertDown();
     }
-    if(chat)
+    if (chat)
         return;
     if (key == GLFW_KEY_C && action == GLFW_PRESS)
         collision = !collision;
-    if (key == GLFW_KEY_F3 && action == GLFW_PRESS){
+    if (key == GLFW_KEY_F3 && action == GLFW_PRESS) {
         debug = !debug;
         DebugInterface::display(debug);
     }
@@ -105,53 +87,53 @@ void Application::onKey(int key, int scancode, int action, int mods){
         alt = !alt;
     if (key == GLFW_KEY_N && action == GLFW_PRESS)
         wireFrame = !wireFrame;
-    if (key == GLFW_KEY_Y  && action == GLFW_PRESS)
+    if (key == GLFW_KEY_Y && action == GLFW_PRESS)
         zoom = !zoom;
-    if(action == GLFW_PRESS || action == GLFW_REPEAT){
-        if(key == GLFW_KEY_SPACE)
+    if (action == GLFW_PRESS || action == GLFW_REPEAT) {
+        if (key == GLFW_KEY_SPACE)
             Player::shouldMoveUp = true;
-        if(key == GLFW_KEY_LEFT_SHIFT)
+        if (key == GLFW_KEY_LEFT_SHIFT)
             Player::shouldMoveDown = true;
-        if(key == GLFW_KEY_W)
+        if (key == GLFW_KEY_W)
             Player::shouldMoveForward = true;
-        if(key == GLFW_KEY_S)
+        if (key == GLFW_KEY_S)
             Player::shouldMoveBackward = true;
-        if(key == GLFW_KEY_A)
+        if (key == GLFW_KEY_A)
             Player::shouldMoveLeft = true;
-        if(key == GLFW_KEY_D)
+        if (key == GLFW_KEY_D)
             Player::shouldMoveRight = true;
-    }else if(action == GLFW_RELEASE){
-        if(key == GLFW_KEY_SPACE)
+    } else if (action == GLFW_RELEASE) {
+        if (key == GLFW_KEY_SPACE)
             Player::shouldMoveUp = false;
-        if(key == GLFW_KEY_LEFT_SHIFT)
+        if (key == GLFW_KEY_LEFT_SHIFT)
             Player::shouldMoveDown = false;
-        if(key == GLFW_KEY_W)
+        if (key == GLFW_KEY_W)
             Player::shouldMoveForward = false;
-        if(key == GLFW_KEY_S)
+        if (key == GLFW_KEY_S)
             Player::shouldMoveBackward = false;
-        if(key == GLFW_KEY_A)
+        if (key == GLFW_KEY_A)
             Player::shouldMoveLeft = false;
-        if(key == GLFW_KEY_D)
+        if (key == GLFW_KEY_D)
             Player::shouldMoveRight = false;
     }
 }
 
-void Application::onChar(unsigned int key){
-    if(allowCommand)
+void Application::onChar(unsigned int key) {
+    if (allowCommand)
         Interface::UI.charInput(key);
 }
 
-void Application::onMousePosition(double x, double y) const{
+void Application::onMousePosition(double x, double y) const {
     Interface::UI.mousePositionInput(x, y);
-    if(!chat)
+    if (!chat)
         Player::moveMouse(x, y);
     else
         Player::hasLastPos = false;
 }
 
-void Application::onMouseButton(int button, int action, int mods){
+void Application::onMouseButton(int button, int action, int mods) {
     Interface::UI.mouseButtonInput(button, action);
-    if(action == GLFW_PRESS) {
+    if (action == GLFW_PRESS) {
         if (button == GLFW_MOUSE_BUTTON_2) {
             Player::dig();
         }
@@ -161,7 +143,7 @@ void Application::onMouseButton(int button, int action, int mods){
     }
 }
 
-void Application::onMouseScroll(double x, double y){
+void Application::onMouseScroll(double x, double y) {
     y > 0 ? cameraSpeed -= 0.2 : cameraSpeed += 2;
     if (zoom) {
         y > 0 ? zoomLevel += zoomSpeed : zoomLevel -= zoomSpeed;
@@ -196,7 +178,7 @@ static void scrollCallback(GLFWwindow *window, double x, double y) {
     application.onMouseScroll(x, y);
 }
 
-void Application::initCallbacks() {   
+void Application::initCallbacks() {
     glfwSetFramebufferSizeCallback(window.getWindow(), frameBufferSize);
     glfwSetKeyCallback(window.getWindow(), keyCallback);
     glfwSetCharCallback(window.getWindow(), charCallback);

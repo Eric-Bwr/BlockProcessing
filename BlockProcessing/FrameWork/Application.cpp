@@ -59,6 +59,13 @@ void Application::init() {
 
     Player::camPos.y = ((int(WorldManager::fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER  + 4) * TERRAIN_SIZE;
     Player::updatePlayer();
+
+    for (auto const &componentList : Interface::UI.components) {
+        for (auto component : *componentList.second) {
+            component->wO = component->width;
+            component->hO = component->height;
+        }
+    }
 }
 
 void Application::run() {
