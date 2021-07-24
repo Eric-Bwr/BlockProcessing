@@ -1,14 +1,14 @@
 #include "Chat.h"
 
 static std::vector<UIText*> texts;
-static float offset = 40;
 static bool shouldDisplay = false;
 static UIImage *background;
 static int revertStep = 0;
+const int Chat::height;
 
 void Chat::init() {
-    background = new UIImage(0, Interface::UI.getHeight() - offset, 1000, 0);
-    auto color = UIColor(000000, 0.5);
+    background = new UIImage(0, Interface::UI.getHeight() - ChatInterface::height, ChatInterface::width, 0);
+    auto color = UIColor(000000, 0.3);
     background->setColor(color);
 }
 
@@ -19,23 +19,21 @@ void Chat::append(const std::string &input, const UIColor &textColor) {
         delete texts.front();
         texts.erase(texts.begin());
     }
-    float height = Interface::UI.getHeight() - offset;
-    height -= 30;
-    auto text = new UIText((char *) input.data(), Interface::font, 30, 0, height, 1000, 30, UITextMode::LEFT);
+    auto text = new UIText((char *) input.data(), Interface::font, 30, 0, Interface::UI.getHeight() - ChatInterface::height - height, ChatInterface::width, height, UITextMode::LEFT);
     text->r = textColor.r;
     text->g = textColor.g;
     text->b = textColor.b;
     text->a = textColor.a;
     for (auto oldText : texts)
-        oldText->setPosition(0, oldText->getY() - 30);
+        oldText->setPosition(0, oldText->getY() - height);
     texts.emplace_back(text);
     if (shouldDisplay)
         Interface::UI.add(text, 1);
-    background->setPosition(0, Interface::UI.getHeight() - texts.size() * 30 - offset);
-    background->setSize(1000, texts.size() * 30);
+    background->setPosition(0, Interface::UI.getHeight() - texts.size() * height - ChatInterface::height);
+    background->setSize(ChatInterface::width, texts.size() * height);
     revertStep = texts.size() - 1;
 }
-
+//TODO: FIXME
 void Chat::revertUp(){
     if(!texts.empty()) {
         if (shouldDisplay && revertStep > 0) {

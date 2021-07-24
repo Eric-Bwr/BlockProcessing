@@ -2,10 +2,11 @@
 #include "../../Command/CommandManager.h"
 
 UITextField* ChatInterface::textField;
+const int ChatInterface::width, ChatInterface::height;
 
 void ChatInterface::init() {
     Chat::init();
-    textField = new UITextField("", font, 50, 0, UI.getHeight() - 40, 1000, 40, 0);
+    textField = new UITextField("", font, 50, 0, UI.getHeight() - height, width, height, 0);
     auto color = UIColor(000000, 0.6);
     textField->setBackgroundColor(color, color.brighter(), color.brighter().brighter());
 }
@@ -40,4 +41,9 @@ void ChatInterface::enter() {
             Chat::append(content, COLOR_WHITE);
         textField->setText("");
     }
+}
+
+ChatInterface::~ChatInterface() {
+    UI.remove(textField);
+    delete textField;
 }

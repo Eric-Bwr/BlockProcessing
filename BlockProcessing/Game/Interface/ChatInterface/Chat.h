@@ -9,5 +9,6 @@ public:
     static void revertUp();
     static void revertDown();
     static void display(bool display);
+    static const int height = 30;
     ~Chat();
 };

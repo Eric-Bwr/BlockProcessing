@@ -1,20 +1,5 @@
 #include "Application.h"
 
-void Application::onFrameBufferSize(int width, int height) {
-    glViewport(0, 0, width, height);
-    if (!debug)
-        DebugInterface::display(true);
-    if (!chat)
-        ChatInterface::display(true);
-    Interface::UI.setSize(width, height);
-    this->width = width;
-    this->height = height;
-    if (!debug)
-        DebugInterface::display(false);
-    if (!chat)
-        ChatInterface::display(false);
-}
-
 void Application::onKey(int key, int scancode, int action, int mods) {
     Interface::UI.keyInput(key, action, mods);
     if (key == GLFW_KEY_T && action == GLFW_RELEASE)
@@ -154,10 +139,6 @@ void Application::onMouseScroll(double x, double y) {
     }
 }
 
-static void frameBufferSize(GLFWwindow *window, int width, int height) {
-    application.onFrameBufferSize(width, height);
-}
-
 static void keyCallback(GLFWwindow *window, int key, int scancode, int action, int mods) {
     application.onKey(key, scancode, action, mods);
 }
@@ -179,7 +160,6 @@ static void scrollCallback(GLFWwindow *window, double x, double y) {
 }
 
 void Application::initCallbacks() {
-    glfwSetFramebufferSizeCallback(window.getWindow(), frameBufferSize);
     glfwSetKeyCallback(window.getWindow(), keyCallback);
     glfwSetCharCallback(window.getWindow(), charCallback);
     glfwSetCursorPosCallback(window.getWindow(), mousePositionCallback);
