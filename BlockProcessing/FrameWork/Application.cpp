@@ -20,7 +20,7 @@ void Application::preInit() {
     windowSettings->setHeight(1080);
     windowSettings->setResizable(false);
     windowSettings->setCentered(true);
-    windowSettings->setSwapInterval(1);
+    windowSettings->setSwapInterval(0);
     windowSettings->setVersionMinor(3);
     windowSettings->setVersionMajor(4);
     windowSettings->setProfile(GLFW_OPENGL_CORE_PROFILE);
@@ -57,9 +57,12 @@ void Application::init() {
     CommandManager::init();
     DebugInterface::init();
     ChatInterface::init();
+    CrosshairInterface::init();
 
     Player::camPos.y = ((int(WorldManager::fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER  + 4) * TERRAIN_SIZE;
     Player::updatePlayer();
+    CrosshairInterface::display(true);
+    lastTime = glfwGetTime();
 }
 
 void Application::run() {
@@ -91,6 +94,13 @@ void Application::update() {
 #include "../Game/Debug/Performance/SpeedTester.h"
 
 void Application::render() {
+    currentTime = glfwGetTime();
+    frames++;
+    if(currentTime - lastTime >= 1.0){
+        DebugInterface::setFPS(float(frames));
+        frames = 0;
+        lastTime += 1.0;
+    }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.8, 0.9, 0.9, 1.0);
 

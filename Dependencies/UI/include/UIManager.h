@@ -32,10 +32,11 @@ public:
 	void charInput(unsigned int key);
 	void mousePositionInput(double x, double y);
 	void mouseButtonInput(int button, int action);
-	inline int getWidth(){ return width; }
-	inline int getHeight(){ return height; }
 	void render();
+	float getWidth() { return width; }
+	float getHeight() { return height; }
     ~UIManager();
+private:
     Mat4f ortho;
     Shader* textShader;
     Shader* quadShader;

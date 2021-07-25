@@ -70,7 +70,10 @@ void Chat::display(bool display) {
 }
 
 Chat::~Chat() {
-    for (auto text : texts)
+    for (auto text : texts) {
+        Interface::UI.remove(text);
         delete text;
+    }
+    Interface::UI.remove(background);
     delete background;
 }

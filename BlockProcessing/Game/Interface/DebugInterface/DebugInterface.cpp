@@ -7,8 +7,10 @@ static UIText* textLeft;
 static UIText* textRight;
 static std::ostringstream stringLeft;
 static std::string gl;
+static float fps;
 
 void DebugInterface::init() {
+    fps = 0;
     gl = (char*)glGetString(GL_VERSION);
     gl += "\n";
     gl += (char*)glGetString(GL_RENDERER);
@@ -20,10 +22,15 @@ void DebugInterface::init() {
 
 void DebugInterface::update() {
     stringLeft.str("");
+    stringLeft << "FPS: " << fps << "\n";
     stringLeft << std::fixed << std::setprecision(2) << "X: " << Player::getX() << " Y: " << Player::getY() << " Z: " << Player::getZ() << "\n";
     stringLeft << "ChunkX: " << Player::chunkX << " ChunkY: " << Player::chunkY << " ChunkZ: " << Player::chunkZ << "\n";
     stringLeft << "OctreeX: " << getOctreeFromChunk(Player::chunkX) << " OctreeY: " << getOctreeFromChunk(Player::chunkY) << " OctreeZ: " << getOctreeFromChunk(Player::chunkZ) << "\n";
     textLeft->setText(stringLeft.str().data());
+}
+
+void DebugInterface::setFPS(float inFps) {
+    fps = inFps;
 }
 
 void DebugInterface::display(bool display) {
@@ -34,4 +41,11 @@ void DebugInterface::display(bool display) {
         UI.remove(textLeft);
         UI.remove(textRight);
     }
+}
+
+DebugInterface::~DebugInterface() {
+    UI.remove(textLeft);
+    UI.remove(textRight);
+    delete textLeft;
+    delete textRight;
 }

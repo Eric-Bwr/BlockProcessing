@@ -5,3 +5,4 @@
 #define SHADER_LINE "../Assets/Shader/Terrain/LineShader.glsl"
 
 #define TEXTURE_TERRAIN_ATLAS "../Assets/Textures/Atlas.png"
+#define TEXTURE_ICONS "../Assets/Textures/Icons.png"

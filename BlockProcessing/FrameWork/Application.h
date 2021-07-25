@@ -1,5 +1,6 @@
 #pragma once
 
+#include <time.h>
 #include "Window/Window.h"
 #include "Game/Terrain/TerrainManager.h"
 #include "Game/Player/Player.h"
@@ -8,6 +9,7 @@
 #include "Game/Debug/LinePoint/LinePoint.h"
 #include "Game/Interface/DebugInterface/DebugInterface.h"
 #include "Game/Interface/ChatInterface/ChatInterface.h"
+#include "Game/Interface/CrosshairInterface/CrosshairInterface.h"
 #include "Game/Command/CommandManager.h"
 
 class Application {
@@ -28,6 +30,8 @@ public:
     void onMouseScroll(double x, double y);
 private:
     Window window;
+    int frames = 0;
+    double lastTime = 0, currentTime = 0;
     bool mode = false;
     bool modeGui = false;
     bool modeCursor = false;
@@ -36,6 +40,7 @@ private:
     bool collision = false;
     bool debug = false;
     bool chat = false;
+    bool crosshair = true;
     bool allowCommand = true;
     float width, height;
     float cameraSpeed = 7.0f;

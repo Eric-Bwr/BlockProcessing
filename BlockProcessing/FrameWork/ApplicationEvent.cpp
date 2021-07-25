@@ -25,6 +25,8 @@ void Application::onKey(int key, int scancode, int action, int mods) {
             Player::hasLastPos = false;
             chat = false;
             ChatInterface::display(false);
+            if(crosshair)
+                CrosshairInterface::display(true);
         }
     }
     if (key == GLFW_KEY_ENTER && action == GLFW_PRESS)
@@ -36,8 +38,11 @@ void Application::onKey(int key, int scancode, int action, int mods) {
         else if (key == GLFW_KEY_DOWN)
             Chat::revertDown();
     }
-    if (chat)
+    if (chat) {
+        if(crosshair)
+            CrosshairInterface::display(false);
         return;
+    }
     if (key == GLFW_KEY_C && action == GLFW_PRESS)
         collision = !collision;
     if (key == GLFW_KEY_F3 && action == GLFW_PRESS) {
