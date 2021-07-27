@@ -2,6 +2,9 @@
 
 void Application::onKey(int key, int scancode, int action, int mods) {
     Interface::UI.keyInput(key, action, mods);
+    if(key == GLFW_KEY_U && action == GLFW_PRESS){
+        WorldManager::s = true;
+    }
     if (key == GLFW_KEY_T && action == GLFW_RELEASE)
         allowCommand = true;
     else if (key == GLFW_KEY_T && action == GLFW_PRESS || key == GLFW_KEY_T && action == GLFW_REPEAT)

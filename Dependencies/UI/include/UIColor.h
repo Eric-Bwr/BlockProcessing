@@ -13,10 +13,11 @@ public:
     UIColor(std::initializer_list<float> colors, int colorMode = COLOR_NORMALIZED);
     explicit UIColor(int hex, float alpha = 1.0f);
 	explicit UIColor(const std::string& hex, float alpha = 1.0f);
-    Vec4f getNormalizedDecimal() const;
-    Vec4f getDecimal() const;
-    std::string getHexString(bool alpha = false, std::string heading = "");
+    Vec4 getNormalizedDecimal() const;
+    Vec4 getDecimal() const;
+    std::string getHexString(bool alpha = false, const std::string& heading = "");
     int getHex(bool alpha = false);
+    void setHex(int hex, float alpha = 1.0f);
     void setRGBA(float red, float green, float blue, float alpha, int colorMode);
     void setRed(float red,int colorMode);
     void setGreen(float green,int colorMode);

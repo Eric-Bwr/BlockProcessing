@@ -19,4 +19,5 @@ class OctreeNodeObject {
 public:
     int level, scaling;
     Coord coord;
+    OctreeNodeObject* children[8];
 };

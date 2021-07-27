@@ -17,3 +17,9 @@ void BlockManager::addBlock(Block* block) {
 Block* BlockManager::getBlockByID(unsigned int id) {
     return blocks.at(id);
 }
+
+BlockManager::~BlockManager() {
+    for(auto block : blocks)
+        delete block.second;
+    blocks.clear();
+}

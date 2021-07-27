@@ -1,7 +1,8 @@
 #include "ChunkBorderManager.h"
+#include "../../Terrain/Octree/OctreeNodeObject.h"
 
 Shader* ChunkBorderManager::shader;
-Mat4f ChunkBorderManager::model;
+Mat4 ChunkBorderManager::model;
 ChunkBorder* ChunkBorderManager::chunkBorder;
 
 void ChunkBorderManager::init() {
@@ -12,11 +13,11 @@ void ChunkBorderManager::init() {
     glLineWidth(CHUNK_BORDER_WIDTH);
 }
 
-void ChunkBorderManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
-    model.translate(WORLD_SIZE * tileX, WORLD_SIZE * tileY, WORLD_SIZE * tileZ);
+void ChunkBorderManager::generate(const Coord& coord) {
+    model.translate(WORLD_SIZE * coord.x, WORLD_SIZE * coord.y, WORLD_SIZE * coord.z);
 }
 
-void ChunkBorderManager::render(Mat4f& view) {
+void ChunkBorderManager::render(Mat4& view) {
     glLineWidth(CHUNK_BORDER_WIDTH);
     shader->bind();
     shader->setUniformMatrix4f("view", view.getBuffer());
@@ -24,7 +25,7 @@ void ChunkBorderManager::render(Mat4f& view) {
     chunkBorder->render();
 }
 
-void ChunkBorderManager::setProjection(Mat4f& projection) {
+void ChunkBorderManager::setProjection(Mat4& projection) {
     shader->bind();
     shader->setUniformMatrix4f("projection", projection.getBuffer());
 }

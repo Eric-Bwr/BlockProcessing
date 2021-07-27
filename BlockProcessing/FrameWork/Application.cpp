@@ -1,8 +1,27 @@
 #include "Application.h"
+#include <iostream>
+#include <assert.h>
 
 Application application;
 
+void terminateHandler() {
+    std::cout << "Unhandled exception" << std::endl;
+    std::abort();
+}
+
+extern "C" void handleAborts(int signalNumber) {
+    std::cerr << "Signal received, shutting down." << std::endl;
+    std::flush(std::cerr);
+    std::flush(std::cout);
+}
+
 int main(){
+    std::set_terminate(terminateHandler);
+    signal(SIGSEGV, &handleAborts);
+    signal(SIGTERM, &handleAborts);
+    signal(SIGBREAK, &handleAborts);
+    signal(SIGABRT, &handleAborts);
+    signal(SIGABRT2, &handleAborts);
     application = Application();
     application.preInit();
     application.init();
@@ -84,9 +103,9 @@ void Application::update() {
     }
     Player::updatePlayer();
     TerrainManager::setLightPosition(Player::getCameraX(), Player::getCameraY() + 1000, Player::getCameraZ());
-    TerrainManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
+    TerrainManager::generate(Player::chunk);
     if(wireFrame)
-        ChunkBorderManager::generate(Player::chunkX, Player::chunkY, Player::chunkZ);
+        ChunkBorderManager::generate(Player::chunk);
     if(debug)
         DebugInterface::update();
 }
@@ -107,13 +126,13 @@ void Application::render() {
     view = Player::getViewMatrix();
     projectionView = projectionView.multiply(projection, view);
     beginSpeedTest();
-    TerrainManager::render(projectionView, view, Player::getCameraX(), Player::getCameraY(), Player::getCameraZ());
+    TerrainManager::render(projectionView, view);
     endSpeedTest();
    // printMicroSeconds();
     OctreeVisualizer::setView(view);
     if(collision)
         for (auto&[coord, octree] : WorldManager::octrees)
-            OctreeVisualizer::visualize(octree);
+            OctreeVisualizer::visualize(WorldManager::chunkCandidatesForGenerating, OCTREE_MAX_LEVEL, Player::chunk, octree);
     if (wireFrame)
         ChunkBorderManager::render(view);
     LinePoint::setView(view);

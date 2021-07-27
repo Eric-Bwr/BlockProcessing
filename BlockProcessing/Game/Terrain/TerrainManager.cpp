@@ -2,7 +2,7 @@
 #include "TerrainManager.h"
 #include "UITexture.h"
 
-Mat4f TerrainManager::model;
+Mat4 TerrainManager::model;
 Shader *TerrainManager::shader;
 Texture *TerrainManager::texture;
 FastNoise *TerrainManager::fastNoise;
@@ -30,27 +30,25 @@ void TerrainManager::init(int seed, FastNoise::NoiseType noiseType, float freque
     texture->generateMipMap();
     model.identity();
     model.scale(TERRAIN_SIZE);
-    shader->setUniformMatrix4f("model", model.getBuffer());
 }
 
-void TerrainManager::generate(int64_t tileX, int64_t tileY, int64_t tileZ) {
-    WorldManager::generate(tileX, tileY, tileZ);
+void TerrainManager::generate(const Coord& coord) {
+    WorldManager::generate(coord);
 }
 
-void TerrainManager::render(Mat4f &projectionView, Mat4f &view, float x, float y, float z) {
+void TerrainManager::render(Mat4 &projectionView, Mat4 &view) {
     shader->bind();
-    shader->setUniformMatrix4f("view", view.getBuffer());
-    shader->setUniform3f("viewPos", x, y, z);
+    shader->setUniform3f("viewPos", view.m32, view.m30, view.m31);
     texture->bind();
-    WorldManager::render(projectionView);
+    WorldManager::render(projectionView, view, shader);
 }
 
-void TerrainManager::setProjection(Mat4f &projection) {
+void TerrainManager::setProjection(Mat4 &projection) {
     shader->bind();
     shader->setUniformMatrix4f("projection", projection.getBuffer());
 }
 
-void TerrainManager::setLightPosition(float x, float y, float z) {
+void TerrainManager::setLightPosition(double x, double y, double z) {
     shader->bind();
     shader->setUniform3f("lightPos", x, y, z);
 }

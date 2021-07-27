@@ -12,6 +12,7 @@ public:
     static void init();
     static void addBlock(Block* block);
     static Block* getBlockByID(unsigned int id);
+    ~BlockManager();
 private:
     static std::map<unsigned int, Block*> blocks;
 };

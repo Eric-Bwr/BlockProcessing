@@ -6,21 +6,21 @@
 
 class PlayerCamera {
 protected:
-    static void initCamera(float x, float y, float z, float yaw, float pitch);
+    static void initCamera(double x, double y, double z, float yaw, float pitch);
 public:
-    static inline float getX(){ return camPos.x / TERRAIN_SIZE; }
-    static inline float getY(){ return camPos.y / TERRAIN_SIZE; }
-    static inline float getZ(){ return camPos.z / TERRAIN_SIZE; }
-    static inline float getCameraX(){ return camPos.x; }
-    static inline float getCameraY(){ return camPos.y; }
-    static inline float getCameraZ(){ return camPos.z; }
+    static inline double getX(){ return camPos.x / TERRAIN_SIZE; }
+    static inline double getY(){ return camPos.y / TERRAIN_SIZE; }
+    static inline double getZ(){ return camPos.z / TERRAIN_SIZE; }
+    static inline double getCameraX(){ return camPos.x; }
+    static inline double getCameraY(){ return camPos.y; }
+    static inline double getCameraZ(){ return camPos.z; }
     static void moveMouse(double xPos, double yPos);
-    static Mat4f& getViewMatrix();
-    static Vec3f camPos, front, up, right;
-    static Mat4f view;
-    static Vec3f worldUp;
+    static Mat4& getViewMatrix();
+    static Vec3 camPos, front, up, right;
+    static Mat4 view;
+    static Vec3 worldUp;
     static bool hasLastPos;
-    static float lastPosX, lastPosY, xOffset, yOffset, yaw, pitch;
+    static double lastPosX, lastPosY, xOffset, yOffset, yaw, pitch;
     static bool shouldMoveForward, shouldMoveBackward, shouldMoveRight, shouldMoveLeft, shouldMoveUp, shouldMoveDown;
 private:
     static void calculateCam();

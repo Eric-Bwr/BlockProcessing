@@ -1,15 +1,18 @@
 #pragma once
 
-#include "OctreeNode.h"
+#include <atomic>
+#include <Shader.h>
+#include <Math/Matrix.h>
 #include "../Chunk/Chunk.h"
+#include "OctreeNodeObject.h"
 
 class OctreeLeaf : public OctreeNodeObject {
 public:
     explicit OctreeLeaf(Coord coord);
     void generate();
-    void render();
+    void render(Mat4 &view, Shader* shader);
     void unload();
     ~OctreeLeaf();
     Chunk chunk;
-    bool generating = false;
+    std::atomic_bool generating = false;
 };

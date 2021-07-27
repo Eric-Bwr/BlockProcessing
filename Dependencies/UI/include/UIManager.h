@@ -33,11 +33,11 @@ public:
 	void mousePositionInput(double x, double y);
 	void mouseButtonInput(int button, int action);
 	void render();
-	float getWidth() { return width; }
-	float getHeight() { return height; }
+	int getWidth() { return width; }
+	int getHeight() { return height; }
     ~UIManager();
 private:
-    Mat4f ortho;
+    Mat4 ortho;
     Shader* textShader;
     Shader* quadShader;
     int width, height;

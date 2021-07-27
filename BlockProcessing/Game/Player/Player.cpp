@@ -8,18 +8,18 @@ int64_t Player::blockX = 0, Player::chunkX = 0, Player::octreeX = 0;
 int64_t Player::blockY = 0, Player::chunkY = 0, Player::octreeY = 0;
 int64_t Player::blockZ = 0, Player::chunkZ = 0, Player::octreeZ = 0;
 Coord Player::block, Player::chunk, Player::octree;
-int Player::lookedAtBlockOffsetX = 0;
-int Player::lookedAtBlockOffsetY = 0;
-int Player::lookedAtBlockOffsetZ = 0;
+int64_t Player::lookedAtBlockOffsetX = 0;
+int64_t Player::lookedAtBlockOffsetY = 0;
+int64_t Player::lookedAtBlockOffsetZ = 0;
 ChunkBlock Player::lookingAtChunkBlock;
 ChunkBlock Player::airBlock;
 ChunkBlock Player::collisionBlock;
 bool Player::shouldFloat = false;
 bool Player::doublePress = false;
-float Player::doublePressSpan = 0.0f;
-float Player::doublePressIgnoreSpan = 0.0f;
+double Player::doublePressSpan = 0.0;
+double Player::doublePressIgnoreSpan = 0.0;
 
-void Player::init(float x, float y, float z, float yaw, float pitch) {
+void Player::init(double x, double y, double z, float yaw, float pitch) {
     PlayerCamera::initCamera(x, y, z, yaw, pitch);
     airBlock.id = BLOCK_AIR;
 }
@@ -44,7 +44,7 @@ void Player::updatePlayer() {
 
 void Player::dig() {
     if (lookingAtChunkBlock.id != BLOCK_AIR)
-        WorldManager::setChunkBlock(airBlock, blockX + lookedAtBlockOffsetX, blockY + lookedAtBlockOffsetY, blockZ + lookedAtBlockOffsetZ);
+        WorldManager::setChunkBlock(airBlock, lookedAtBlockOffsetX, lookedAtBlockOffsetY,  lookedAtBlockOffsetZ);
 }
 
 void Player::place() {
@@ -85,7 +85,7 @@ void Player::calculateMove() {
             // if (collisionBlock.id != BLOCK_AIR)
             //    camPos += right * PLAYER_MOVE_SPEED;
         }
-       // if (shouldFloat) {
+       // if (shoulddouble) {
             //if (shouldMoveUp)
             //    camPos.y += PLAYER_MOVE_SPEED;
        // }
@@ -95,7 +95,7 @@ void Player::calculateMove() {
        //     doublePress = true;
 
        //if(doublePress && elapsed < timefornextclickinms && shouldMoveUp)
-       //    shouldFloat = true;
+       //    shoulddouble = true;
 
        //if(elapsed >  timefornextclickinms)
        //    doublePress = false;
@@ -103,7 +103,7 @@ void Player::calculateMove() {
         //doublePressLastState -> use to fix hold down issue
        /* if (shouldMoveUp) {
             if (doublePress && doublePressIgnoreSpan < 0) {
-                shouldFloat = !shouldFloat;
+                shoulddouble = !shoulddouble;
                 doublePress = false;
             }
             doublePressSpan = PLAYER_DOUBLE_PRESS_SPAN;
@@ -157,17 +157,15 @@ void Player::calculateGravity() {
 }
 
 void Player::castRay() {
-    Vec3f direction = front;
+    Vec3 direction = front;
     direction.norm();
-    float endX = 0, endY = 0, endZ = 0;
-    while (std::sqrt(endX * endX + endY * endY + endZ * endZ) <= PLAYER_BLOCK_DISTANCE) {
-        endX += direction.x * (float) PLAYER_STEP_SIZE;
-        endY += direction.y * (float) PLAYER_STEP_SIZE;
-        endZ += direction.z * (float) PLAYER_STEP_SIZE;
-        lookedAtBlockOffsetX = (int) endX;
-        lookedAtBlockOffsetY = (int) endY;
-        lookedAtBlockOffsetZ = (int) endZ;
-        WorldManager::getChunkBlock(lookingAtChunkBlock, blockX + lookedAtBlockOffsetX, blockY + lookedAtBlockOffsetY, blockZ + lookedAtBlockOffsetZ);
+    Vec3 end = {};
+    while (end.dot(end) <= PLAYER_BLOCK_DISTANCE * PLAYER_BLOCK_DISTANCE) {
+        end += (direction * PLAYER_STEP_SIZE);
+        lookedAtBlockOffsetX = round(camPos.x / TERRAIN_SIZE + end.x - 0.5f);
+        lookedAtBlockOffsetY = round(camPos.y / TERRAIN_SIZE + end.y - 0.5f);
+        lookedAtBlockOffsetZ = round(camPos.z / TERRAIN_SIZE + end.z - 0.5f);
+        WorldManager::getChunkBlock(lookingAtChunkBlock, lookedAtBlockOffsetX, lookedAtBlockOffsetY, lookedAtBlockOffsetZ);
         if (lookingAtChunkBlock.id != BLOCK_AIR) {
             return;
         }

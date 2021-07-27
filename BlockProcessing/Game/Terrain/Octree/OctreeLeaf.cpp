@@ -1,5 +1,5 @@
-#include <Game/Terrain/World/WorldManager.h>
 #include "OctreeLeaf.h"
+#include <Game/Terrain/World/WorldManager.h>
 
 OctreeLeaf::OctreeLeaf(Coord coord) {
     this->coord = coord;
@@ -12,14 +12,13 @@ OctreeLeaf::OctreeLeaf(Coord coord) {
 }
 
 void OctreeLeaf::generate(){
-    generating = true;
     ChunkManager::generateChunkDefaultBlockData(&chunk);
     ChunkManager::generateChunkDefaultFaceData(&chunk);
 }
 
-void OctreeLeaf::render() {
+void OctreeLeaf::render(Mat4 &view, Shader* shader) {
     if(chunk.render)
-        ChunkManager::renderChunk(&chunk);
+        ChunkManager::renderChunk(&chunk, view, shader);
 }
 
 void OctreeLeaf::unload() {

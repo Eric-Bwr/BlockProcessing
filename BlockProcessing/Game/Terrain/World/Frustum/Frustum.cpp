@@ -6,11 +6,11 @@ enum Planes {
     Near, Far, Left, Right, Top, Bottom
 };
 
-float Plane::distanceToPoint(Coord point) const {
+double Plane::distanceToPoint(Coord point) const {
     return (point.x * normal.x + point.y * normal.y + point.z * normal.z) + distanceToOrigin;
 }
 
-void Frustum::update(Mat4f& projectionView) {
+void Frustum::update(Mat4& projectionView) {
     planes[Planes::Left].normal.x = projectionView.m03 + projectionView.m00;
     planes[Planes::Left].normal.y = projectionView.m13 + projectionView.m10;
     planes[Planes::Left].normal.z = projectionView.m23 + projectionView.m20;
@@ -42,7 +42,7 @@ void Frustum::update(Mat4f& projectionView) {
     planes[Planes::Far].distanceToOrigin = projectionView.m33 - projectionView.m32;
 
     for (auto &plane : planes) {
-        float length = plane.normal.len();
+        double length = plane.normal.len();
         plane.normal.x /= length;
         plane.normal.y /= length;
         plane.normal.z /= length;
@@ -62,7 +62,7 @@ bool Frustum::isInside(const Coord& coord) {
     return result;
 }
 
-Coord Frustum::getVN(Vec3f &normal, const Coord& coord) {
+Coord Frustum::getVN(Vec3 &normal, const Coord& coord) {
     Coord copyCoord = coord;
     copyCoord.x *= WORLD_SIZE;
     copyCoord.y *= WORLD_SIZE;
@@ -79,7 +79,7 @@ Coord Frustum::getVN(Vec3f &normal, const Coord& coord) {
     return coord;
 }
 
-Coord Frustum::getVP(Vec3f &normal, const Coord& coord) {
+Coord Frustum::getVP(Vec3 &normal, const Coord& coord) {
     Coord copyCoord = coord;
     copyCoord.x *= WORLD_SIZE;
     copyCoord.y *= WORLD_SIZE;

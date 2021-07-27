@@ -10,8 +10,8 @@ public:
     static void init();
     static void visualizeLine(float r, float g, float b, float width);
     static void visualizePoint(float r, float g, float b, float size);
-    static void setView(Mat4f& view);
-    static void setProjection(Mat4f& projection);
-    static Mat4f LinePointMatrix;
+    static void setView(Mat4& view);
+    static void setProjection(Mat4& projection);
+    static Mat4 LinePointMatrix;
     ~LinePoint();
 };

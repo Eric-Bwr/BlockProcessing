@@ -1,15 +1,15 @@
 #include "PlayerCamera.h"
 
-#define radians 0.01745329251994329576923690768489f
+#define radians 0.01745329251994329576923690768489
 
-Vec3f PlayerCamera::worldUp(0, 1, 0);
+Vec3 PlayerCamera::worldUp(0, 1, 0);
 bool PlayerCamera::hasLastPos = false;
-float PlayerCamera::lastPosX, PlayerCamera::lastPosY, PlayerCamera::xOffset, PlayerCamera::yOffset, PlayerCamera::yaw, PlayerCamera::pitch;
+double PlayerCamera::lastPosX, PlayerCamera::lastPosY, PlayerCamera::xOffset, PlayerCamera::yOffset, PlayerCamera::yaw, PlayerCamera::pitch;
 bool PlayerCamera::shouldMoveForward = false, PlayerCamera::shouldMoveBackward = false, PlayerCamera::shouldMoveRight = false, PlayerCamera::shouldMoveLeft = false, PlayerCamera::shouldMoveUp = false, PlayerCamera::shouldMoveDown = false;
-Vec3f PlayerCamera::camPos, PlayerCamera::front(0, 0, -1), PlayerCamera::up, PlayerCamera::right;
-Mat4f PlayerCamera::view;
+Vec3 PlayerCamera::camPos, PlayerCamera::front(0, 0, -1), PlayerCamera::up, PlayerCamera::right;
+Mat4 PlayerCamera::view;
 
-void PlayerCamera::initCamera(float x, float y, float z, float cameraYaw, float cameraPitch){
+void PlayerCamera::initCamera(double x, double y, double z, float cameraYaw, float cameraPitch){
     camPos.x = x;
     camPos.y = y;
     camPos.z = z;
@@ -30,21 +30,21 @@ void PlayerCamera::calculateCam() {
 
 void PlayerCamera::moveMouse(double xPos, double yPos) {
     if (!hasLastPos) {
-        lastPosX = (float) xPos;
-        lastPosY = (float) (yPos * -1);
+        lastPosX = xPos;
+        lastPosY = (yPos * -1);
         hasLastPos = true;
     }
 
-    xOffset = (lastPosX - (float) xPos) * -1;
-    yOffset = (float) (yPos * -1) - lastPosY;
-    lastPosX = (float) xPos;
-    lastPosY = (float) (yPos * -1);
+    xOffset = (lastPosX - xPos) * -1;
+    yOffset = (yPos * -1) - lastPosY;
+    lastPosX = xPos;
+    lastPosY = (yPos * -1);
 
     xOffset *= PLAYER_CAMERA_MOUSE_SENSITIVITY;
     yOffset *= PLAYER_CAMERA_MOUSE_SENSITIVITY;
 
-    yaw += (float) xOffset;
-    pitch += (float) yOffset;
+    yaw += xOffset;
+    pitch += yOffset;
     if (pitch >= PLAYER_CAMERA_PITCH_MAX)
         pitch = PLAYER_CAMERA_PITCH_MAX;
     if (pitch <= PLAYER_CAMERA_PITCH_MIN)
@@ -52,6 +52,6 @@ void PlayerCamera::moveMouse(double xPos, double yPos) {
     calculateCam();
 }
 
-Mat4f &PlayerCamera::getViewMatrix() {
+Mat4 &PlayerCamera::getViewMatrix() {
     return view.lookAt(camPos, camPos + front, up);
 }

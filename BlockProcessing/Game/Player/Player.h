@@ -7,7 +7,7 @@
 
 class Player : public PlayerCamera {
 public:
-    static void init(float x, float y, float z, float yaw, float pitch);
+    static void init(double x, double y, double z, float yaw, float pitch);
     static void updatePlayer();
     static void dig();
     static void place();
@@ -20,15 +20,15 @@ private:
     static void calculateMove();
     static void calculateGravity();
     static void castRay();
-    static int lookedAtBlockOffsetX;
-    static int lookedAtBlockOffsetY;
-    static int lookedAtBlockOffsetZ;
+    static int64_t lookedAtBlockOffsetX;
+    static int64_t lookedAtBlockOffsetY;
+    static int64_t lookedAtBlockOffsetZ;
     static ChunkBlock lookingAtChunkBlock;
     static ChunkBlock airBlock;
     static ChunkBlock collisionBlock;
     static bool shouldFloat;
     static bool doublePress;
     static bool doublePressLastState;
-    static float doublePressSpan;
-    static float doublePressIgnoreSpan;
+    static double doublePressSpan;
+    static double doublePressIgnoreSpan;
 };

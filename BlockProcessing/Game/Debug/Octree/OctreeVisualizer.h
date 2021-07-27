@@ -9,8 +9,8 @@
 class OctreeVisualizer {
 public:
     static void init();
-    static void visualize(OctreeNodeObject* octreeNodeObject);
-    static void setView(Mat4f& view);
-    static void setProjection(Mat4f& projection);
+    static void visualize(std::vector<Coord>& candidates, int closestNodeLevel, Coord& coord, OctreeNodeObject* octreeNodeObject);
+    static void setView(Mat4& view);
+    static void setProjection(Mat4& projection);
     ~OctreeVisualizer();
 };

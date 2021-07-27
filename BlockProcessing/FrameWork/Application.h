@@ -1,5 +1,6 @@
 #pragma once
 
+#include <signal.h>
 #include <time.h>
 #include "Window/Window.h"
 #include "Game/Terrain/TerrainManager.h"
@@ -22,7 +23,6 @@ public:
     void end();
 public:
     void initCallbacks();
-    void onFrameBufferSize(int width, int height);
     void onKey(int key, int scancode, int action, int mods);
     void onChar(unsigned int key);
     void onMousePosition(double x, double y) const;
@@ -52,9 +52,9 @@ private:
     float maxZoom = 45.0f, minZoom = 1.0f;
 
     float fov = 45.0f;
-    Mat4f projection;
-    Mat4f view;
-    Mat4f projectionView;
+    Mat4 projection;
+    Mat4 view;
+    Mat4 projectionView;
 };
 
 extern Application application;

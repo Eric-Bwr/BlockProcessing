@@ -64,44 +64,44 @@ void CubeManager::init() {
     layout->pushFloat(1);
 }
 
-void CubeManager::addFace(std::vector<float>& data, Block* block, float x, float y, float z, int face) {
+void CubeManager::addFace(std::vector<float>& data, Block* block, int x, int y, int z, int face) {
     data.resize(data.size() + 54);
     float* dataPtr = data.data() + (data.size() - 54);
     float faceData = 0;
     int textureXOffset;
     int textureYOffset;
     switch (face) {
-        case CHUNK_FACE_TOP:
+        case FACE_TOP:
             memcpy(dataPtr, topFace, 54 * sizeof(float));
             faceData = (float)block->id;
             textureXOffset = block->textureTopX;
             textureYOffset = block->textureTopY;
             break;
-        case CHUNK_FACE_BOTTOM:
+        case FACE_BOTTOM:
             memcpy(dataPtr, bottomFace, 54 * sizeof(float));
             faceData = (float)block->id + 0.1f;
             textureXOffset = block->textureBottomX;
             textureYOffset = block->textureBottomY;
             break;
-        case CHUNK_FACE_FRONT:
+        case FACE_FRONT:
             memcpy(dataPtr, frontFace, 54 * sizeof(float));
             faceData = (float)block->id + 0.2f;
             textureXOffset = block->textureFrontX;
             textureYOffset = block->textureFrontY;
             break;
-        case CHUNK_FACE_BACK:
+        case FACE_BACK:
             memcpy(dataPtr, backFace, 54 * sizeof(float));
             faceData = (float)block->id + 0.3f;
             textureXOffset = block->textureBackX;
             textureYOffset = block->textureBackY;
             break;
-        case CHUNK_FACE_LEFT:
+        case FACE_LEFT:
             memcpy(dataPtr, leftFace, 54 * sizeof(float));
             faceData = (float)block->id + 0.4f;
             textureXOffset = block->textureLeftX;
             textureYOffset = block->textureLeftY;
             break;
-        case CHUNK_FACE_RIGHT:
+        case FACE_RIGHT:
             memcpy(dataPtr, rightFace, 54 * sizeof(float));
             faceData = (float)block->id + 0.5f;
             textureXOffset = block->textureRightX;
@@ -111,9 +111,9 @@ void CubeManager::addFace(std::vector<float>& data, Block* block, float x, float
             break;
     }
     for (int i = 0; i < 54; i += 9) {
-        dataPtr[i + 0] += x;
-        dataPtr[i + 1] += y;
-        dataPtr[i + 2] += z;
+        dataPtr[i + 0] += (float)x;
+        dataPtr[i + 1] += (float)y;
+        dataPtr[i + 2] += (float)z;
         dataPtr[i + 3] = (dataPtr[i + 3] + textureXOffset) / TEXTURE_ATLAS_ROW_COUNT;
         dataPtr[i + 4] = (dataPtr[i + 4] + textureYOffset) / TEXTURE_ATLAS_ROW_COUNT;
         dataPtr[i + 8] = faceData;

@@ -2,93 +2,95 @@
 
 #include <cmath>
 
-class Vec2f {
+class Vec2 {
 public:
-	float x, y;
+	double x, y;
 
-	Vec2f() = default;
-	explicit Vec2f(float v);
-	Vec2f(float x, float y);
-	Vec2f(const Vec2f &v);
+	Vec2() = default;
+	explicit Vec2(double v);
+	Vec2(double x, double y);
+	Vec2(const Vec2 &v);
 
-	friend Vec2f operator+ (const Vec2f &a, const Vec2f &b);
-	friend Vec2f operator+ (const Vec2f &a, float b);
-	friend Vec2f operator- (const Vec2f &a, const Vec2f &b);
-	friend Vec2f operator- (const Vec2f &a, float b);
-	friend Vec2f operator* (const Vec2f &a, const Vec2f &b);
-	friend Vec2f operator* (const Vec2f &a, float b);
-	friend Vec2f operator/ (const Vec2f &a, const Vec2f &b);
-	friend Vec2f operator/ (const Vec2f &a, float b);
+	friend Vec2 operator+ (const Vec2 &a, const Vec2 &b);
+	friend Vec2 operator+ (const Vec2 &a, double b);
+	friend Vec2 operator- (const Vec2 &a, const Vec2 &b);
+	friend Vec2 operator- (const Vec2 &a, double b);
+	friend Vec2 operator* (const Vec2 &a, const Vec2 &b);
+	friend Vec2 operator* (const Vec2 &a, double b);
+	friend Vec2 operator/ (const Vec2 &a, const Vec2 &b);
+	friend Vec2 operator/ (const Vec2 &a, double b);
 
-	Vec2f& operator+= (Vec2f const &a);
-	Vec2f& operator-= (Vec2f const &a);
-	Vec2f& operator*= (float v);
+	Vec2& operator+= (Vec2 const &a);
+	Vec2& operator-= (Vec2 const &a);
+	Vec2& operator*= (double v);
 	
-	bool operator== (Vec2f &a) const;
-	bool operator!= (Vec2f &a) const;
+	bool operator== (Vec2 &a) const;
+	bool operator!= (Vec2 &a) const;
 
-	Vec2f norm() const;
-	float dot(Vec2f const &a) const;
-	float len() const;
+	Vec2 norm() const;
+	double dot(Vec2 const &a) const;
+	double len() const;
+	double len2() const;
 };
 
-class Vec3f {
+class Vec3 {
 public:
-	float x, y, z;
+	double x, y, z;
 
-	Vec3f() = default;
-	explicit Vec3f(float v);
-	Vec3f(float x, float y, float z);
-	Vec3f(const Vec2f& xy, float z);
-	Vec3f(const Vec3f& v);
+	Vec3() = default;
+	explicit Vec3(double v);
+	Vec3(double x, double y, double z);
+	Vec3(const Vec2& xy, double z);
+	Vec3(const Vec3& v);
 
-	Vec2f xy() const;
-	Vec2f xz() const;
-	Vec2f yz() const;
+	Vec2 xy() const;
+	Vec2 xz() const;
+	Vec2 yz() const;
 
-	friend Vec3f operator+ (const Vec3f &a, const Vec3f &b);
-	friend Vec3f operator+ (const Vec3f &a, float b);
-	friend Vec3f operator- (const Vec3f &a, const Vec3f &b);
-	friend Vec3f operator- (const Vec3f &a, float b);
-	friend Vec3f operator* (const Vec3f &a, const Vec3f &b);
-	friend Vec3f operator* (const Vec3f &a, float b);
-	friend Vec3f operator/ (const Vec3f &a, const Vec3f &b);
-	friend Vec3f operator/ (const Vec3f &a, float b);
+	friend Vec3 operator+ (const Vec3 &a, const Vec3 &b);
+	friend Vec3 operator+ (const Vec3 &a, double b);
+	friend Vec3 operator- (const Vec3 &a, const Vec3 &b);
+	friend Vec3 operator- (const Vec3 &a, double b);
+	friend Vec3 operator* (const Vec3 &a, const Vec3 &b);
+	friend Vec3 operator* (const Vec3 &a, double b);
+	friend Vec3 operator/ (const Vec3 &a, const Vec3 &b);
+	friend Vec3 operator/ (const Vec3 &a, double b);
 
-	Vec3f &operator+= (const Vec3f &a);
-	Vec3f &operator-= (const Vec3f &a);
-	Vec3f &operator*= (float v);
+	Vec3 &operator+= (const Vec3 &a);
+	Vec3 &operator-= (const Vec3 &a);
+	Vec3 &operator*= (double v);
 	
-	bool operator== (Vec3f &a) const;
-	bool operator!= (Vec3f &a) const;
+	bool operator== (Vec3 &a) const;
+	bool operator!= (Vec3 &a) const;
 
-	Vec3f cross(Vec3f const &a) const;
-	Vec3f norm() const;
-	float dot(Vec3f const &a) const;
-	float len() const;
+	Vec3 cross(Vec3 const &a) const;
+	Vec3 norm() const;
+	double dot(Vec3 const &a) const;
+	double len() const;
+	double len2() const;
 };
 
-class Vec4f {
+class Vec4 {
 public:
-    float x, y, z, w;
+    double x, y, z, w;
 
-	Vec4f() = default;
-    explicit Vec4f(float v);
-    Vec4f(float x, float y, float z, float w);
+	Vec4() = default;
+    explicit Vec4(double v);
+    Vec4(double x, double y, double z, double w);
 
-    friend Vec4f operator+ (const Vec4f &a, const Vec4f &b);
-    friend Vec4f operator+ (const Vec4f &a, float b);
-    friend Vec4f operator- (const Vec4f &a, const Vec4f &b);
-    friend Vec4f operator- (const Vec4f &a, float b);
-    friend Vec4f operator* (const Vec4f &a, const Vec4f &b);
-    friend Vec4f operator* (const Vec4f &a, float b);
-    friend Vec4f operator/ (const Vec4f &a, const Vec4f &b);
-    friend Vec4f operator/ (const Vec4f &a, float b);
+    friend Vec4 operator+ (const Vec4 &a, const Vec4 &b);
+    friend Vec4 operator+ (const Vec4 &a, double b);
+    friend Vec4 operator- (const Vec4 &a, const Vec4 &b);
+    friend Vec4 operator- (const Vec4 &a, double b);
+    friend Vec4 operator* (const Vec4 &a, const Vec4 &b);
+    friend Vec4 operator* (const Vec4 &a, double b);
+    friend Vec4 operator/ (const Vec4 &a, const Vec4 &b);
+    friend Vec4 operator/ (const Vec4 &a, double b);
 
-    Vec4f &operator+= (const Vec4f &a);
-    Vec4f &operator-= (const Vec4f &a);
-    Vec4f &operator*= (float v);
+    Vec4 &operator+= (const Vec4 &a);
+    Vec4 &operator-= (const Vec4 &a);
+    Vec4 &operator*= (double v);
 
-    bool operator== (Vec4f &a) const;
-    bool operator!= (Vec4f &a) const;
+    bool operator== (Vec4 &a) const;
+    bool operator!= (Vec4 &a) const;
 };

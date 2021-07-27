@@ -9,8 +9,6 @@ set(CMAKE_CXX_STANDARD 20)
 
 file(GLOB_RECURSE SOURCE_FILES "BlockProcessing/*.cpp" "BlockProcessing/*.h")
 
-set(dir ${CMAKE_CURRENT_SOURCE_DIR})
-
 include_directories(Dependencies)
 include_directories(${PROJECT_NAME} "Dependencies/FreeType/include")
 include_directories(${PROJECT_NAME} "Dependencies/OpenGL/include")

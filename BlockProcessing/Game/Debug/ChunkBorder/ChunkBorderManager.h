@@ -11,12 +11,12 @@
 class ChunkBorderManager {
 public:
     static void init();
-    static void generate(int64_t tileX, int64_t tileY, int64_t tileZ);
-    static void render(Mat4f& view);
-    static void setProjection(Mat4f& projection);
+    static void generate(const Coord& coord);
+    static void render(Mat4& view);
+    static void setProjection(Mat4& projection);
     ~ChunkBorderManager();
 public:
     static Shader* shader;
-    static Mat4f model;
+    static Mat4 model;
     static ChunkBorder* chunkBorder;
 };

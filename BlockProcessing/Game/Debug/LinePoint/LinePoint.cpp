@@ -5,7 +5,7 @@ static Shader* shader;
 static VertexArrayObject *vao;
 static VertexBufferObject *vbo;
 static VertexBufferObjectLayout *layout;
-Mat4f LinePoint::LinePointMatrix;
+Mat4 LinePoint::LinePointMatrix;
 
 void LinePoint::init() {
     shader = new Shader(SHADER_LINE);
@@ -39,12 +39,12 @@ void LinePoint::visualizePoint(float r, float g, float b, float size) {
     glDrawArrays(GL_POINTS, 0, 1);
 }
 
-void LinePoint::setView(Mat4f &view) {
+void LinePoint::setView(Mat4 &view) {
     shader->bind();
     shader->setUniformMatrix4f("view", view.getBuffer());
 }
 
-void LinePoint::setProjection(Mat4f &projection) {
+void LinePoint::setProjection(Mat4 &projection) {
     shader->bind();
     shader->setUniformMatrix4f("projection", projection.getBuffer());
 }

@@ -7,8 +7,7 @@ layout (location = 2) in vec3 inNormal;
 layout (location = 3) in float inBlockID;
 
 uniform mat4 projection;
-uniform mat4 model;
-uniform mat4 view;
+uniform mat4 modelView;
 
 out vec2 textureCoords;
 out vec3 normals;
@@ -20,18 +19,17 @@ uniform float intensity = 0.00015;
 uniform float gradient = 1.2;
 
 void main(){
-    vec4 pos = model * vec4(inPosition, 1.0f);
-    normals = (model * vec4(inNormal, 0.0)).xyz;
+    vec4 pos = modelView * vec4(inPosition, 1.0f);
+    normals = inNormal;
     fragPosition = inPosition;
-    vec4 worldToCamera = view * pos;
-    gl_Position = projection * worldToCamera;
+    gl_Position = projection * pos;
     textureCoords = inTexture;
-    visibility = clamp(exp(-pow((length(worldToCamera.xyz) * intensity), gradient)), 0.0, 1.0);
+    visibility = clamp(exp(-pow((length(pos.xyz) * intensity), gradient)), 0.0, 1.0);
     blockID = inBlockID;
 }
 
-    #fragment
-    #version 430
+#fragment
+#version 430
 
 in vec2 textureCoords;
 in vec3 normals;
