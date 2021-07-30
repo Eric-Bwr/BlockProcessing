@@ -18,7 +18,7 @@ include_directories(${PROJECT_NAME} "Dependencies/UI/include")
 include_directories(${PROJECT_NAME} "Dependencies/FastNoise")
 include_directories(${PROJECT_NAME})
 
-add_executable(${PROJECT_NAME} ${SOURCE_FILES} Dependencies/FastNoise/FastNoise.h Dependencies/FastNoise/FastNoise.cpp BlockProcessing/Game/Interface/Messages.h BlockProcessing/Game/PostProcess/PostProcessShader.h BlockProcessing/Game/Interface/CrosshairInterface/CrosshairInterface.cpp BlockProcessing/Game/Interface/CrosshairInterface/CrosshairInterface.h)
+add_executable(${PROJECT_NAME} ${SOURCE_FILES} Dependencies/FastNoise/FastNoise.h Dependencies/FastNoise/FastNoise.cpp)
 
 target_link_libraries(${PROJECT_NAME}
         ${CMAKE_CURRENT_LIST_DIR}/Dependencies/UI/UI.a

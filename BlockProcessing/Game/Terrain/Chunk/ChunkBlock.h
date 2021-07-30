@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../Block/Blocks/BlockAir.h"
+
 struct ChunkBlock {
-    unsigned int id = 0;
+    unsigned int id = BLOCK_AIR;
 };

@@ -1,6 +1,5 @@
 #include "Application.h"
 #include <iostream>
-#include <assert.h>
 
 Application application;
 
@@ -35,8 +34,8 @@ void Application::preInit() {
     windowSettings->setSampleSize(2);
     windowSettings->setShouldMultiSample(true);
     windowSettings->setTransparent(false);
-    windowSettings->setWidth(1920);
-    windowSettings->setHeight(1080);
+    windowSettings->setWidth(1600);
+    windowSettings->setHeight(800);
     windowSettings->setResizable(false);
     windowSettings->setCentered(true);
     windowSettings->setSwapInterval(0);
@@ -66,8 +65,10 @@ void Application::init() {
     Player::init(0, 0, 0, 90, 0);
     TerrainManager::init(rand(), FastNoise::PerlinFractal, 0.009, 6);
     TerrainManager::setProjection(projection);
-    ChunkBorderManager::init();
-    ChunkBorderManager::setProjection(projection);
+    ChunkBorderVisualizer::init();
+    ChunkBorderVisualizer::setProjection(projection);
+    PlayerBlockOutline::init();
+    PlayerBlockOutline::setProjection(projection);
     OctreeVisualizer::init();
     OctreeVisualizer::setProjection(projection);
     LinePoint::init();
@@ -78,7 +79,7 @@ void Application::init() {
     ChatInterface::init();
     CrosshairInterface::init();
 
-    Player::camPos.y = ((int(WorldManager::fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER  + 4) * TERRAIN_SIZE;
+    Player::camPos.y = ((int(WorldManager::fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER  + 4);
     Player::updatePlayer();
     CrosshairInterface::display(true);
     lastTime = glfwGetTime();
@@ -86,9 +87,17 @@ void Application::init() {
 
 void Application::run() {
     while(window.windowIsAlive()){
+        double lastTime = glfwGetTime();
         window.updateWindow();
         update();
         render();
+        double currentTime = glfwGetTime();
+        frameDeltaTime = currentTime - lastTime;
+       //while(frameDeltaTime < 1.0 / 60.0) {
+       //    currentTime = glfwGetTime();
+       //    frameDeltaTime = currentTime - lastTime;
+       //    std::this_thread::sleep_for(std::chrono::milliseconds(1));
+       //}
     }
 }
 
@@ -99,13 +108,15 @@ void Application::update() {
         TerrainManager::setProjection(projection);
         OctreeVisualizer::setProjection(projection);
         LinePoint::setProjection(projection);
-        ChunkBorderManager::setProjection(projection);
+        ChunkBorderVisualizer::setProjection(projection);
+        PlayerBlockOutline::setProjection(projection);
     }
-    Player::updatePlayer();
+    Player::updatePlayer(frameDeltaTime);
     TerrainManager::setLightPosition(Player::getCameraX(), Player::getCameraY() + 1000, Player::getCameraZ());
     TerrainManager::generate(Player::chunk);
+    //PlayerBlockOutline::update(Player::block);
     if(wireFrame)
-        ChunkBorderManager::generate(Player::chunk);
+        ChunkBorderVisualizer::generate(Player::chunk);
     if(debug)
         DebugInterface::update();
 }
@@ -118,7 +129,7 @@ void Application::render() {
     if(currentTime - lastTime >= 1.0){
         DebugInterface::setFPS(float(frames));
         frames = 0;
-        lastTime += 1.0;
+        lastTime++;
     }
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.8, 0.9, 0.9, 1.0);
@@ -130,11 +141,12 @@ void Application::render() {
     endSpeedTest();
    // printMicroSeconds();
     OctreeVisualizer::setView(view);
+    PlayerBlockOutline::render(view);
     if(collision)
         for (auto&[coord, octree] : WorldManager::octrees)
-            OctreeVisualizer::visualize(WorldManager::chunkCandidatesForGenerating, OCTREE_MAX_LEVEL, Player::chunk, octree);
+            OctreeVisualizer::visualize(OCTREE_MAX_LEVEL, Player::chunk, &octree->getRoot());
     if (wireFrame)
-        ChunkBorderManager::render(view);
+        ChunkBorderVisualizer::render(view);
     LinePoint::setView(view);
 
     if (alt) {
@@ -145,7 +157,6 @@ void Application::render() {
         TerrainManager::shader->setUniformMatrix4f("projection", projection.getBuffer());
         TerrainManager::shader->setUniform3f("lightPos", 10, 5000, 10);
         TerrainManager::shader->setUniformBool("blinn", true);
-        TerrainManager::shader->setUniformMatrix4f("model", TerrainManager::model.getBuffer());
     }
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);

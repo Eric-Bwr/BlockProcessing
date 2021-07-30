@@ -2,7 +2,6 @@
 #include "TerrainManager.h"
 #include "UITexture.h"
 
-Mat4 TerrainManager::model;
 Shader *TerrainManager::shader;
 Texture *TerrainManager::texture;
 FastNoise *TerrainManager::fastNoise;
@@ -28,8 +27,6 @@ void TerrainManager::init(int seed, FastNoise::NoiseType noiseType, float freque
     texture->setLodBias(TEXTURE_ATLAS_LOD_BIAS);
     texture->load();
     texture->generateMipMap();
-    model.identity();
-    model.scale(TERRAIN_SIZE);
 }
 
 void TerrainManager::generate(const Coord& coord) {

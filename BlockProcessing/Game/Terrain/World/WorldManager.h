@@ -1,6 +1,6 @@
 #pragma once
 
-#include <assert.h>
+#include <cassert>
 #include <cmath>
 #include <thread>
 #include <FastNoise.h>
@@ -11,8 +11,9 @@
 #include "../Chunk/ChunkManager.h"
 #include "../Block/BlockManager.h"
 #include "Frustum/Frustum.h"
-#include "../Util/CoordinateHelper.h"
-#include "../Octree/OctreeNode.h"
+#include "../Util/Coordinate.h"
+#include "../Octree/Octree.h"
+#include "SafeQueue.h"
 
 struct Hash {
     int operator()(const Coord &coord) const {
@@ -38,10 +39,11 @@ public:
     static void render(Mat4& projectionView, Mat4 &view, Shader* shader);
     ~WorldManager();
 public:
-    static bool s;
     static FastNoise* fastNoise;
-    static std::unordered_map<Coord, OctreeNode*, Hash, Compare> octrees;
+    static std::unordered_map<Coord, std::shared_ptr<Octree>, Hash, Compare> octrees;
     static std::unordered_set<Coord, Hash, Compare> modifiedChunks;
     static std::vector<Coord> chunkCandidatesForGenerating;
     static Frustum frustum;
+    static SafeQueue<std::pair<std::shared_ptr<Octree>, OctreeNode*>> toGenerateQueue;
+    static SafeQueue<std::pair<std::shared_ptr<Octree>, OctreeNode*>> finishedGeneratedQueue;
 };

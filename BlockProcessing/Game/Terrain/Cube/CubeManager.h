@@ -2,7 +2,7 @@
 
 #include "../TerrainDefines.h"
 #include "../Block/BlockManager.h"
-#include "../Util/CoordinateHelper.h"
+#include "../Util/Coordinate.h"
 #include <Buffer.h>
 #include <memory.h>
 

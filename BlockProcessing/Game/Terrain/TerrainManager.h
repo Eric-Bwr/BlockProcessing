@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Paths.h>
+#include "Paths.h"
 #include <Shader.h>
 #include <Texture.h>
 #include <FastNoise.h>
@@ -19,7 +19,6 @@ public:
     static void setLightPosition(double x, double y, double z);
     ~TerrainManager();
 public:
-    static Mat4 model;
     static Shader* shader;
     static Texture* texture;
     static FastNoise* fastNoise;

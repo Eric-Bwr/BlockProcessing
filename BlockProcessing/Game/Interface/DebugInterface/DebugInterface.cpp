@@ -23,7 +23,7 @@ void DebugInterface::init() {
 void DebugInterface::update() {
     stringLeft.str("");
     stringLeft << "FPS: " << fps << "\n";
-    stringLeft << std::fixed << std::setprecision(2) << "X: " << Player::getX() << " Y: " << Player::getY() << " Z: " << Player::getZ() << "\n";
+    stringLeft << "X: " << Player::getX() << " Y: " << Player::getY() << " Z: " << Player::getZ() << "\n";
     stringLeft << "ChunkX: " << Player::chunkX << " ChunkY: " << Player::chunkY << " ChunkZ: " << Player::chunkZ << "\n";
     stringLeft << "OctreeX: " << getOctreeFromChunk(Player::chunkX) << " OctreeY: " << getOctreeFromChunk(Player::chunkY) << " OctreeZ: " << getOctreeFromChunk(Player::chunkZ) << "\n";
     textLeft->setText(stringLeft.str().data());

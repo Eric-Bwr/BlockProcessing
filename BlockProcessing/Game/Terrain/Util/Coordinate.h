@@ -1,6 +1,11 @@
 #pragma once
 
 #include <cstdint>
+#include <cmath>
+#include <Math/Vector.h>
+#include "../TerrainDefines.h"
+
+#include <cstdint>
 
 struct Coord {
     int64_t x, y, z;
@@ -15,9 +20,8 @@ struct Coord {
     };
 };
 
-class OctreeNodeObject {
-public:
-    int level, scaling;
-    Coord coord;
-    OctreeNodeObject* children[8];
-};
+int64_t getBlockFromCamera(double camera);
+int64_t getChunkFromBlock(int64_t block);
+Coord getChunkFromBlock(Coord block);
+Coord getOctreeFromChunk(Coord chunk);
+int64_t getOctreeFromChunk(int64_t chunk);

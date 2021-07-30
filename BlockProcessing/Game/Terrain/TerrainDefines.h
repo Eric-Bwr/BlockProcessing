@@ -3,11 +3,10 @@
 //MOVE TO NEW WORLD GENERATION THING
 const int TERRAIN_AMPLIFIER = 200;
 
-const float TERRAIN_SIZE = 20.0f;
-const int CHUNK_SIZE = 20;
-const int CHUNKING_RADIUS = 8;
-const int CHUNKING_THREADS = 12;
-const int CHUNKING_DELETION_OFFSET = 2;
+const int CHUNK_SIZE = 16;
+const int CHUNKING_THREADS = 6;
+const int CHUNKING_RADIUS = 40;
+const int CHUNKING_DELETION_OFFSET = 1;
 
 const int OCTREE_MAX_LEVEL = 4;
 
@@ -25,8 +24,9 @@ const float OCTREE_VISUALIZING_COLORS[(OCTREE_MAX_LEVEL + 1) * 3]{
         0.0, 1.0, 0.0,
 };
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#include "cmath"
-const double WORLD_SIZE = (CHUNK_SIZE * TERRAIN_SIZE);
-const int CHUNKING_DELETION_RADIUS = (CHUNKING_RADIUS + CHUNKING_DELETION_OFFSET);
+const int MAX_CHUNKS_TO_GENERATE = CHUNKING_THREADS * 10;
 const int CHUNK_CUBIC_SIZE = (CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE);
 const int OCTREE_LENGTH = 1 << OCTREE_MAX_LEVEL;
+const int CHUNKING_DELETION_RADIUS_SQUARED = (CHUNKING_RADIUS + CHUNKING_DELETION_OFFSET) * (CHUNKING_RADIUS + CHUNKING_DELETION_OFFSET);
+const int OCTREE_DELETION_RADIUS_SQUARED = (3 * OCTREE_LENGTH + OCTREE_LENGTH / 2) * (3 * OCTREE_LENGTH + OCTREE_LENGTH / 2);
+const int CHUNKING_RADIUS_SQUARED = (CHUNKING_RADIUS * CHUNKING_RADIUS);

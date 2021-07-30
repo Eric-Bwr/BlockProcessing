@@ -1,5 +1,5 @@
 #include "Frustum.h"
-#include "../../Octree/OctreeNodeObject.h"
+#include "../../Util/Coordinate.h"
 #include "../../TerrainDefines.h"
 
 enum Planes {
@@ -63,35 +63,29 @@ bool Frustum::isInside(const Coord& coord) {
 }
 
 Coord Frustum::getVN(Vec3 &normal, const Coord& coord) {
-    Coord copyCoord = coord;
-    copyCoord.x *= WORLD_SIZE;
-    copyCoord.y *= WORLD_SIZE;
-    copyCoord.z *= WORLD_SIZE;
-    if (normal.x < 0) {
-        copyCoord.x += WORLD_SIZE;
-    }
-    if (normal.y < 0) {
-        copyCoord.y += WORLD_SIZE;
-    }
-    if (normal.z < 0) {
-        copyCoord.z += WORLD_SIZE;
-    }
+    auto copyCoord = coord;
+    copyCoord.x *= CHUNK_SIZE;
+    copyCoord.y *= CHUNK_SIZE;
+    copyCoord.z *= CHUNK_SIZE;
+    if (normal.x < 0)
+        copyCoord.x += CHUNK_SIZE;
+    if (normal.y < 0)
+        copyCoord.y += CHUNK_SIZE;
+    if (normal.z < 0)
+        copyCoord.z += CHUNK_SIZE;
     return coord;
 }
 
 Coord Frustum::getVP(Vec3 &normal, const Coord& coord) {
-    Coord copyCoord = coord;
-    copyCoord.x *= WORLD_SIZE;
-    copyCoord.y *= WORLD_SIZE;
-    copyCoord.z *= WORLD_SIZE;
-    if (normal.x > 0) {
-        copyCoord.x += WORLD_SIZE;
-    }
-    if (normal.y > 0) {
-        copyCoord.y += WORLD_SIZE;
-    }
-    if (normal.z > 0) {
-        copyCoord.z += WORLD_SIZE;
-    }
+    auto copyCoord = coord;
+    copyCoord.x *= CHUNK_SIZE;
+    copyCoord.y *= CHUNK_SIZE;
+    copyCoord.z *= CHUNK_SIZE;
+    if (normal.x > 0)
+        copyCoord.x += CHUNK_SIZE;
+    if (normal.y > 0)
+        copyCoord.y += CHUNK_SIZE;
+    if (normal.z > 0)
+        copyCoord.z += CHUNK_SIZE;
     return copyCoord;
 }

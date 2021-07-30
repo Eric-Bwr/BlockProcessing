@@ -8,9 +8,9 @@ class PlayerCamera {
 protected:
     static void initCamera(double x, double y, double z, float yaw, float pitch);
 public:
-    static inline double getX(){ return camPos.x / TERRAIN_SIZE; }
-    static inline double getY(){ return camPos.y / TERRAIN_SIZE; }
-    static inline double getZ(){ return camPos.z / TERRAIN_SIZE; }
+    static inline double getX(){ return camPos.x; }
+    static inline double getY(){ return camPos.y; }
+    static inline double getZ(){ return camPos.z; }
     static inline double getCameraX(){ return camPos.x; }
     static inline double getCameraY(){ return camPos.y; }
     static inline double getCameraZ(){ return camPos.z; }

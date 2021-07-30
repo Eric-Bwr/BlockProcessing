@@ -15,7 +15,10 @@ void BlockManager::addBlock(Block* block) {
 }
 
 Block* BlockManager::getBlockByID(unsigned int id) {
-    return blocks.at(id);
+    if(blocks.count(id))
+        return blocks.at(id);
+    else
+        return BLOCK_AIR;
 }
 
 BlockManager::~BlockManager() {

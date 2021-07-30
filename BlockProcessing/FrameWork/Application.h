@@ -1,17 +1,18 @@
 #pragma once
 
-#include <signal.h>
-#include <time.h>
+#include <csignal>
+#include <ctime>
 #include "Window/Window.h"
 #include "Game/Terrain/TerrainManager.h"
 #include "Game/Player/Player.h"
-#include "Game/Debug/ChunkBorder/ChunkBorderManager.h"
+#include "Game/Debug/ChunkBorder/ChunkBorderVisualizer.h"
 #include "Game/Debug/Octree/OctreeVisualizer.h"
 #include "Game/Debug/LinePoint/LinePoint.h"
 #include "Game/Interface/DebugInterface/DebugInterface.h"
 #include "Game/Interface/ChatInterface/ChatInterface.h"
 #include "Game/Interface/CrosshairInterface/CrosshairInterface.h"
 #include "Game/Command/CommandManager.h"
+#include "Game/Player/PlayerBlockOutline.h"
 
 class Application {
 public:
@@ -32,6 +33,7 @@ private:
     Window window;
     int frames = 0;
     double lastTime = 0, currentTime = 0;
+    double frameDeltaTime = 0;
     bool mode = false;
     bool modeGui = false;
     bool modeCursor = false;
@@ -47,7 +49,7 @@ private:
     bool zoom = true;
     bool wireFrame = false;
     float span = 0.0f;
-    float offset = 4.5 * TERRAIN_SIZE;
+    float offset = 4.5;
     float zoomLevel = 45.0f, prevZoomLevel = 45.0f, zoomSpeed = 1.0f;
     float maxZoom = 45.0f, minZoom = 1.0f;
 

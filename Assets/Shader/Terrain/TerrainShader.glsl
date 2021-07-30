@@ -12,7 +12,7 @@ uniform mat4 modelView;
 out vec2 textureCoords;
 out vec3 normals;
 out vec3 fragPosition;
-out float blockID;
+flat out float blockID;
 out float visibility;
 
 uniform float intensity = 0.00015;
@@ -34,7 +34,7 @@ void main(){
 in vec2 textureCoords;
 in vec3 normals;
 in vec3 fragPosition;
-in float blockID;
+flat in float blockID;
 in float visibility;
 
 uniform sampler2D image;
@@ -48,12 +48,9 @@ const vec3 grassColor = vec3(0.2, 0.45, 0.2);
 out vec4 FragColor;
 
 void main(){
-    vec3 color;
-    if (blockID == 3){
-        color = vec3(texture(image, textureCoords).rgb);
+    vec3 color = texture(image, textureCoords).rgb;
+    if (blockID == 3.0)
         color *= grassColor;
-    }else
-        color = texture(image, textureCoords).rgb;
     // ambient
     vec3 ambient = 0.1005 * color;
     // diffuse

@@ -1,4 +1,5 @@
 #include "../Terrain/World/WorldManager.h"
+#include "PlayerBlockOutline.h"
 #include "Player.h"
 
 #define radians 0.01745329251994329576923690768489f
@@ -8,12 +9,12 @@ int64_t Player::blockX = 0, Player::chunkX = 0, Player::octreeX = 0;
 int64_t Player::blockY = 0, Player::chunkY = 0, Player::octreeY = 0;
 int64_t Player::blockZ = 0, Player::chunkZ = 0, Player::octreeZ = 0;
 Coord Player::block, Player::chunk, Player::octree;
-int64_t Player::lookedAtBlockOffsetX = 0;
-int64_t Player::lookedAtBlockOffsetY = 0;
-int64_t Player::lookedAtBlockOffsetZ = 0;
-ChunkBlock Player::lookingAtChunkBlock;
-ChunkBlock Player::airBlock;
-ChunkBlock Player::collisionBlock;
+static int64_t lookedAtBlockOffsetX = 0;
+static int64_t lookedAtBlockOffsetY = 0;
+static int64_t lookedAtBlockOffsetZ = 0;
+static ChunkBlock lookingAtChunkBlock;
+static ChunkBlock airBlock;
+static ChunkBlock collisionBlock;
 bool Player::shouldFloat = false;
 bool Player::doublePress = false;
 double Player::doublePressSpan = 0.0;
@@ -24,12 +25,10 @@ void Player::init(double x, double y, double z, float yaw, float pitch) {
     airBlock.id = BLOCK_AIR;
 }
 
-#include "iostream"
-
 bool dos = false;
 
-void Player::updatePlayer() {
-    calculateMove();
+void Player::updatePlayer(double deltaTime) {
+    calculateMove(deltaTime);
     block.x = blockX = getBlockFromCamera(camPos.x);
     block.y = blockY = getBlockFromCamera(camPos.y);
     block.z = blockZ = getBlockFromCamera(camPos.z);
@@ -44,7 +43,7 @@ void Player::updatePlayer() {
 
 void Player::dig() {
     if (lookingAtChunkBlock.id != BLOCK_AIR)
-        WorldManager::setChunkBlock(airBlock, lookedAtBlockOffsetX, lookedAtBlockOffsetY,  lookedAtBlockOffsetZ);
+        WorldManager::setChunkBlock(airBlock, lookedAtBlockOffsetX, lookedAtBlockOffsetY, lookedAtBlockOffsetZ);
 }
 
 void Player::place() {
@@ -53,11 +52,11 @@ void Player::place() {
 }
 
 //https://stackoverflow.com/questions/8978491/player-to-voxel-collision-detection-response
-void Player::calculateMove() {
+void Player::calculateMove(double deltaTime) {
     if (gameMode == GAMEMODE_CREATIVE) {
         if (shouldMoveForward) {
-            camPos.x += std::cos(yaw * radians) * PLAYER_MOVE_SPEED;
-            camPos.z += std::sin(yaw * radians) * PLAYER_MOVE_SPEED;
+            camPos.x += std::cos(yaw * radians) * PLAYER_MOVE_SPEED * deltaTime;
+            camPos.z += std::sin(yaw * radians) * PLAYER_MOVE_SPEED * deltaTime;
             //WorldManager::getChunkBlock(collisionBlock, getBlockFromCamera(camPos.x), getBlockFromCamera(camPos.y), getBlockFromCamera(camPos.z));
             //if (collisionBlock.id != BLOCK_AIR) {
             //    camPos.x -= front.x * PLAYER_MOVE_SPEED;
@@ -65,8 +64,8 @@ void Player::calculateMove() {
             //}
         }
         if (shouldMoveBackward) {
-            camPos.x -= std::cos(yaw * radians) * PLAYER_MOVE_SPEED;
-            camPos.z -= std::sin(yaw * radians) * PLAYER_MOVE_SPEED;
+            camPos.x -= std::cos(yaw * radians) * PLAYER_MOVE_SPEED * deltaTime;
+            camPos.z -= std::sin(yaw * radians) * PLAYER_MOVE_SPEED * deltaTime;
             //WorldManager::getChunkBlock(collisionBlock, getBlockFromCamera(camPos.x), getBlockFromCamera(camPos.y), getBlockFromCamera(camPos.z));
             //if (collisionBlock.id != BLOCK_AIR) {
             //    camPos.x += front.x * PLAYER_MOVE_SPEED;
@@ -74,13 +73,13 @@ void Player::calculateMove() {
             // }
         }
         if (shouldMoveRight) {
-            camPos += right * PLAYER_MOVE_SPEED;
+            camPos += right * PLAYER_MOVE_SPEED * deltaTime;
             //WorldManager::getChunkBlock(collisionBlock, getBlockFromCamera(camPos.x), getBlockFromCamera(camPos.y), getBlockFromCamera(camPos.z));
             //if (collisionBlock.id != BLOCK_AIR)
             //    camPos -= right * PLAYER_MOVE_SPEED;
         }
         if (shouldMoveLeft) {
-            camPos -= right * PLAYER_MOVE_SPEED;
+            camPos -= right * PLAYER_MOVE_SPEED * deltaTime;
             //WorldManager::getChunkBlock(collisionBlock, getBlockFromCamera(camPos.x), getBlockFromCamera(camPos.y), getBlockFromCamera(camPos.z));
             // if (collisionBlock.id != BLOCK_AIR)
             //    camPos += right * PLAYER_MOVE_SPEED;
@@ -117,9 +116,9 @@ void Player::calculateMove() {
             doublePressSpan--;
 */
         if (shouldMoveUp)
-            camPos.y += PLAYER_MOVE_SPEED;
+            camPos.y += PLAYER_MOVE_SPEED * deltaTime;
         if (shouldMoveDown)
-            camPos.y -= PLAYER_MOVE_SPEED;
+            camPos.y -= PLAYER_MOVE_SPEED * deltaTime;
     } else if (gameMode == GAMEMODE_SURVIVAL) {
         calculateGravity();
         if (shouldMoveForward) {
@@ -162,12 +161,14 @@ void Player::castRay() {
     Vec3 end = {};
     while (end.dot(end) <= PLAYER_BLOCK_DISTANCE * PLAYER_BLOCK_DISTANCE) {
         end += (direction * PLAYER_STEP_SIZE);
-        lookedAtBlockOffsetX = round(camPos.x / TERRAIN_SIZE + end.x - 0.5f);
-        lookedAtBlockOffsetY = round(camPos.y / TERRAIN_SIZE + end.y - 0.5f);
-        lookedAtBlockOffsetZ = round(camPos.z / TERRAIN_SIZE + end.z - 0.5f);
+        lookedAtBlockOffsetX = round(camPos.x + end.x - 0.5f);
+        lookedAtBlockOffsetY = round(camPos.y + end.y - 0.5f);
+        lookedAtBlockOffsetZ = round(camPos.z + end.z - 0.5f);
         WorldManager::getChunkBlock(lookingAtChunkBlock, lookedAtBlockOffsetX, lookedAtBlockOffsetY, lookedAtBlockOffsetZ);
-        if (lookingAtChunkBlock.id != BLOCK_AIR) {
+        if (lookingAtChunkBlock.id != BLOCK_AIR)
             return;
-        }
+        //else
+            //PlayerBlockOutline::update(0, -1000, 0);
     }
+    //PlayerBlockOutline::update(lookedAtBlockOffsetX, lookedAtBlockOffsetY, lookedAtBlockOffsetZ);
 }

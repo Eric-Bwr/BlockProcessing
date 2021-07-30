@@ -16,6 +16,8 @@ public:
     static void loadChunkData(Chunk* chunk);
     static void renderChunk(Chunk* chunk, Mat4 &view, Shader* shader);
     static void unloadChunk(Chunk* chunk);
-private:
-    static void getChunkBlock(Chunk* chunk, ChunkBlock& chunkBlock, int64_t x, int64_t y, int64_t z, int indexX, int indexY, int indexZ);
+    static void getChunkBlock(Chunk* chunk, ChunkBlock& chunkBlock);
+    static void getChunkBlock(Chunk* chunk, ChunkBlock& chunkBlock, int64_t x, int64_t y, int64_t z);
+    static void setChunkBlock(Chunk* chunk, ChunkBlock& chunkBlock);
+    static void setChunkBlock(Chunk* chunk, ChunkBlock& chunkBlock, int64_t x, int64_t y, int64_t z);
 };
