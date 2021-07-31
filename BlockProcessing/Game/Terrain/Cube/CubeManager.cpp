@@ -1,13 +1,5 @@
 #include "CubeManager.h"
 
-VertexBufferObjectLayout* CubeManager::layout;
-float* CubeManager::frontFace;
-float* CubeManager::backFace;
-float* CubeManager::leftFace;
-float* CubeManager::rightFace;
-float* CubeManager::topFace;
-float* CubeManager::bottomFace;
-
 void CubeManager::init() {
     frontFace = new float[54]{
             0, 0, 1, 0, 0, 0, 0, -1, 0,
@@ -57,11 +49,10 @@ void CubeManager::init() {
             0, 0, 1, 0, 1, 0, -1, 0, 0,
             1, 0, 0, 1, 0, 0, -1, 0, 0
     };
-    layout = new VertexBufferObjectLayout();
-    layout->pushFloat(3);
-    layout->pushFloat(2);
-    layout->pushFloat(3);
-    layout->pushFloat(1);
+    layout.pushFloat(3);
+    layout.pushFloat(2);
+    layout.pushFloat(3);
+    layout.pushFloat(1);
 }
 
 void CubeManager::addFace(std::vector<float>& data, Block* block, int x, int y, int z, int face) {
@@ -127,5 +118,4 @@ CubeManager::~CubeManager() {
     delete[] rightFace;
     delete[] topFace;
     delete[] bottomFace;
-    delete layout;
 }

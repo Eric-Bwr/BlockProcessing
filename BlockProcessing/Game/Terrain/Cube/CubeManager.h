@@ -15,15 +15,15 @@
 
 class CubeManager {
 public:
-    static void init();
-    static void addFace(std::vector<float>& data, Block* block, int x, int y, int z, int face);
-    static VertexBufferObjectLayout *layout;
+    void init();
+    void addFace(std::vector<float>& data, Block* block, int x, int y, int z, int face);
+    VertexBufferObjectLayout layout;
     ~CubeManager();
 private:
-    static float *frontFace;
-    static float *backFace;
-    static float *leftFace;
-    static float *rightFace;
-    static float *topFace;
-    static float *bottomFace;
+    float *frontFace;
+    float *backFace;
+    float *leftFace;
+    float *rightFace;
+    float *topFace;
+    float *bottomFace;
 };

@@ -2,10 +2,9 @@
 
 #include <UIManager.h>
 
-class Interface {
-public:
-    static void init(int width, int height);
-    static void render();
-    static UIManager UI;
-    static Font *font;
+struct Interface {
+    Interface() = default;
+    UIManager* UI;
+    Font* font;
+    int width, height;
 };

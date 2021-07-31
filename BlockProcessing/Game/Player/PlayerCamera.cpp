@@ -2,24 +2,19 @@
 
 #define radians 0.01745329251994329576923690768489
 
-Vec3 PlayerCamera::worldUp(0, 1, 0);
-bool PlayerCamera::hasLastPos = false;
-double PlayerCamera::lastPosX, PlayerCamera::lastPosY, PlayerCamera::xOffset, PlayerCamera::yOffset, PlayerCamera::yaw, PlayerCamera::pitch;
-bool PlayerCamera::shouldMoveForward = false, PlayerCamera::shouldMoveBackward = false, PlayerCamera::shouldMoveRight = false, PlayerCamera::shouldMoveLeft = false, PlayerCamera::shouldMoveUp = false, PlayerCamera::shouldMoveDown = false;
-Vec3 PlayerCamera::camPos, PlayerCamera::front(0, 0, -1), PlayerCamera::up, PlayerCamera::right;
-Mat4 PlayerCamera::view;
-
 void PlayerCamera::initCamera(double x, double y, double z, float cameraYaw, float cameraPitch){
+    worldUp.y = 1;
+    front.z = -1;
     camPos.x = x;
     camPos.y = y;
     camPos.z = z;
     yaw = cameraYaw;
     pitch = cameraPitch;
     view.identity();
-    calculateCam();
+    calculateCamera();
 }
 
-void PlayerCamera::calculateCam() {
+void PlayerCamera::calculateCamera() {
     front.x = std::cos(yaw * radians) * std::cos(pitch * radians);
     front.y = std::sin(pitch * radians);
     front.z = std::sin(yaw * radians) * std::cos(pitch * radians);
@@ -49,7 +44,7 @@ void PlayerCamera::moveMouse(double xPos, double yPos) {
         pitch = PLAYER_CAMERA_PITCH_MAX;
     if (pitch <= PLAYER_CAMERA_PITCH_MIN)
         pitch = PLAYER_CAMERA_PITCH_MIN;
-    calculateCam();
+    calculateCamera();
 }
 
 Mat4 &PlayerCamera::getViewMatrix() {

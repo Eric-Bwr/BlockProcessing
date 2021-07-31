@@ -3,7 +3,7 @@
 const double PLAYER_BLOCK_DISTANCE = 15.0;
 const double PLAYER_STEP_SIZE = 0.03;
 const double PLAYER_GRAVITY = 1.5;
-const double PLAYER_MOVE_SPEED = 1000;
+const double PLAYER_MOVE_SPEED = 18;
 const int PLAYER_DOUBLE_PRESS_IGNORE_SPAN = 5;
 const int PLAYER_DOUBLE_PRESS_SPAN = 30;
 const float PLAYER_BLOCK_OUTLINE_WIDTH = 10;

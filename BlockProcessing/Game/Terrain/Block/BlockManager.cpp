@@ -1,16 +1,14 @@
 #include "BlockManager.h"
 
-std::map<unsigned int, Block*> BlockManager::blocks;
-
 void BlockManager::init() {
-    addBlock(new BlockAir());
-    addBlock(new BlockStone());
-    addBlock(new BlockDirt());
-    addBlock(new BlockGrass());
-    addBlock(new BlockPlanks());
+    add(new BlockAir());
+    add(new BlockStone());
+    add(new BlockDirt());
+    add(new BlockGrass());
+    add(new BlockPlanks());
 }
 
-void BlockManager::addBlock(Block* block) {
+void BlockManager::add(Block* block) {
     blocks.insert(std::pair<unsigned int, Block*>(block->id, block));
 }
 

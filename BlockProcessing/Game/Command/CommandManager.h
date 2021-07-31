@@ -4,6 +4,11 @@
 
 class CommandManager {
 public:
-    static void init();
-    static void execute(const std::string& command);
+    void init(ChatInterface* chatInterface);
+    void add(Command* command);
+    void execute(const std::string& command);
+    ~CommandManager();
+private:
+    ChatInterface* chatInterface;
+    std::map<char*, Command*> commands;
 };

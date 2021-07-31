@@ -1,11 +1,5 @@
 #include "OctreeVisualizer.h"
 #include "Paths.h"
-#include "../../Terrain/World/WorldManager.h"
-
-static Shader *shader;
-static VertexArrayObject vao;
-static VertexBufferObject vbo;
-static Mat4 model;
 
 void OctreeVisualizer::init() {
     shader = new Shader(SHADER_LINE);
@@ -44,7 +38,7 @@ void OctreeVisualizer::init() {
     vao.addBuffer(vbo, layout);
 }
 
-static void visualizeNode(const std::vector<Coord>& candidates, int closestNodeLevel, Coord minCorner, const Coord& playerCoord, OctreeNode *octreeNode) {
+void OctreeVisualizer::visualizeNode(const std::vector<Coord>& candidates, int closestNodeLevel, Coord minCorner, const Coord& playerCoord, OctreeNode *octreeNode) {
     glLineWidth(OCTREE_LINE_WIDTH + octreeNode->level * OCTREE_LINE_WIDTH_AMPLIFIER);
     model.identity();
     model.translate(octreeNode->coord.x * CHUNK_SIZE, octreeNode->coord.y * CHUNK_SIZE, octreeNode->coord.z * CHUNK_SIZE);
@@ -70,10 +64,10 @@ static void visualizeNode(const std::vector<Coord>& candidates, int closestNodeL
     }
 }
 
-void OctreeVisualizer::visualize(int closestNodeLevel, Coord& playerCoord, OctreeNode *octreeNode) {
+void OctreeVisualizer::visualize(const std::vector<Coord>& candidates, int closestNodeLevel, Coord& playerCoord, OctreeNode *octreeNode) {
     shader->bind();
     vao.bind();
-    visualizeNode(WorldManager::chunkCandidatesForGenerating, closestNodeLevel, {}, playerCoord, octreeNode);
+    visualizeNode(candidates, closestNodeLevel, {}, playerCoord, octreeNode);
 }
 
 void OctreeVisualizer::setView(Mat4 &view) {

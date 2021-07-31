@@ -1,23 +1,27 @@
 #pragma once
 
-#include "Game/Terrain/Cube/CubeManager.h"
 #include "Chunk.h"
-#include "../Block/BlockManager.h"
 
 class Mat4;
 class Shader;
+class CubeManager;
+class BlockManager;
+class WorldManager;
 
 class ChunkManager {
 public:
-    static void initChunk(Chunk* chunk);
-    static void generateChunkDefaultBlockData(Chunk *chunk);
-    static void generateChunkDefaultFaceData(Chunk *chunk);
-    static void generateChunkFaceData(Chunk *chunk);
-    static void loadChunkData(Chunk* chunk);
-    static void renderChunk(Chunk* chunk, Mat4 &view, Shader* shader);
-    static void unloadChunk(Chunk* chunk);
-    static void getChunkBlock(Chunk* chunk, ChunkBlock& chunkBlock);
-    static void getChunkBlock(Chunk* chunk, ChunkBlock& chunkBlock, int64_t x, int64_t y, int64_t z);
-    static void setChunkBlock(Chunk* chunk, ChunkBlock& chunkBlock);
-    static void setChunkBlock(Chunk* chunk, ChunkBlock& chunkBlock, int64_t x, int64_t y, int64_t z);
+    void init(CubeManager *cubeManager, BlockManager* blockManager, WorldManager* worldManager);
+    void initChunk(Chunk* chunk);
+    void generateChunkDefaultBlockData(Chunk *chunk);
+    void generateChunkDefaultFaceData(Chunk *chunk);
+    void generateChunkFaceData(Chunk *chunk);
+    void loadChunkData(Chunk* chunk);
+    void renderChunk(Chunk* chunk, Mat4 &view, Shader* shader);
+    void unloadChunk(Chunk* chunk);
+    void getChunkBlock(Chunk* chunk, unsigned int& id, int64_t x, int64_t y, int64_t z);
+    void setChunkBlock(Chunk* chunk, unsigned int id, int64_t x, int64_t y, int64_t z);
+private:
+    CubeManager *cubeManager;
+    BlockManager *blockManager;
+    WorldManager *worldManager;
 };

@@ -1,24 +1,19 @@
 #include "PlayerBlockOutline.h"
 #include <Paths.h>
 
-static Shader* shader;
-static Mat4 model;
-static VertexArrayObject vao;
-static VertexBufferObject vbo;
-static int vertexCount;
-UIColor PlayerBlockOutline::color;
-
 void PlayerBlockOutline::init() {
-    const float vertices[4] = {
+    const float vertices[8] = {
             0, 0,
-            1, 0
+            1, 0,
+            1, 0,
+            1, 1
     };
     shader = new Shader(SHADER_LINE);
     model.identity();
     model.translate(0, 0, 0);
     auto layout = VertexBufferObjectLayout();
     layout.pushFloat(2);
-    vertexCount = 2;
+    vertexCount = 4;
     vao.init();
     vbo.init(vertices, layout.getStride() * vertexCount, GL_STATIC_DRAW);
     vao.addBuffer(vbo, layout);

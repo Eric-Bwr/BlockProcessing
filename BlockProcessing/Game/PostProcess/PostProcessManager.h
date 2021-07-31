@@ -12,7 +12,7 @@
 
 class PostProcessManager {
 public:
-    PostProcessManager(int width, int height);
+    void init(int width, int height);
     void bind();
     void unbind();
     void processEffects();

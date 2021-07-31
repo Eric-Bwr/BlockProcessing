@@ -1,8 +1,7 @@
 #include "CommandTP.h"
-#include "Game/Player/Player.h"
-#include "../../Interface/Messages.h"
+#include "Game/Interface/Messages.h"
 
-CommandTP::CommandTP(){
+CommandTP::CommandTP(Player& player) : player(player){
     prefix = "tp";
 }
 
@@ -12,12 +11,12 @@ void CommandTP::execute(int length, const std::vector<std::string>& arguments) {
         auto y = arguments.at(1);
         auto z = arguments.at(2);
         if(isNumber(x) && isNumber(y) && isNumber(z)) {
-            Player::camPos.x = std::stof(x);
-            Player::camPos.y = std::stof(y);
-            Player::camPos.z = std::stof(z);
-            Player::updatePlayer();
+            player.camPos.x = std::stof(x);
+            player.camPos.y = std::stof(y);
+            player.camPos.z = std::stof(z);
+            player.update();
             return;
         }
     }
-    Chat::append(MESSAGES_ERROR_HELP_TP, COLOR_RED);
+    chatInterface->append(MESSAGES_ERROR_HELP_TP, COLOR_RED);
 }

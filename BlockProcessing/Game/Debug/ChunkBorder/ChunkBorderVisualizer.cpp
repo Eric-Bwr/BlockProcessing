@@ -1,12 +1,6 @@
 #include "ChunkBorderVisualizer.h"
 #include "Paths.h"
 
-static Shader* shader;
-static Mat4 model;
-static VertexArrayObject vao;
-static VertexBufferObject vbo;
-static int vertexCount;
-
 void ChunkBorderVisualizer::init() {
     shader = new Shader(SHADER_CHUNK_BORDER);
     model.identity();

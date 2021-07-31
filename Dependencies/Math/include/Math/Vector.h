@@ -4,7 +4,7 @@
 
 class Vec2 {
 public:
-	double x, y;
+	double x = 0, y = 0;
 
 	Vec2() = default;
 	explicit Vec2(double v);
@@ -35,7 +35,7 @@ public:
 
 class Vec3 {
 public:
-	double x, y, z;
+	double x = 0, y = 0, z = 0;
 
 	Vec3() = default;
 	explicit Vec3(double v);
@@ -72,7 +72,7 @@ public:
 
 class Vec4 {
 public:
-    double x, y, z, w;
+    double x = 0, y = 0, z = 0, w = 0;
 
 	Vec4() = default;
     explicit Vec4(double v);

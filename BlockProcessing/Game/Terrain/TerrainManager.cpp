@@ -1,21 +1,19 @@
-#include "../Debug/Octree/OctreeVisualizer.h"
 #include "TerrainManager.h"
 #include "UITexture.h"
+#include "Game/BlockProcessing.h"
 
-Shader *TerrainManager::shader;
-Texture *TerrainManager::texture;
-FastNoise *TerrainManager::fastNoise;
-
-void TerrainManager::init(int seed, FastNoise::NoiseType noiseType, float frequency, int octaves) {
+void TerrainManager::init(CubeManager* cubeManager, BlockManager* blockManager, ChunkManager* chunkManager, WorldManager* worldManager, int seed, FastNoise::NoiseType noiseType, float frequency, int octaves) {
+    this->worldManager = worldManager;
     fastNoise = new FastNoise;
     fastNoise->SetNoiseType(noiseType);
     fastNoise->SetSeed(seed);
     fastNoise->SetFrequency(frequency);
     fastNoise->SetFractalOctaves(octaves);
-    CubeManager::init();
-    BlockManager::init();
-    WorldManager::fastNoise = fastNoise;
-    WorldManager::init();
+    cubeManager->init();
+    blockManager->init();
+    chunkManager->init(cubeManager, blockManager, worldManager);
+    worldManager->fastNoise = fastNoise;
+    worldManager->init(blockManager, chunkManager);
     shader = new Shader(SHADER_TERRAIN);
     shader->bind();
     texture = new UITexture(TEXTURE_TERRAIN_ATLAS);
@@ -30,14 +28,14 @@ void TerrainManager::init(int seed, FastNoise::NoiseType noiseType, float freque
 }
 
 void TerrainManager::generate(const Coord& coord) {
-    WorldManager::generate(coord);
+    worldManager->generate(coord);
 }
 
 void TerrainManager::render(Mat4 &projectionView, Mat4 &view) {
     shader->bind();
     shader->setUniform3f("viewPos", view.m32, view.m30, view.m31);
     texture->bind();
-    WorldManager::render(projectionView, view, shader);
+    worldManager->render(projectionView, view, shader);
 }
 
 void TerrainManager::setProjection(Mat4 &projection) {

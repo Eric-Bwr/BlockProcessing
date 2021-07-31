@@ -1,10 +1,10 @@
 #include "Octree.h"
-#include "../World/WorldManager.h"
-#include "../../Player/Player.h"
+#include "Game/BlockProcessing.h"
 
 OctreeNode::OctreeNode() = default;
 
-OctreeNode::OctreeNode(int level, int scaling, Coord coord, std::vector<OctreeNode> &nodes, std::vector<Chunk> &chunks, int current_nodes_index, int &chunk_index) {
+OctreeNode::OctreeNode(ChunkManager* chunkManager, int level, int scaling, Coord coord, std::vector<OctreeNode> &nodes, std::vector<Chunk> &chunks, int current_nodes_index, int &chunk_index) {
+    this->chunkManager = chunkManager;
     this->alreadyConstructed = true;
     this->coord = coord;
     this->level = level;
@@ -31,7 +31,7 @@ OctreeNode::OctreeNode(int level, int scaling, Coord coord, std::vector<OctreeNo
             assert(child_nodes_index < nodes.size());
             assert(!nodes[child_nodes_index].alreadyConstructed);
 
-            OctreeNode node = OctreeNode(level - 1, scaling / 2, childCoord, nodes, chunks, child_nodes_index, chunk_index);
+            OctreeNode node = OctreeNode(chunkManager, level - 1, scaling / 2, childCoord, nodes, chunks, child_nodes_index, chunk_index);
             nodes[child_nodes_index] = std::move(node);
             children[i] = &nodes[child_nodes_index];
         }
@@ -39,6 +39,7 @@ OctreeNode::OctreeNode(int level, int scaling, Coord coord, std::vector<OctreeNo
 }
 
 OctreeNode &OctreeNode::operator=(OctreeNode &&other) {
+    this->chunkManager = other.chunkManager;
     this->alreadyConstructed = other.alreadyConstructed;
     this->coord = other.coord;
     this->level = other.level;
@@ -59,13 +60,12 @@ OctreeNode &OctreeNode::operator=(OctreeNode &&other) {
     return *this;
 }
 
-OctreeNode::~OctreeNode() {
-}
+OctreeNode::~OctreeNode() = default;
 
 void OctreeNode::render(Mat4 &view, Shader *shader) {
     if (emptyChildren != ALL_ONES_FLAG) {
         if (level == 0) {
-            ChunkManager::renderChunk(chunk, view, shader);
+            chunkManager->renderChunk(chunk, view, shader);
         } else {
             for (auto child : children)
                 child->render(view, shader);
@@ -154,7 +154,7 @@ void OctreeNode::deleteFurthestLoadedChunks(const Coord& playerChunkCoord){
  		if (!chunk->generating && chunk->loaded) {
             auto distance = Coord::distanceSquared(playerChunkCoord, coord);
             if (distance >= CHUNKING_DELETION_RADIUS_SQUARED) {
-                ChunkManager::unloadChunk(chunk);
+                chunkManager->unloadChunk(chunk);
                 updateHierarchyLoadedAndEmptyStatus(false, true);
             }
         }
@@ -217,4 +217,15 @@ void OctreeNode::updateHierarchyLoadedAndEmptyStatus(bool isChunkLoaded, bool is
 
         node = parent;
     }
+}
+
+void Octree::printCurrentMemoryUsageInfo(int64_t& totalEmptyChunks, int64_t& totalChunks) {
+    totalChunks += chunks.size();
+    int64_t value = 0;
+    for(auto& chunk : chunks){
+        if(chunk.faceData.empty())
+            value++;
+    }
+    totalEmptyChunks += value;
+    std::cout << "Num Chunks: " <<  chunks.size() << " Empty: " <<  value << "\n";
 }

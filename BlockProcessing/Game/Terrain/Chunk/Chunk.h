@@ -1,13 +1,11 @@
 #pragma once
 
+#include <vector>
 #include <atomic>
-#include <Buffer.h>
-#include "../TerrainDefines.h"
-#include "ChunkBlock.h"
 
 struct Chunk {
     std::vector<float> faceData;
-    std::vector<ChunkBlock> blockData;
+    std::vector<unsigned int> blockData;
     uint64_t faceDataSize = 0;
     uint64_t vertexCount = 0;
     int64_t tileX, tileY, tileZ;

@@ -1,7 +1,9 @@
 #include "PostProcessManager.h"
 #include "PostProcessShader.h"
 
-PostProcessManager::PostProcessManager(int width, int height) : width(width), height(height) {
+void PostProcessManager::init(int width, int height) {
+    this->width = width;
+    this->height = height;
     frameBuffer.bind();
     colorBuffer = new Texture();
     colorBuffer->setWidth(width);
