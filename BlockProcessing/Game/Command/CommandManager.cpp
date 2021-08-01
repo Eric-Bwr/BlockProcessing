@@ -6,7 +6,9 @@ void CommandManager::init(ChatInterface* chatInterface) {
 }
 
 void CommandManager::add(Command* command) {
+    command->commandManager = this;
     command->chatInterface = chatInterface;
+    command->init();
     commands.insert(std::pair<char*, Command*>(command->prefix, command));
 }
 

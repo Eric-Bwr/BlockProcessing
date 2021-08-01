@@ -39,7 +39,7 @@
 #ifdef FN_USE_DOUBLES
 typedef double FN_DECIMAL;
 #else
-typedef double FN_DECIMAL;
+typedef float FN_DECIMAL;
 #endif
 
 class FastNoise

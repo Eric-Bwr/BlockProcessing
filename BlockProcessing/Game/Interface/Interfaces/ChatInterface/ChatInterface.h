@@ -12,7 +12,7 @@ struct ChatComponent {
     UIText* textElement;
     UIImage* background;
     float blending, staying;
-    bool hovered, pressed = false;
+    bool hovered = false, pressed = false;
 };
 
 class ChatInterface : public Interface {

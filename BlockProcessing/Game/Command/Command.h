@@ -9,8 +9,9 @@ std::vector<std::string> split(const std::string &text);
 
 struct Command {
 public:
-    Command() = default;
+    virtual void init() {}
     virtual void execute(const std::string& typed, int length, const std::vector<std::string>& arguments) {}
+    CommandManager* commandManager;
     ChatInterface* chatInterface;
     char* prefix = "";
 };
