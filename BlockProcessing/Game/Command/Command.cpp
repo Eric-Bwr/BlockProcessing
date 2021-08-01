@@ -1,9 +1,21 @@
 #include "Command.h"
 
 bool isNumber(const std::string &str) {
-    for (char const &c : str) {
-        if (!std::isdigit(c)) return false;
+    bool lastWasNegate = false;
+    for (char c : str) {
+        if (c == '-')
+            if(lastWasNegate)
+                return false;
+            else
+                lastWasNegate = true;
+        else {
+            if (!std::isdigit(c) && lastWasNegate)
+                return false;
+            lastWasNegate = false;
+        }
     }
+    if(lastWasNegate)
+        return false;
     return true;
 }
 

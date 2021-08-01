@@ -103,10 +103,14 @@ void Player::calculateMove(double deltaTime) {
         else
             doublePressSpan--;
 */
+        worldManager->getChunkBlock(collisionBlockID, blockX, blockY - 3, blockZ);
         if (shouldMoveUp)
             camPos.y += PLAYER_MOVE_SPEED * deltaTime;
-        if (shouldMoveDown)
+        if (shouldMoveDown) {
             camPos.y -= PLAYER_MOVE_SPEED * deltaTime;
+            if(collisionBlockID != BLOCK_AIR)
+                camPos.y += PLAYER_MOVE_SPEED * deltaTime;
+        }
     } else if (gameMode == GAMEMODE_SURVIVAL) {
         calculateGravity();
         worldManager->getChunkBlock(collisionBlockID, getBlockFromCamera(camPos.x), getBlockFromCamera(camPos.y), getBlockFromCamera(camPos.z));
@@ -158,7 +162,7 @@ void Player::castRay() {
             return;
         }
     }
-    playerBlockOutline.update(0, -2, 0);
+    playerBlockOutline.update(0, -99999999, 0);
 }
 
 Player::~Player() = default;

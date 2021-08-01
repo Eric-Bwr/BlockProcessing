@@ -3,7 +3,7 @@
 #include <Paths.h>
 
 void PlayerBlockOutline::init() {
-    const float offset = 0.002;
+    const float offset = 0.0015;
     const float vertices[72] = {
             0 - offset, 0 - offset, 0 - offset,
             1 + offset, 0 - offset, 0 - offset,

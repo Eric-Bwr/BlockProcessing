@@ -15,7 +15,7 @@ out vec3 fragPosition;
 flat out float blockID;
 out float visibility;
 
-uniform float intensity = 0.00015;
+uniform float intensity = 0.0015;
 uniform float gradient = 1.2;
 
 void main(){

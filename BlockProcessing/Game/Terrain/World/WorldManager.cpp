@@ -128,16 +128,30 @@ Chunk *WorldManager::getChunkFromChunkCoords(int64_t x, int64_t y, int64_t z) {
 }
 
 void WorldManager::getDefaultChunkBlock(unsigned int& id, int64_t x, int64_t y, int64_t z) {
-    int height = int(((fastNoise->GetNoise(x, z) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER);
-    if (y > height || y < 0) {
-        id = blockManager->getBlockByID(BLOCK_AIR)->id;
-    } else if (y == height) {
-        id = blockManager->getBlockByID(BLOCK_GRASS)->id;
-    } else if (y < height && y >= height - 1) {
-        id = blockManager->getBlockByID(BLOCK_DIRT)->id;
-    } else {
-        id = blockManager->getBlockByID(BLOCK_STONE)->id;
+    auto noise = (fastNoise->GetNoise(x, y, z) + 1.0f) / 2.0f;
+    if(noise < 0.63)
+        id = BLOCK_AIR;
+    else{
+        if((fastNoise->GetNoise(x, y + 1, z) + 1.0f) / 2.0f < 0.63){
+            id = BLOCK_GRASS;
+        }else if((fastNoise->GetNoise(x, y + 2, z) + 1.0f) / 2.0f < 0.63){
+
+            id = BLOCK_DIRT;
+        }else
+            id = BLOCK_STONE;
     }
+
+
+    //int height = int(((fastNoise->GetNoise(x, z) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER);
+    //if (y > height || y < 0) {
+    //    id = blockManager->getBlockByID(BLOCK_AIR)->id;
+    //} else if (y == height) {
+    //    id = blockManager->getBlockByID(BLOCK_GRASS)->id;
+    //} else if (y < height && y >= height - 1) {
+    //    id = blockManager->getBlockByID(BLOCK_DIRT)->id;
+    //} else {
+    //    id = blockManager->getBlockByID(BLOCK_STONE)->id;
+    //}
 }
 
 void WorldManager::getChunkBlock(unsigned int& id, int64_t x, int64_t y, int64_t z) {

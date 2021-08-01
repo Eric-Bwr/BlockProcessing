@@ -6,7 +6,7 @@
 struct CommandTP : Command {
 public:
     explicit CommandTP(Player& player);
-    void execute(int length, const std::vector<std::string>& arguments) override;
+    void execute(const std::string& typed, int length, const std::vector<std::string>& arguments) override;
 private:
     Player& player;
 };

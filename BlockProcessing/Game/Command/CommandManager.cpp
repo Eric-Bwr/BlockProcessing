@@ -15,11 +15,13 @@ void CommandManager::execute(const std::string &input) {
     for (auto command : commands) {
         if (command.first == arguments.at(0)) {
             arguments.erase(arguments.begin());
-            command.second->execute(arguments.size(), arguments);
+            command.second->execute("/" + input, arguments.size(), arguments);
             return;
         }
     }
-    chatInterface->append(MESSAGES_ERROR_UNKNOWN_CMD, COLOR_RED);
+    auto chatComponent = new ChatComponent(MESSAGES_ERROR_UNKNOWN_CMD, MESSAGES_ERROR_COLOR);
+    chatComponent->typed = "/" + input;
+    chatInterface->append(chatComponent);
 }
 
 CommandManager::~CommandManager() {

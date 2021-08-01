@@ -36,7 +36,7 @@ void BlockProcessing::init(GLFWwindow* window, int width, int height) {
 
     commandManager.add(new CommandTP(player));
 
-    player.camPos.y = ((int(worldManager.fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER  + 4);
+    player.camPos.y = ((int(worldManager.fastNoise->GetNoise(0, 0, 0) + 1.0f) / 2.0f) * TERRAIN_AMPLIFIER  + 4);
     player.update();
     crosshairInterface.display(true);
 }
@@ -51,6 +51,7 @@ void BlockProcessing::update(double frameDeltaTime) {
         chunkBorderVisualizer.setProjection(projection);
         player.setProjection(projection);
     }
+    chatInterface.update(frameDeltaTime);
     player.update(frameDeltaTime);
     terrainManager.setLightPosition(player.getCameraX(), player.getCameraY() + 1000, player.getCameraZ());
     terrainManager.generate(player.chunk);

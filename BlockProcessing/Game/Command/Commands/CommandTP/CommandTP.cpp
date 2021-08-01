@@ -5,7 +5,7 @@ CommandTP::CommandTP(Player& player) : player(player){
     prefix = "tp";
 }
 
-void CommandTP::execute(int length, const std::vector<std::string>& arguments) {
+void CommandTP::execute(const std::string& typed, int length, const std::vector<std::string>& arguments) {
     if(length == 3){
         auto x = arguments.at(0);
         auto y = arguments.at(1);
@@ -18,5 +18,7 @@ void CommandTP::execute(int length, const std::vector<std::string>& arguments) {
             return;
         }
     }
-    chatInterface->append(MESSAGES_ERROR_HELP_TP, COLOR_RED);
+    auto chatComponent = new ChatComponent(MESSAGES_ERROR_HELP_TP, MESSAGES_ERROR_COLOR);
+    chatComponent->typed = typed;
+    chatInterface->append(chatComponent);
 }
