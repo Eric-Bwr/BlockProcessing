@@ -9,7 +9,7 @@
 class PlayerBlockOutline {
 public:
     void init();
-    void update(const Coord& coord);
+    void update(int64_t x, int64_t y, int64_t z);
     void render(Mat4& view);
     void setProjection(Mat4& projection);
     UIColor color;

@@ -1,6 +1,14 @@
 #include "ChatInterface.h"
 #include "Game/Command/CommandManager.h"
 
+ChatComponent::ChatComponent() = default;
+
+ChatComponent::ChatComponent(const std::string &text, const UIColor &textColor, void (*callback)(bool pressed, bool hovered)) {
+    this->text = text;
+    this->textColor = textColor;
+    this->callback = callback;
+}
+
 void ChatInterface::init(CommandManager* commandManager) {
     this->commandManager = commandManager;
     textField = new UITextField("", font, 50, 0, height - chatHeight, chatWidth, chatHeight, 0);
@@ -11,33 +19,37 @@ void ChatInterface::init(CommandManager* commandManager) {
     background->setColor(color);
 }
 
-void ChatInterface::append(const std::string &input, const UIColor &textColor) {
+void ChatInterface::append(ChatComponent* chatComponent) {
     if(texts.size() >= 20) {
         if(shouldDisplay)
-            UI->remove(texts.front());
+            UI->remove(texts.front()->textElement);
         delete texts.front();
         texts.erase(texts.begin());
     }
-    auto text = new UIText((char *) input.data(), font, 30, 0, height - chatHistoryHeight - chatHeight, width, chatHistoryHeight, UITextMode::LEFT);
-    text->r = textColor.r;
-    text->g = textColor.g;
-    text->b = textColor.b;
-    text->a = textColor.a;
+    chatComponent->textElement = new UIText((char *) chatComponent->text.data(), font, 30, 0, height - chatHistoryHeight - chatHeight, width, chatHistoryHeight, UITextMode::LEFT);
+    chatComponent->textElement->r = chatComponent->textColor.r;
+    chatComponent->textElement->g = chatComponent->textColor.g;
+    chatComponent->textElement->b = chatComponent->textColor.b;
+    chatComponent->textElement->a = chatComponent->textColor.a;
     for (auto oldText : texts)
-        oldText->setPosition(0, oldText->getY() - chatHistoryHeight);
-    texts.emplace_back(text);
+        oldText->textElement->setPosition(0, oldText->textElement->getY() - chatHistoryHeight);
+    texts.emplace_back(chatComponent);
     if (shouldDisplay)
-        UI->add(text, 1);
+        UI->add(chatComponent->textElement, 1);
     background->setPosition(0, height - texts.size() * chatHistoryHeight - chatHeight);
     background->setSize(chatWidth, texts.size() * chatHistoryHeight);
     revertStep = texts.size() - 1;
+}
+
+void ChatInterface::append(const std::string& text, const UIColor& textColor) {
+    append(new ChatComponent(text, textColor, nullptr));
 }
 
 void ChatInterface::revertUp(){
     if(!texts.empty()) {
         if (shouldDisplay && revertStep > 0) {
             revertStep--;
-            textField->setText(texts.at(revertStep)->getText());
+            textField->setText(texts.at(revertStep)->textElement->getText());
         } else if (revertStep == 0)
             textField->setText("");
     }
@@ -46,7 +58,7 @@ void ChatInterface::revertUp(){
 void ChatInterface::revertDown(){
     if(!texts.empty()) {
         if (shouldDisplay && revertStep <= texts.size() - 1) {
-            textField->setText(texts.at(revertStep)->getText());
+            textField->setText(texts.at(revertStep)->textElement->getText());
             revertStep++;
         } else if (revertStep > texts.size() - 1)
             textField->setText("");
@@ -57,7 +69,7 @@ void ChatInterface::display(bool display) {
     shouldDisplay = display;
     if(display) {
         for (auto text : texts)
-            UI->add(text, 1);
+            UI->add(text->textElement, 1);
         UI->add(background);
         revertStep = texts.size() - 1;
 
@@ -67,7 +79,7 @@ void ChatInterface::display(bool display) {
     } else {
         revertStep = 0;
         for (auto text : texts)
-            UI->remove(text);
+            UI->remove(text->textElement);
         UI->remove(background);
 
         UI->remove(textField);
@@ -98,7 +110,8 @@ ChatInterface::~ChatInterface() {
     UI->remove(textField);
     delete textField;
     for (auto text : texts) {
-        UI->remove(text);
+        UI->remove(text->textElement);
+        delete text->textElement;
         delete text;
     }
     UI->remove(background);

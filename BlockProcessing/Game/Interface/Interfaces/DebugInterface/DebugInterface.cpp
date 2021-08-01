@@ -10,13 +10,14 @@ void DebugInterface::init() {
     gl += "\nGLSL: ";
     gl += (char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
     textLeft = new UIText("", font, 30, 0, 0, 2000, 500, UITextMode::LEFT);
-    textRight = new UIText(gl.data(), font, 30, 0, 0, UI->getWidth(), 500, UITextMode::RIGHT);
+    textRight = new UIText(gl.data(), font, 30, 0, 0, width, 500, UITextMode::RIGHT);
 }
 
 void DebugInterface::update(Player* player) {
     stringLeft.str("");
     stringLeft << "FPS: " << fps << "\n";
     stringLeft << std::fixed << std::setprecision(2) << "X: " << player->getX() << " Y: " << player->getY() << " Z: " << player->getZ() << "\n";
+    stringLeft << "BlockX: " << player->blockX << " BlockY: " << player->blockY << " BlockZ: " << player->blockZ << "\n";
     stringLeft << "ChunkX: " << player->chunkX << " ChunkY: " << player->chunkY << " ChunkZ: " << player->chunkZ << "\n";
     stringLeft << "OctreeX: " << player->octreeX << " OctreeY: " << player->octreeY << " OctreeZ: " << player->octreeZ << "\n";
     textLeft->setText(stringLeft.str().data());

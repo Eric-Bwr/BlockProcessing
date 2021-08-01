@@ -78,15 +78,15 @@ void BlockProcessing::render(double frameDeltaTime) {
         chunkBorderVisualizer.render(view);
     linePointVisualizer.setView(view);
 
-    if (alt) {
-        alt = false;
-        Shader::unbind();
-        terrainManager.shader->reload();
-        std::cout << terrainManager.shader->getErrorMessage();
-        terrainManager.shader->setUniformMatrix4f("projection", projection.getBuffer());
-        terrainManager.shader->setUniform3f("lightPos", 10, 5000, 10);
-        terrainManager.shader->setUniformBool("blinn", true);
-    }
+    //if (CHANGE: alt) {
+    //    alt = false;
+    //    Shader::unbind();
+    //    terrainManager.shader->reload();
+    //    std::cout << terrainManager.shader->getErrorMessage();
+    //    terrainManager.shader->setUniformMatrix4f("projection", projection.getBuffer());
+    //    terrainManager.shader->setUniform3f("lightPos", 10, 5000, 10);
+    //    terrainManager.shader->setUniformBool("blinn", true);
+    //}
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
     interface.render();

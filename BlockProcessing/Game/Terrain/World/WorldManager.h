@@ -29,7 +29,6 @@ struct Compare {
 
 class WorldManager {
 public:
-    static bool printCurrentMemoryUsageInfo;
     void init(BlockManager* blockManager, ChunkManager* chunkManager);
     void generate(const Coord& playerChunkCoord);
     Chunk* getChunkFromBlockCoords(int64_t x, int64_t y, int64_t z);
@@ -37,11 +36,12 @@ public:
     void getDefaultChunkBlock(unsigned int& id, int64_t x, int64_t y, int64_t z);
     void getChunkBlock(unsigned int& id, int64_t x, int64_t y, int64_t z);
     void setChunkBlock(unsigned int id, int64_t x, int64_t y, int64_t z);
+    void setChunkBlocks(const std::vector<unsigned int>& blocks, int64_t x, int64_t y, int64_t z);
     void render(Mat4& projectionView, Mat4 &view, Shader* shader);
     ~WorldManager();
     FastNoise* fastNoise;
     std::unordered_map<Coord, std::shared_ptr<Octree>, Hash, Compare> octrees;
-    std::unordered_set<Coord, Hash, Compare> modifiedChunks;
+    std::vector<Coord> modifiedNodes;
     std::vector<Coord> chunkCandidatesForGenerating;
     Frustum frustum;
 private:

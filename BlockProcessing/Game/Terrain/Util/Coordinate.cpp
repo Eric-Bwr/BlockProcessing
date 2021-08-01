@@ -1,25 +1,22 @@
 #include "Coordinate.h"
 
 int64_t getBlockFromCamera(double camera) {
-    int64_t block = floor(camera);
-    if (block < 0)
-        block -= 1;
-    return block;
+    return floor(camera);
 }
 
 Coord getChunkFromBlock(Coord block) {
     if (block.x < 0)
-        block.x = (block.x / CHUNK_SIZE) - 1;
+        block.x = ((block.x + 1) / CHUNK_SIZE) - 1;
     else
         block.x /= CHUNK_SIZE;
 
     if (block.y < 0)
-        block.y = (block.y / CHUNK_SIZE) - 1;
+        block.y = ((block.y + 1) / CHUNK_SIZE) - 1;
     else
         block.y /= CHUNK_SIZE;
 
     if (block.z < 0)
-        block.z = (block.z / CHUNK_SIZE) - 1;
+        block.z = ((block.z + 1) / CHUNK_SIZE) - 1;
     else
         block.z /= CHUNK_SIZE;
     return block;
@@ -27,7 +24,7 @@ Coord getChunkFromBlock(Coord block) {
 
 int64_t getChunkFromBlock(int64_t block) {
     if (block < 0)
-        block = (block / CHUNK_SIZE) - 1;
+        block = ((block + 1) / CHUNK_SIZE) - 1;
     else
         block /= CHUNK_SIZE;
     return block;

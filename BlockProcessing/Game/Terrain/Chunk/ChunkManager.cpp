@@ -1,6 +1,5 @@
 #include "ChunkManager.h"
 #include "../Cube/CubeManager.h"
-#include "../Block/BlockManager.h"
 #include "../World/WorldManager.h"
 
 void ChunkManager::init(CubeManager *cubeManager, BlockManager* blockManager, WorldManager* worldManager) {
@@ -129,6 +128,7 @@ void ChunkManager::generateChunkDefaultFaceData(Chunk *chunk) {
 }
 
 void ChunkManager::generateChunkFaceData(Chunk *chunk) {
+    chunk->faceData.clear();
     Block *block;
     unsigned int neighbor;
     unsigned int chunkBlock;
@@ -270,4 +270,8 @@ void ChunkManager::setChunkBlock(Chunk *chunk, unsigned int id, int64_t x, int64
     int64_t indexY = y - (chunk->tileY * CHUNK_SIZE);
     int64_t indexZ = z - (chunk->tileZ * CHUNK_SIZE);
     chunk->blockData[indexZ * CHUNK_SIZE * CHUNK_SIZE + indexY * CHUNK_SIZE + indexX] = id;
+}
+
+void ChunkManager::setChunkBlocks(Chunk *chunk, const std::vector<unsigned int>& blocks) {
+    chunk->blockData = blocks;
 }

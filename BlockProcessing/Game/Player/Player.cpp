@@ -30,9 +30,9 @@ void Player::update(double deltaTime) {
     castRay();
 }
 
-void Player::dig() const {
+void Player::dig() {
     if (lookedBlockID != BLOCK_AIR)
-        worldManager->setChunkBlock(lookedBlockID, lookedBlockX, lookedBlockY, lookedBlockZ);
+        worldManager->setChunkBlock(BLOCK_AIR, lookedBlockX, lookedBlockY, lookedBlockZ);
 }
 
 void Player::place() {
@@ -150,10 +150,15 @@ void Player::castRay() {
         lookedBlockY = round(camPos.y + end.y - 0.5f);
         lookedBlockZ = round(camPos.z + end.z - 0.5f);
         worldManager->getChunkBlock(lookedBlockID, lookedBlockX, lookedBlockY, lookedBlockZ);
-        if (lookedBlockID != BLOCK_AIR)
+        if (lookedBlockID != BLOCK_AIR) {
+            lookedBlock.x = lookedBlockX;
+            lookedBlock.y = lookedBlockY;
+            lookedBlock.z = lookedBlockZ;
+            playerBlockOutline.update(lookedBlockX, lookedBlockY, lookedBlockZ);
             return;
+        }
     }
-    playerBlockOutline.update(lookedBlock);
+    playerBlockOutline.update(0, -2, 0);
 }
 
 Player::~Player() = default;

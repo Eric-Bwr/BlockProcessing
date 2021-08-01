@@ -20,6 +20,7 @@ public:
     void unloadChunk(Chunk* chunk);
     void getChunkBlock(Chunk* chunk, unsigned int& id, int64_t x, int64_t y, int64_t z);
     void setChunkBlock(Chunk* chunk, unsigned int id, int64_t x, int64_t y, int64_t z);
+    void setChunkBlocks(Chunk *chunk, const std::vector<unsigned int>& blocks);
 private:
     CubeManager *cubeManager;
     BlockManager *blockManager;

@@ -1,6 +1,5 @@
 #include "TerrainManager.h"
 #include "UITexture.h"
-#include "Game/BlockProcessing.h"
 
 void TerrainManager::init(CubeManager* cubeManager, BlockManager* blockManager, ChunkManager* chunkManager, WorldManager* worldManager, int seed, FastNoise::NoiseType noiseType, float frequency, int octaves) {
     this->worldManager = worldManager;
@@ -15,7 +14,7 @@ void TerrainManager::init(CubeManager* cubeManager, BlockManager* blockManager, 
     worldManager->fastNoise = fastNoise;
     worldManager->init(blockManager, chunkManager);
     shader = new Shader(SHADER_TERRAIN);
-    shader->bind();
+    shader->addUniforms({"projection", "modelView", "intensity", "gradient", "image", "lightPos", "viewPos", "blinn", "skyColor"});
     texture = new UITexture(TEXTURE_TERRAIN_ATLAS);
     texture->bind();
     texture->clampEdge();

@@ -1,5 +1,5 @@
 #vertex
-#version 430
+#version 430 core
 
 layout (location = 0) in vec3 inPosition;
 layout (location = 1) in vec2 inTexture;
@@ -29,7 +29,7 @@ void main(){
 }
 
 #fragment
-#version 430
+#version 430 core
 
 in vec2 textureCoords;
 in vec3 normals;

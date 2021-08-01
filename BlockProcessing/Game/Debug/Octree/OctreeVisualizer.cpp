@@ -3,6 +3,7 @@
 
 void OctreeVisualizer::init() {
     shader = new Shader(SHADER_LINE);
+    shader->addUniforms({"projection", "view", "model", "color"});
     const float vertices[72]{
             0, 0, 0,
             0, CHUNK_SIZE, 0,

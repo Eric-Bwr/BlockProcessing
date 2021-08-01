@@ -1,5 +1,5 @@
 #vertex
-#version 330
+#version 330 core
 
 layout (location = 0) in vec3 inPosition;
 
@@ -12,7 +12,7 @@ void main(){
 }
 
     #fragment
-    #version 330
+    #version 330 core
 
 uniform vec3 color;
 

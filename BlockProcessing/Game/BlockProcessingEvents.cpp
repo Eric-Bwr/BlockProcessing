@@ -7,9 +7,6 @@ void BlockProcessing::onKey(int key, int scancode, int action, int mods) {
     else if (key == GLFW_KEY_T && action == GLFW_PRESS || key == GLFW_KEY_T && action == GLFW_REPEAT)
         if (!chat)
             allowCommand = false;
-    if (key == GLFW_KEY_J && action == GLFW_PRESS) {
-        WorldManager::printCurrentMemoryUsageInfo = !WorldManager::printCurrentMemoryUsageInfo;
-    }
     if (key == GLFW_KEY_T && action == GLFW_PRESS) {
         if (!chat) {
             glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);

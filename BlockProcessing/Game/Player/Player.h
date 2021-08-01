@@ -12,7 +12,7 @@ public:
     void render(Mat4& view);
     void setProjection(Mat4& projection);
     void update(double deltaTime = 0.0);
-    void dig() const;
+    void dig();
     void place();
     int8_t gameMode = GAMEMODE_CREATIVE;
     int64_t blockX, chunkX, octreeX, lookedBlockX;

@@ -12,7 +12,6 @@ OctreeNode::OctreeNode(ChunkManager* chunkManager, int level, int scaling, Coord
     int64_t offsetX, offsetY, offsetZ;
     center = Coord{coord.x + scaling / 2, coord.y + scaling / 2, coord.z + scaling / 2};
     if (level == 0) {
-        assert(chunk_index < chunks.size());
         chunk = &chunks[chunk_index++];
         chunk->tileX = coord.x;
         chunk->tileY = coord.y;
@@ -27,9 +26,6 @@ OctreeNode::OctreeNode(ChunkManager* chunkManager, int level, int scaling, Coord
                                 coord.z + (offsetZ * (scaling / 2))};
 
             int child_nodes_index = 8 * current_nodes_index + i + 1;
-
-            assert(child_nodes_index < nodes.size());
-            assert(!nodes[child_nodes_index].alreadyConstructed);
 
             OctreeNode node = OctreeNode(chunkManager, level - 1, scaling / 2, childCoord, nodes, chunks, child_nodes_index, chunk_index);
             nodes[child_nodes_index] = std::move(node);
@@ -54,13 +50,9 @@ OctreeNode &OctreeNode::operator=(OctreeNode &&other) {
         }
     }
 
-    assert(other.level != 0 || other.chunk != nullptr);
-
     other.chunk = nullptr;
     return *this;
 }
-
-OctreeNode::~OctreeNode() = default;
 
 void OctreeNode::render(Mat4 &view, Shader *shader) {
     if (emptyChildren != ALL_ONES_FLAG) {
@@ -144,9 +136,6 @@ void OctreeNode::getClosestUnloadedChunks(std::vector<Coord> &candidates, int ma
     }
 }
 
-/**
- * Returns true if a chunk has been deleted
- */
 void OctreeNode::deleteFurthestLoadedChunks(const Coord& playerChunkCoord){
     if (emptyChildren == ALL_ONES_FLAG)
         return;
@@ -173,9 +162,9 @@ void OctreeNode::deleteFurthestLoadedChunks(const Coord& playerChunkCoord){
 }
 
 OctreeNode* OctreeNode::getLeaf(const Coord &inCoord) {
-    if (level == 0) {
+    if (level == 0)
         return this;
-    } else {
+    else {
         auto soughtChildCoord = Coord{inCoord.x >= center.x, inCoord.y >= center.y, inCoord.z >= center.z};
         for (int i = 0; i < 8; i++) {
             Coord childCoord = {(i & 0b001) != 0, (i & 0b100) != 0, (i & 0b010) != 0};
@@ -188,44 +177,24 @@ OctreeNode* OctreeNode::getLeaf(const Coord &inCoord) {
 }
 
 void OctreeNode::updateHierarchyLoadedAndEmptyStatus(bool isChunkLoaded, bool isChunkEmpty){
-    //This function is called when the chunk is loaded.
-    assert(this->level == 0); //this must be a leaf node
     OctreeNode* node = this;
-    //This is a leaf node, it does not has any children so we indicate
-    //its loaded status with a full set of ones.
     node->loadedChildren = !isChunkLoaded ? 0b00000000 : OctreeNode::ALL_ONES_FLAG;
-    //Same thing for the empty status, either full ones or full zeros for the leaf node.
     node->emptyChildren = !isChunkEmpty ? 0b00000000 : OctreeNode::ALL_ONES_FLAG;
     while(node->parent != nullptr){
         OctreeNode* parent = node->parent;
         int index = 0;
-        //Grab the index of the node in its parent children array
         while(parent->children[index] != node){
             index++;
-            assert(index < 8);
         }
 
         const auto& setBit = [](int& number, int n, int value){
             number ^= (-value ^ number) & (1UL << n);
         };
 
-        /// If the nodes's children are fully loaded, we indicate
-        // that the node is fully loaded in its parent's bitfield
         setBit(parent->loadedChildren, index, node->loadedChildren==OctreeNode::ALL_ONES_FLAG);
-        //Same thing for the empty status
         setBit(parent->emptyChildren, index, node->emptyChildren==OctreeNode::ALL_ONES_FLAG);
-
         node = parent;
     }
 }
 
-void Octree::printCurrentMemoryUsageInfo(int64_t& totalEmptyChunks, int64_t& totalChunks) {
-    totalChunks += chunks.size();
-    int64_t value = 0;
-    for(auto& chunk : chunks){
-        if(chunk.faceData.empty())
-            value++;
-    }
-    totalEmptyChunks += value;
-    std::cout << "Num Chunks: " <<  chunks.size() << " Empty: " <<  value << "\n";
-}
+OctreeNode::~OctreeNode() = default;

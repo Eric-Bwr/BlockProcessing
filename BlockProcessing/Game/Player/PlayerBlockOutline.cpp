@@ -1,32 +1,58 @@
 #include "PlayerBlockOutline.h"
+#include "PlayerDefines.h"
 #include <Paths.h>
 
 void PlayerBlockOutline::init() {
-    const float vertices[8] = {
-            0, 0,
-            1, 0,
-            1, 0,
-            1, 1
+    const float offset = 0.002;
+    const float vertices[72] = {
+            0 - offset, 0 - offset, 0 - offset,
+            1 + offset, 0 - offset, 0 - offset,
+            1 + offset, 0 - offset, 0 - offset,
+            1 + offset, 0 - offset, 1 + offset,
+            1 + offset, 0 - offset, 1 + offset,
+            0 - offset, 0 - offset, 1 + offset,
+            0 - offset, 0 - offset, 1 + offset,
+            0 - offset, 0 - offset, 0 - offset,
+
+            0 - offset, 0 - offset, 0 - offset,
+            0 - offset, 1 + offset, 0 - offset,
+            1 + offset, 0 - offset, 0 - offset,
+            1 + offset, 1 + offset, 0 - offset,
+            0 - offset, 0 - offset, 1 + offset,
+            0 - offset, 1 + offset, 1 + offset,
+            1 + offset, 0 - offset, 1 + offset,
+            1 + offset, 1 + offset, 1 + offset,
+
+            0 - offset, 1 + offset, 0 - offset,
+            1 + offset, 1 + offset, 0 - offset,
+            1 + offset, 1 + offset, 0 - offset,
+            1 + offset, 1 + offset, 1 + offset,
+            1 + offset, 1 + offset, 1 + offset,
+            0 - offset, 1 + offset, 1 + offset,
+            0 - offset, 1 + offset, 1 + offset,
+            0 - offset, 1 + offset, 0 - offset
     };
     shader = new Shader(SHADER_LINE);
+    shader->addUniforms({"projection", "view", "model", "color"});
     model.identity();
     model.translate(0, 0, 0);
     auto layout = VertexBufferObjectLayout();
-    layout.pushFloat(2);
-    vertexCount = 4;
+    layout.pushFloat(3);
+    vertexCount = 24;
     vao.init();
     vbo.init(vertices, layout.getStride() * vertexCount, GL_STATIC_DRAW);
     vao.addBuffer(vbo, layout);
+    color = COLOR_BLACK;
 }
 
-void PlayerBlockOutline::update(const Coord& coord) {
-    model.m30 = coord.x;
-    model.m31 = coord.y;
-    model.m32 = coord.z;
+void PlayerBlockOutline::update(int64_t x, int64_t y, int64_t z) {
+    model.m30 = x;
+    model.m31 = y;
+    model.m32 = z;
 }
 
 void PlayerBlockOutline::render(Mat4& view) {
-    glLineWidth(CHUNK_BORDER_WIDTH);
+    glLineWidth(PLAYER_BLOCK_OUTLINE_WIDTH);
     shader->bind();
     shader->setUniformMatrix4f("view", view.getBuffer());
     shader->setUniformMatrix4f("model", model.getBuffer());

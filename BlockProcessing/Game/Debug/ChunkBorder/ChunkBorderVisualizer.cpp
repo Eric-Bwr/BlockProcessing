@@ -3,6 +3,7 @@
 
 void ChunkBorderVisualizer::init() {
     shader = new Shader(SHADER_CHUNK_BORDER);
+    shader->addUniforms({"projection", "view", "model"});
     model.identity();
     model.translate(0, 0, 0);
     std::vector<float> faceData;

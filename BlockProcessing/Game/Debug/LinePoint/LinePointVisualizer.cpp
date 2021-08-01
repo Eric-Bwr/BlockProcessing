@@ -3,6 +3,7 @@
 
 void LinePointVisualizer::init() {
     shader = new Shader(SHADER_LINE);
+    shader->addUniforms({"projection", "view", "model", "color"});
     const float vertices[6] = {
         0, 0, 0,
         0, 1, 0
