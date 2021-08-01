@@ -5,7 +5,6 @@
 class CommandManager;
 
 struct ChatComponent {
-    ChatComponent();
     explicit ChatComponent(const std::string& text, const UIColor& textColor = COLOR_WHITE, void(*callback)(bool pressed, bool hovered) = nullptr);
     std::string text, typed;
     UIColor textColor;
@@ -13,6 +12,7 @@ struct ChatComponent {
     UIText* textElement;
     UIImage* background;
     float blending, staying;
+    bool hovered, pressed = false;
 };
 
 class ChatInterface : public Interface {
@@ -25,6 +25,8 @@ public:
     void revertUp();
     void revertDown();
     void enter();
+    void onMousePosition(double x, double y);
+    void onMouseButton(int button, int action);
     ~ChatInterface();
     CommandManager* commandManager;
 private:

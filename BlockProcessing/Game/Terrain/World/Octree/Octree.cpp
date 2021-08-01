@@ -3,7 +3,7 @@
 
 OctreeNode::OctreeNode() = default;
 
-OctreeNode::OctreeNode(ChunkManager* chunkManager, int level, int scaling, Coord coord, std::vector<OctreeNode> &nodes, std::vector<Chunk> &chunks, int current_nodes_index, int &chunk_index) {
+OctreeNode::OctreeNode(ChunkManager* chunkManager, int level, int scaling, const Coord& coord, std::vector<OctreeNode> &nodes, std::vector<Chunk> &chunks, int current_nodes_index, int &chunk_index) {
     this->chunkManager = chunkManager;
     this->alreadyConstructed = true;
     this->coord = coord;

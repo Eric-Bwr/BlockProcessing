@@ -118,6 +118,7 @@ void BlockProcessing::onMousePosition(double x, double y) {
         player.moveMouse(x, y);
     else
         player.hasLastPos = false;
+    chatInterface.onMousePosition(x, y);
 }
 
 void BlockProcessing::onMouseButton(int button, int action, int mods) {
@@ -130,6 +131,7 @@ void BlockProcessing::onMouseButton(int button, int action, int mods) {
             player.place();
         }
     }
+    chatInterface.onMouseButton(button, action);
 }
 
 void BlockProcessing::onMouseScroll(double x, double y) {

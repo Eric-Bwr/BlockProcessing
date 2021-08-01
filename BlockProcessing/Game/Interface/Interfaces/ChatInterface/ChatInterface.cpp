@@ -1,20 +1,20 @@
 #include "ChatInterface.h"
 #include "Game/Command/CommandManager.h"
 
-ChatComponent::ChatComponent() = default;
-
 ChatComponent::ChatComponent(const std::string &text, const UIColor &textColor, void (*callback)(bool pressed, bool hovered)) {
     this->text = text;
     this->textColor = textColor;
     this->callback = callback;
+    this->hovered = false;
+    this->pressed = false;
 }
 
 void ChatInterface::init(CommandManager *commandManager) {
     this->commandManager = commandManager;
+    backgroundColor.setHex(0x000000, 0.5);
     textField = new UITextField("", font, 40, 0, height - chatHeight, chatWidth, chatHeight);
     textField->setFontSize(40);
-    textField->setBackgroundColor({0, 0, 0, 0.4}, {0, 0, 0, 0.55}, {0, 0, 0, 0.7});
-    backgroundColor.setHex(0x000000, 0.4);
+    textField->setBackgroundColor({0, 0, 0, 0.4}, {0, 0, 0, 0.45}, backgroundColor);
 }
 
 void ChatInterface::append(ChatComponent *chatComponent) {
@@ -125,7 +125,7 @@ void ChatInterface::display(bool display) {
 
 static bool hasCharacter(const std::string &text) {
     for (auto character : text)
-        if (character != ' ' && character != '\t')
+        if (character != ' ' && character != '\t' && character != '\n')
             return true;
     return false;
 }
@@ -138,6 +138,39 @@ void ChatInterface::enter() {
         else
             append(content, COLOR_WHITE);
         textField->setText("");
+    }
+}
+
+void ChatInterface::onMousePosition(double x, double y) {
+    if(shouldDisplay){
+        for(auto component : components){
+            if (x >= component->textElement->getX() && x <= component->textElement->getX() + component->textElement->getWidth() &&
+                y >= component->textElement->getY() && y <= component->textElement->getY() + component->textElement->getHeight()) {
+                if(component->callback != nullptr && !component->hovered)
+                    component->callback(true, component->pressed);
+                component->hovered = true;
+            }else {
+                if(component->callback != nullptr && component->hovered)
+                    component->callback(false, component->pressed);
+                component->hovered = false;
+            }
+        }
+    }
+}
+
+void ChatInterface::onMouseButton(int button, int action) {
+    if(shouldDisplay && button == MOUSE_BUTTON_PRESSED){
+        for(auto component : components){
+            if(component->hovered && action == INPUT_PRESSED){
+                component->pressed = true;
+                if(component->callback != nullptr)
+                    component->callback(true, true);
+            }else {
+                component->pressed = false;
+                if(component->callback != nullptr)
+                    component->callback(component->hovered, false);
+            }
+        }
     }
 }
 

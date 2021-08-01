@@ -17,7 +17,7 @@ class OctreeNode {
     static const int ALL_ONES_FLAG = 0b11111111;
 public:
     OctreeNode();
-    OctreeNode(ChunkManager* chunkManager, int level, int scaling, Coord coord, std::vector<OctreeNode>& nodes, std::vector<Chunk>& chunks, int current_nodes_index, int& chunk_index);
+    OctreeNode(ChunkManager* chunkManager, int level, int scaling, const Coord& coord, std::vector<OctreeNode>& nodes, std::vector<Chunk>& chunks, int current_nodes_index, int& chunk_index);
     OctreeNode& operator=(OctreeNode&& other);
     void render(Mat4 &view, Shader* shader);
     Coord closestContainedChunk(const Coord& playerChunkCoord) const;
