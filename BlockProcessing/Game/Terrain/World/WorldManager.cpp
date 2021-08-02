@@ -76,7 +76,7 @@ void WorldManager::generate(const Coord &playerChunkCoord) {
                 Octree *octree = nullptr;
                 auto it = octrees.find(octreeCoord);
                 if (it == octrees.end()) {
-                    octree = new Octree(chunkManager, octreeCoord);
+                    octree = new Octree(&frustum, chunkManager, octreeCoord);
                     octrees.insert(std::pair<Coord, Octree *>(octreeCoord, octree));
                 } else
                     octree = it->second.get();
@@ -194,7 +194,7 @@ void WorldManager::setChunkBlocks(const std::vector<unsigned int>& blocks, int64
 void WorldManager::render(Mat4 &projectionView, Mat4 &view, Shader *shader) {
     frustum.update(projectionView);
     for (auto&[coord, octree] : octrees) {
-        octree->getRoot().render(view, shader);
+        octree->getRoot().render(&frustum, view, shader);
     }
 }
 

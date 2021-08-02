@@ -7,7 +7,6 @@ class Coord;
 
 struct Plane {
 public:
-    double distanceToPoint(Coord point) const;
     double distanceToOrigin;
     Vec3 normal;
 };
@@ -15,9 +14,8 @@ public:
 class Frustum {
 public:
     void update(Mat4& projectionView);
-    bool isInside(const Coord& coord);
+    bool isInside(const Coord& center, float radius);
 private:
-    static Coord getVN(Vec3 &normal, const Coord& coord);
-    static Coord getVP(Vec3 &normal, const Coord& coord);
+    float distanceToPlane(const Plane& plane, const Coord& point);
     std::array<Plane, 6> planes;
 };

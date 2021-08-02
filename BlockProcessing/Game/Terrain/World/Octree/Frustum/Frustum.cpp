@@ -1,14 +1,9 @@
 #include "Frustum.h"
-#include "../../Util/Coordinate.h"
-#include "../../TerrainDefines.h"
+#include "Game/Terrain/Util/Coordinate.h"
 
 enum Planes {
     Near, Far, Left, Right, Top, Bottom
 };
-
-double Plane::distanceToPoint(Coord point) const {
-    return (point.x * normal.x + point.y * normal.y + point.z * normal.z) + distanceToOrigin;
-}
 
 void Frustum::update(Mat4& projectionView) {
     planes[Planes::Left].normal.x = projectionView.m03 + projectionView.m00;
@@ -50,42 +45,14 @@ void Frustum::update(Mat4& projectionView) {
     }
 }
 
-bool Frustum::isInside(const Coord& coord) {
-    bool result = true;
-    for (auto &plane : planes) {
-        if (plane.distanceToPoint(getVP(plane.normal, coord)) < 0) {
-            return false;
-        } else if (plane.distanceToPoint(getVN(plane.normal, coord)) < 0) {
-            result = true;
-        }
-    }
-    return result;
+float Frustum::distanceToPlane(const Plane& plane, const Coord& point) {
+    return (point.x * CHUNK_SIZE) * plane.normal.x + (point.y * CHUNK_SIZE) * plane.normal.y + (point.z * CHUNK_SIZE) * plane.normal.z + plane.distanceToOrigin;
 }
 
-Coord Frustum::getVN(Vec3 &normal, const Coord& coord) {
-    auto copyCoord = coord;
-    copyCoord.x *= CHUNK_SIZE;
-    copyCoord.y *= CHUNK_SIZE;
-    copyCoord.z *= CHUNK_SIZE;
-    if (normal.x < 0)
-        copyCoord.x += CHUNK_SIZE;
-    if (normal.y < 0)
-        copyCoord.y += CHUNK_SIZE;
-    if (normal.z < 0)
-        copyCoord.z += CHUNK_SIZE;
-    return coord;
-}
+bool Frustum::isInside(const Coord& center, float radius){
+    float dist01 = std::min(distanceToPlane(planes[0], center), distanceToPlane(planes[1], center));
+    float dist23 = std::min(distanceToPlane(planes[2], center), distanceToPlane(planes[3], center));
+    float dist45 = std::min(distanceToPlane(planes[4], center), distanceToPlane(planes[5], center));
 
-Coord Frustum::getVP(Vec3 &normal, const Coord& coord) {
-    auto copyCoord = coord;
-    copyCoord.x *= CHUNK_SIZE;
-    copyCoord.y *= CHUNK_SIZE;
-    copyCoord.z *= CHUNK_SIZE;
-    if (normal.x > 0)
-        copyCoord.x += CHUNK_SIZE;
-    if (normal.y > 0)
-        copyCoord.y += CHUNK_SIZE;
-    if (normal.z > 0)
-        copyCoord.z += CHUNK_SIZE;
-    return copyCoord;
+    return std::min(std::min(dist01, dist23), dist45) + radius > 0;
 }

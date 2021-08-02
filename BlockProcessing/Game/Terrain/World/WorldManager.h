@@ -10,9 +10,9 @@
 #include <algorithm>
 #include "../Chunk/ChunkManager.h"
 #include "../Block/BlockManager.h"
-#include "Frustum/Frustum.h"
 #include "../Util/Coordinate.h"
 #include "../World/Octree/Octree.h"
+#include "../World/Octree/Frustum/Frustum.h"
 #include "SafeQueue.h"
 
 struct Hash {

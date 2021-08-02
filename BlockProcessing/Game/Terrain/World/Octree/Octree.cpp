@@ -1,14 +1,13 @@
 #include "Octree.h"
 #include "Game/BlockProcessing.h"
 
-OctreeNode::OctreeNode() = default;
-
-OctreeNode::OctreeNode(ChunkManager* chunkManager, int level, int scaling, const Coord& coord, std::vector<OctreeNode> &nodes, std::vector<Chunk> &chunks, int current_nodes_index, int &chunk_index) {
+OctreeNode::OctreeNode(Frustum* frustum, ChunkManager* chunkManager, int level, int scaling, const Coord& coord, std::vector<OctreeNode> &nodes, std::vector<Chunk> &chunks, int current_nodes_index, int &chunk_index) {
     this->chunkManager = chunkManager;
     this->alreadyConstructed = true;
     this->coord = coord;
     this->level = level;
     this->scaling = scaling;
+    this->frustum = frustum;
     int64_t offsetX, offsetY, offsetZ;
     center = Coord{coord.x + scaling / 2, coord.y + scaling / 2, coord.z + scaling / 2};
     if (level == 0) {
@@ -27,7 +26,7 @@ OctreeNode::OctreeNode(ChunkManager* chunkManager, int level, int scaling, const
 
             int child_nodes_index = 8 * current_nodes_index + i + 1;
 
-            OctreeNode node = OctreeNode(chunkManager, level - 1, scaling / 2, childCoord, nodes, chunks, child_nodes_index, chunk_index);
+            OctreeNode node = OctreeNode(frustum, chunkManager, level - 1, scaling / 2, childCoord, nodes, chunks, child_nodes_index, chunk_index);
             nodes[child_nodes_index] = std::move(node);
             children[i] = &nodes[child_nodes_index];
         }
@@ -43,6 +42,7 @@ OctreeNode &OctreeNode::operator=(OctreeNode &&other) {
     this->center = other.center;
     this->chunk = other.chunk;
     this->children = other.children;
+    this->frustum = other.frustum;
 
     if(level != 0){
         for(auto child : children){
@@ -54,31 +54,31 @@ OctreeNode &OctreeNode::operator=(OctreeNode &&other) {
     return *this;
 }
 
-void OctreeNode::render(Mat4 &view, Shader *shader) {
+void OctreeNode::render(Frustum* fr, Mat4 &view, Shader *shader) {
     if (emptyChildren != ALL_ONES_FLAG) {
-        if (level == 0) {
-            chunkManager->renderChunk(chunk, view, shader);
-        } else {
-            for (auto child : children)
-                child->render(view, shader);
+        if(fr->isInside(center, scaling * OCTREE_FRUSTUM_CULLING)) {
+            if (level == 0)
+                chunkManager->renderChunk(chunk, view, shader);
+            else {
+                for (auto child : children)
+                    child->render(fr, view, shader);
+            }
         }
     }
 }
 
 Coord OctreeNode::closestContainedChunk(const Coord& playerChunkCoord) const {
-    Coord minCorner = coord;
-    Coord maxCorner = {minCorner.x + scaling - 1, minCorner.y + scaling - 1, minCorner.z + scaling - 1};
-    return {std::min(std::max(playerChunkCoord.x, minCorner.x), maxCorner.x), std::min(std::max(playerChunkCoord.y, minCorner.y), maxCorner.y), std::min(std::max(playerChunkCoord.z, minCorner.z), maxCorner.z)};
+    Coord maxCorner = {coord.x + scaling - 1, coord.y + scaling - 1, coord.z + scaling - 1};
+    return {std::min(std::max(playerChunkCoord.x, coord.x), maxCorner.x), std::min(std::max(playerChunkCoord.y, coord.y), maxCorner.y), std::min(std::max(playerChunkCoord.z, coord.z), maxCorner.z)};
 }
 
 Coord OctreeNode::furthestContainedChunk(const Coord& playerChunkCoord) const{
-    Coord minCorner = coord;
-    Coord maxCorner = {minCorner.x + scaling - 1, minCorner.y + scaling - 1, minCorner.z + scaling - 1};
+    Coord maxCorner = {coord.x + scaling - 1, coord.y + scaling - 1, coord.z + scaling - 1};
 
     Coord furthest = {};
-    furthest.x = 2 * playerChunkCoord.x < (maxCorner.x - minCorner.x) ? maxCorner.x : minCorner.x;
-    furthest.y = 2 * playerChunkCoord.y < (maxCorner.y - minCorner.y) ? maxCorner.y : minCorner.y;
-    furthest.z = 2 * playerChunkCoord.z < (maxCorner.z - minCorner.z) ? maxCorner.z : minCorner.z;
+    furthest.x = 2 * playerChunkCoord.x < (maxCorner.x - coord.x) ? maxCorner.x : coord.x;
+    furthest.y = 2 * playerChunkCoord.y < (maxCorner.y - coord.y) ? maxCorner.y : coord.y;
+    furthest.z = 2 * playerChunkCoord.z < (maxCorner.z - coord.z) ? maxCorner.z : coord.z;
 
     return furthest;
 }
