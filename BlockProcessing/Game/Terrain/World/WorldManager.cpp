@@ -194,7 +194,7 @@ void WorldManager::setChunkBlocks(const std::vector<unsigned int>& blocks, int64
 void WorldManager::render(Mat4 &projectionView, Mat4 &view, Shader *shader) {
     frustum.update(projectionView);
     for (auto&[coord, octree] : octrees) {
-        octree->getRoot().render(&frustum, view, shader);
+        octree->getRoot().render(view, shader);
     }
 }
 

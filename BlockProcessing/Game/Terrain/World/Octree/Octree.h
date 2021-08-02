@@ -20,7 +20,7 @@ public:
     OctreeNode() = default;
     OctreeNode(Frustum* frustum, ChunkManager* chunkManager, int level, int scaling, const Coord& coord, std::vector<OctreeNode>& nodes, std::vector<Chunk>& chunks, int current_nodes_index, int& chunk_index);
     OctreeNode& operator=(OctreeNode&& other);
-    void render(Frustum* fr, Mat4 &view, Shader* shader);
+    void render(Mat4 &view, Shader* shader);
     Coord closestContainedChunk(const Coord& playerChunkCoord) const;
     Coord furthestContainedChunk(const Coord& playerChunkCoord) const;
     void getClosestUnloadedChunks(std::vector<Coord>& candidates, int maxCandidates, const Coord& playerChunkCoord);

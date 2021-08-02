@@ -54,14 +54,14 @@ OctreeNode &OctreeNode::operator=(OctreeNode &&other) {
     return *this;
 }
 
-void OctreeNode::render(Frustum* fr, Mat4 &view, Shader *shader) {
+void OctreeNode::render(Mat4 &view, Shader *shader) {
     if (emptyChildren != ALL_ONES_FLAG) {
-        if(fr->isInside(center, scaling * OCTREE_FRUSTUM_CULLING)) {
+        if(frustum->isInside(center, scaling * OCTREE_FRUSTUM_CULLING)) {
             if (level == 0)
                 chunkManager->renderChunk(chunk, view, shader);
             else {
                 for (auto child : children)
-                    child->render(fr, view, shader);
+                    child->render(view, shader);
             }
         }
     }
