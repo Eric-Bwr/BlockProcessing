@@ -2,6 +2,7 @@
 #include "UITexture.h"
 
 void TerrainManager::init(CubeManager* cubeManager, BlockManager* blockManager, ChunkManager* chunkManager, WorldManager* worldManager, int seed, FastNoise::NoiseType noiseType, float frequency, int octaves) {
+    this->blockManager = blockManager;
     this->worldManager = worldManager;
     fastNoise = new FastNoise;
     fastNoise->SetNoiseType(noiseType);
@@ -15,15 +16,6 @@ void TerrainManager::init(CubeManager* cubeManager, BlockManager* blockManager, 
     worldManager->init(blockManager, chunkManager);
     shader = new Shader(SHADER_TERRAIN);
     shader->addUniforms({"projection", "modelView", "intensity", "gradient", "image", "lightPos", "viewPos", "blinn", "skyColor"});
-    texture = new UITexture(TEXTURE_TERRAIN_ATLAS);
-    texture->bind();
-    texture->clampEdge();
-    texture->minLinearMipLinear();
-    texture->magNear();
-    texture->setMaxLevel(TEXTURE_ATLAS_TILE_SIZE);
-    texture->setLodBias(TEXTURE_ATLAS_LOD_BIAS);
-    texture->load();
-    texture->generateMipMap();
 }
 
 void TerrainManager::generate(const Coord& coord) {
@@ -33,7 +25,7 @@ void TerrainManager::generate(const Coord& coord) {
 void TerrainManager::render(Mat4 &projectionView, Mat4 &view) {
     shader->bind();
     shader->setUniform3f("viewPos", view.m32, view.m30, view.m31);
-    texture->bind();
+    blockManager->texture->bind();
     worldManager->render(projectionView, view, shader);
 }
 

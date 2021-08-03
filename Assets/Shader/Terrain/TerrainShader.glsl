@@ -2,14 +2,14 @@
 #version 430 core
 
 layout (location = 0) in vec3 inPosition;
-layout (location = 1) in vec2 inTexture;
+layout (location = 1) in vec3 inTexture;
 layout (location = 2) in vec3 inNormal;
 layout (location = 3) in float inBlockID;
 
 uniform mat4 projection;
 uniform mat4 modelView;
 
-out vec2 textureCoords;
+out vec3 textureCoords;
 out vec3 normals;
 out vec3 fragPosition;
 flat out float blockID;
@@ -31,13 +31,13 @@ void main(){
 #fragment
 #version 430 core
 
-in vec2 textureCoords;
+in vec3 textureCoords;
 in vec3 normals;
 in vec3 fragPosition;
 flat in float blockID;
 in float visibility;
 
-uniform sampler2D image;
+uniform sampler2DArray image;
 uniform vec3 lightPos;
 uniform vec3 viewPos;
 uniform bool blinn = true;

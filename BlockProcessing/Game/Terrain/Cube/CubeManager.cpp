@@ -1,113 +1,105 @@
 #include "CubeManager.h"
 
 void CubeManager::init() {
-    frontFace = new float[54]{
-            0, 0, 1, 0, 0, 0, 0, -1, 0,
-            1, 0, 1, 1, 0, 0, 0, -1, 0,
-            0, 1, 1, 0, 1, 0, 0, -1, 0,
-            1, 1, 1, 1, 1, 0, 0, -1, 0,
-            0, 1, 1, 0, 1, 0, 0, -1, 0,
-            1, 0, 1, 1, 0, 0, 0, -1, 0
+    frontFace = new float[60]{
+            0, 0, 1, 0, 0, 0, 0, 0, -1, 0,
+            1, 0, 1, 1, 0, 0, 0, 0, -1, 0,
+            0, 1, 1, 0, 1, 0, 0, 0, -1, 0,
+            1, 1, 1, 1, 1, 0, 0, 0, -1, 0,
+            0, 1, 1, 0, 1, 0, 0, 0, -1, 0,
+            1, 0, 1, 1, 0, 0, 0, 0, -1, 0
     };
-    backFace = new float[54]{
-            1, 0, 0, 0, 0, 0, 0, 1, 0,
-            0, 0, 0, 1, 0, 0, 0, 1, 0,
-            1, 1, 0, 0, 1, 0, 0, 1, 0,
-            0, 1, 0, 1, 1, 0, 0, 1, 0,
-            1, 1, 0, 0, 1, 0, 0, 1, 0,
-            0, 0, 0, 1, 0, 0, 0, 1, 0
+    backFace = new float[60]{
+            1, 0, 0, 0, 0, 0, 0, 0, 1, 0,
+            0, 0, 0, 1, 0, 0, 0, 0, 1, 0,
+            1, 1, 0, 0, 1, 0, 0, 0, 1, 0,
+            0, 1, 0, 1, 1, 0, 0, 0, 1, 0,
+            1, 1, 0, 0, 1, 0, 0, 0, 1, 0,
+            0, 0, 0, 1, 0, 0, 0, 0, 1, 0
     };
-    leftFace = new float[54]{
-            0, 0, 0, 0, 0, -1, 0, 0, 0,
-            0, 0, 1, 1, 0, -1, 0, 0, 0,
-            0, 1, 0, 0, 1, -1, 0, 0, 0,
-            0, 1, 1, 1, 1, -1, 0, 0, 0,
-            0, 1, 0, 0, 1, -1, 0, 0, 0,
-            0, 0, 1, 1, 0, -1, 0, 0, 0
+    leftFace = new float[60]{
+            0, 0, 0, 0, 0, 0, -1, 0, 0, 0,
+            0, 0, 1, 1, 0, 0, -1, 0, 0, 0,
+            0, 1, 0, 0, 1, 0, -1, 0, 0, 0,
+            0, 1, 1, 1, 1, 0, -1, 0, 0, 0,
+            0, 1, 0, 0, 1, 0, -1, 0, 0, 0,
+            0, 0, 1, 1, 0, 0, -1, 0, 0, 0
     };
-    rightFace = new float[54]{
-            1, 0, 1, 0, 0, 1, 0, 0, 0,
-            1, 0, 0, 1, 0, 1, 0, 0, 0,
-            1, 1, 1, 0, 1, 1, 0, 0, 0,
-            1, 1, 0, 1, 1, 1, 0, 0, 0,
-            1, 1, 1, 0, 1, 1, 0, 0, 0,
-            1, 0, 0, 1, 0, 1, 0, 0, 0
+    rightFace = new float[60]{
+            1, 0, 1, 0, 0, 0, 1, 0, 0, 0,
+            1, 0, 0, 1, 0, 0, 1, 0, 0, 0,
+            1, 1, 1, 0, 1, 0, 1, 0, 0, 0,
+            1, 1, 0, 1, 1, 0, 1, 0, 0, 0,
+            1, 1, 1, 0, 1, 0, 1, 0, 0, 0,
+            1, 0, 0, 1, 0, 0, 1, 0, 0, 0
     };
-    topFace = new float[54]{
-            0, 1, 1, 0, 0, 0, 1, 0, 0,
-            1, 1, 1, 1, 0, 0, 1, 0, 0,
-            0, 1, 0, 0, 1, 0, 1, 0, 0,
-            1, 1, 0, 1, 1, 0, 1, 0, 0,
-            0, 1, 0, 0, 1, 0, 1, 0, 0,
-            1, 1, 1, 1, 0, 0, 1, 0, 0
+    topFace = new float[60]{
+            0, 1, 1, 0, 0, 0, 0, 1, 0, 0,
+            1, 1, 1, 1, 0, 0, 0, 1, 0, 0,
+            0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
+            1, 1, 0, 1, 1, 0, 0, 1, 0, 0,
+            0, 1, 0, 0, 1, 0, 0, 1, 0, 0,
+            1, 1, 1, 1, 0, 0, 0, 1, 0, 0
     };
-    bottomFace = new float[54]{
-            0, 0, 0, 0, 0, 0, -1, 0, 0,
-            1, 0, 0, 1, 0, 0, -1, 0, 0,
-            0, 0, 1, 0, 1, 0, -1, 0, 0,
-            1, 0, 1, 1, 1, 0, -1, 0, 0,
-            0, 0, 1, 0, 1, 0, -1, 0, 0,
-            1, 0, 0, 1, 0, 0, -1, 0, 0
+    bottomFace = new float[60]{
+            0, 0, 0, 0, 0, 0, 0, -1, 0, 0,
+            1, 0, 0, 1, 0, 0, 0, -1, 0, 0,
+            0, 0, 1, 0, 1, 0, 0, -1, 0, 0,
+            1, 0, 1, 1, 1, 0, 0, -1, 0, 0,
+            0, 0, 1, 0, 1, 0, 0, -1, 0, 0,
+            1, 0, 0, 1, 0, 0, 0, -1, 0, 0
     };
     layout.pushFloat(3);
-    layout.pushFloat(2);
+    layout.pushFloat(3);
     layout.pushFloat(3);
     layout.pushFloat(1);
 }
-
+#include "iostream"
 void CubeManager::addFace(std::vector<float>& data, Block* block, int x, int y, int z, int face) {
-    data.resize(data.size() + 54);
-    float* dataPtr = data.data() + (data.size() - 54);
+    data.resize(data.size() + 60);
+    float* dataPtr = data.data() + (data.size() - 60);
     float faceData = 0;
-    int textureXOffset;
-    int textureYOffset;
+    int texture = block->index * 6;
     switch (face) {
         case FACE_TOP:
-            memcpy(dataPtr, topFace, 54 * sizeof(float));
+            memcpy(dataPtr, topFace, 60 * sizeof(float));
             faceData = (float)block->id;
-            textureXOffset = block->textureTopX;
-            textureYOffset = block->textureTopY;
+            texture += block->textureTop;
             break;
         case FACE_BOTTOM:
-            memcpy(dataPtr, bottomFace, 54 * sizeof(float));
+            memcpy(dataPtr, bottomFace, 60 * sizeof(float));
             faceData = (float)block->id + 0.1f;
-            textureXOffset = block->textureBottomX;
-            textureYOffset = block->textureBottomY;
+            texture += block->textureBottom;
             break;
         case FACE_FRONT:
-            memcpy(dataPtr, frontFace, 54 * sizeof(float));
+            memcpy(dataPtr, frontFace, 60 * sizeof(float));
             faceData = (float)block->id + 0.2f;
-            textureXOffset = block->textureFrontX;
-            textureYOffset = block->textureFrontY;
+            texture += block->textureFront;
             break;
         case FACE_BACK:
-            memcpy(dataPtr, backFace, 54 * sizeof(float));
+            memcpy(dataPtr, backFace, 60 * sizeof(float));
             faceData = (float)block->id + 0.3f;
-            textureXOffset = block->textureBackX;
-            textureYOffset = block->textureBackY;
+            texture += block->textureBack;
             break;
         case FACE_LEFT:
-            memcpy(dataPtr, leftFace, 54 * sizeof(float));
+            memcpy(dataPtr, leftFace, 60 * sizeof(float));
             faceData = (float)block->id + 0.4f;
-            textureXOffset = block->textureLeftX;
-            textureYOffset = block->textureLeftY;
+            texture += block->textureLeft;
             break;
         case FACE_RIGHT:
-            memcpy(dataPtr, rightFace, 54 * sizeof(float));
+            memcpy(dataPtr, rightFace, 60 * sizeof(float));
             faceData = (float)block->id + 0.5f;
-            textureXOffset = block->textureRightX;
-            textureYOffset = block->textureRightY;
+            texture += block->textureRight;
             break;
         default:
             break;
     }
-    for (int i = 0; i < 54; i += 9) {
+    for (int i = 0; i < 60; i += 10) {
         dataPtr[i + 0] += (float)x;
         dataPtr[i + 1] += (float)y;
         dataPtr[i + 2] += (float)z;
-        dataPtr[i + 3] = (dataPtr[i + 3] + textureXOffset) / TEXTURE_ATLAS_ROW_COUNT;
-        dataPtr[i + 4] = (dataPtr[i + 4] + textureYOffset) / TEXTURE_ATLAS_ROW_COUNT;
-        dataPtr[i + 8] = faceData;
+        dataPtr[i + 5] = (float)texture;
+        dataPtr[i + 9] = faceData;
     }
 }
 

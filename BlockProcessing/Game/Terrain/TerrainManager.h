@@ -18,7 +18,7 @@ public:
     void setLightPosition(double x, double y, double z);
     ~TerrainManager();
     Shader* shader;
-    Texture* texture;
     FastNoise* fastNoise;
+    BlockManager* blockManager;
     WorldManager* worldManager;
 };

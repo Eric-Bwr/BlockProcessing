@@ -10,9 +10,6 @@ const int CHUNKING_DELETION_OFFSET = 1;
 
 const int OCTREE_MAX_LEVEL = 4;
 
-const int TEXTURE_ATLAS_TILE_SIZE = 32;
-const int TEXTURE_ATLAS_ROW_COUNT = 16;
-const int TEXTURE_ATLAS_LOD_BIAS = -2;
 //----------------------------------------[DEBUG]----------------------------------------
 const float CHUNK_BORDER_WIDTH = 1.4;
 

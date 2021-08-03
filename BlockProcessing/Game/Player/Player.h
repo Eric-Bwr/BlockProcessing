@@ -14,10 +14,11 @@ public:
     void update(double deltaTime = 0.0);
     void dig();
     void place();
+    bool colliding();
     int8_t gameMode = GAMEMODE_CREATIVE;
-    int64_t blockX, chunkX, octreeX, lookedBlockX;
-    int64_t blockY, chunkY, octreeY, lookedBlockY;
-    int64_t blockZ, chunkZ, octreeZ, lookedBlockZ;
+    int64_t blockX, chunkX, octreeX, lookedBlockX, prevLookedBlockX;
+    int64_t blockY, chunkY, octreeY, lookedBlockY, prevLookedBlockY;
+    int64_t blockZ, chunkZ, octreeZ, lookedBlockZ, prevLookedBlockZ;
     Coord block, chunk, octree, lookedBlock;
     ~Player();
 private:
@@ -26,5 +27,6 @@ private:
     void calculateMove(double deltaTime);
     void calculateGravity();
     void castRay();
+    void raycast();
     unsigned int lookedBlockID, collisionBlockID;
 };

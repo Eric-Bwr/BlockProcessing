@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Block.h"
+#include "Game/Terrain/Block/Block.h"
 
 #define BLOCK_DIRT 2
 
-class BlockDirt : public Block {
+struct BlockDirt : public Block {
 public:
     BlockDirt();
 };

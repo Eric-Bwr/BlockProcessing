@@ -5,7 +5,6 @@ void BlockProcessing::init(GLFWwindow* window, int width, int height) {
     this->window = window;
     this->width = width;
     this->height = height;
-    glEnable(GL_MULTISAMPLE);
     glEnable(GL_CULL_FACE);
     glCullFace(GL_BACK);
     glEnable(GL_DEPTH_TEST);

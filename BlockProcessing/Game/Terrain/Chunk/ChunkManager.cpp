@@ -221,7 +221,7 @@ void ChunkManager::generateChunkFaceData(Chunk *chunk) {
 
 void ChunkManager::loadChunkData(Chunk *chunk) {
     chunk->faceDataSize = chunk->faceData.size();
-    chunk->vertexCount = chunk->faceDataSize / 9;
+    chunk->vertexCount = chunk->faceDataSize / 10;
     if (chunk->vertexCount != 0) {
         glBindBuffer(GL_ARRAY_BUFFER, chunk->vbo);
         glBufferData(GL_ARRAY_BUFFER, cubeManager->layout.getStride() * chunk->vertexCount, nullptr, GL_STATIC_DRAW);

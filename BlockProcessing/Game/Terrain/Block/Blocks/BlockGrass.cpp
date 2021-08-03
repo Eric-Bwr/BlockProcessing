@@ -3,16 +3,9 @@
 BlockGrass::BlockGrass() {
     name = "Grass";
     id = BLOCK_GRASS;
-    textureTopX = 0;
-    textureTopY = 0;
-    textureBottomX = 2;
-    textureBottomY = 0;
-    textureLeftX = 3;
-    textureLeftY = 0;
-    textureRightX = 3;
-    textureRightY = 0;
-    textureFrontX = 3;
-    textureFrontY = 0;
-    textureBackX = 3;
-    textureBackY = 0;
+    paths[0] = "GrassSide.png";
+    paths[1] = "Dirt.png";
+    paths[2] = "Grass.png";
+    textureBottom = 1;
+    textureTop = 2;
 }
