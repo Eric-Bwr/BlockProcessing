@@ -1,8 +1,10 @@
 #include "NetworkManager.h"
 #include "iostream"
 
+static std::atomic_bool alive = true;
+
 static void frame(Network::Client* client){
-    while(true){
+    while(alive){
         std::this_thread::sleep_for(std::chrono::milliseconds((long) (1)));
         client->Frame();
     }
@@ -41,4 +43,8 @@ void NetworkManager::OnPacketReceive(Network::TCPConnection *connection, Network
 
 void NetworkManager::OnPacketSend(Network::TCPConnection *connection, Network::Packet *packet) {
 
+}
+
+NetworkManager::~NetworkManager() {
+    alive = false;
 }

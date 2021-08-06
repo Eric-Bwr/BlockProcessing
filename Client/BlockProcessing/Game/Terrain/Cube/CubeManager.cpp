@@ -68,27 +68,27 @@ void CubeManager::addFace(std::vector<float>& data, Block* block, int x, int y, 
             break;
         case FACE_BOTTOM:
             memcpy(dataPtr, bottomFace, 60 * sizeof(float));
-            faceData = (float)block->id + 0.1f;
+            faceData = (float)block->id;
             texture += block->textureBottom;
             break;
         case FACE_FRONT:
             memcpy(dataPtr, frontFace, 60 * sizeof(float));
-            faceData = (float)block->id + 0.2f;
+            faceData = (float)block->id;
             texture += block->textureFront;
             break;
         case FACE_BACK:
             memcpy(dataPtr, backFace, 60 * sizeof(float));
-            faceData = (float)block->id + 0.3f;
+            faceData = (float)block->id;
             texture += block->textureBack;
             break;
         case FACE_LEFT:
             memcpy(dataPtr, leftFace, 60 * sizeof(float));
-            faceData = (float)block->id + 0.4f;
+            faceData = (float)block->id;
             texture += block->textureLeft;
             break;
         case FACE_RIGHT:
             memcpy(dataPtr, rightFace, 60 * sizeof(float));
-            faceData = (float)block->id + 0.5f;
+            faceData = (float)block->id;
             texture += block->textureRight;
             break;
         default:

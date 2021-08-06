@@ -9,12 +9,10 @@ void Server::OnDisconnect(Network::TCPConnection *connection) {
     std::cout << "Disconnect: " << connection->GetIPEndpoint().GetIP() << "\n";
 }
 
-void Server::OnError(Network::TCPConnection *connection, short error) {
-    std::cout << "Error: " << connection->GetIPEndpoint().GetIP() << " " << error <<  "\n";
-}
+void Server::OnError(Network::TCPConnection *connection, short error) {}
 
 void Server::OnPacketReceive(Network::TCPConnection *connection, Network::Packet *packet) {
-    std::cout << "Connection: " << connection->GetIPEndpoint().GetIP() << "\n" <<
+    std::cout << "Packet from: " << connection->GetIPEndpoint().GetIP() << "\n" <<
               "Packet: " << packet->GetString() << "\n";
     delete packet;
 }

@@ -12,4 +12,5 @@ public:
     void OnError(Network::TCPConnection* connection, short error) override;
     void OnPacketReceive(Network::TCPConnection* connection, Network::Packet* packet) override;
     void OnPacketSend(Network::TCPConnection* connection, Network::Packet* packet) override;
+    ~NetworkManager();
 };
