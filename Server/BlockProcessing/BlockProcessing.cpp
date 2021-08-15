@@ -27,10 +27,10 @@ int main() {
 
     FILE *file;
     if (access("Settings.properties", F_OK) == 0) {
-        file = fopen("Settings.properties", "r+");
+        file = fopen("Server.properties", "r+");
     } else {
-        file = fopen("Settings.properties", "w+");
-        fputs("IP: 0.0.0.0 \nPort: 25565\n", file);
+        file = fopen("Server.properties", "w+");
+        fputs("IP: 127.0.0.1\nPort: 25565", file);
     }
     fseek(file, 0, SEEK_END);
     uint64_t len = ftell(file);

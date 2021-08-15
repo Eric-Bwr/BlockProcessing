@@ -1,5 +1,9 @@
 #pragma once
 
+#ifndef radians
+#define radians 0.01745329251994329576923690768489
+#endif
+
 #include <cmath>
 
 class Vec2 {

@@ -32,9 +32,7 @@ void NetworkManager::OnDisconnect() {
     std::cout << "Disconnected\n";
 }
 
-void NetworkManager::OnError(Network::TCPConnection *connection, short error) {
-    std::cout << "Error: " << connection->GetIPEndpoint().GetIP() << " " << error <<  "\n";
-}
+void NetworkManager::OnError(Network::TCPConnection *connection, short error) {}
 
 void NetworkManager::OnPacketReceive(Network::TCPConnection *connection, Network::Packet *packet) {
     std::cout << "Connection: " << connection->GetIPEndpoint().GetIP() << "\n" <<

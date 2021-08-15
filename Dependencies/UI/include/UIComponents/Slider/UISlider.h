@@ -17,7 +17,7 @@ public:
     void setSlideColor(const UIColor& standardColor, const UIColor& hoverColor, const UIColor& pressedColor);
     void setSlideCoords(float buttonX, float buttonY, float buttonWidth, float buttonHeight, float hoverX, float hoverY, float hoverWidth, float hoverHeight, float pressedX, float pressedY, float pressedWidth, float pressedHeight);
     void setDragColor(const UIColor& standardColor, const UIColor& hoverColor, const UIColor& pressedColor);
-    void setDragCoords(float buttonX, float buttonY, float buttonWidth, float buttonHeight, float hoverX, float hoverY, float hoverWidth, float hoverHeight, float pressedX, float pressedY, float pressedWidth, float pressedHeight);
+    void setDragCoords(float width, float height, float buttonX, float buttonY, float buttonWidth, float buttonHeight, float hoverX, float hoverY, float hoverWidth, float hoverHeight, float pressedX, float pressedY, float pressedWidth, float pressedHeight);
     void setPosition(float positionX, float positionY) override;
 	void setSize(float width, float height);
 	void setBounds(float positionX, float positionY, float width, float height) override;

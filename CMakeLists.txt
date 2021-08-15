@@ -49,7 +49,7 @@ include_directories(Server)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Server/Build)
 
-add_executable(Server ${SOURCE_FILES_SERVER} Dependencies/FastNoise/FastNoise.h Dependencies/FastNoise/FastNoise.cpp Server/BlockProcessing/BlockProcessing.cpp)
+add_executable(Server ${SOURCE_FILES_SERVER} Dependencies/FastNoise/FastNoise.h Dependencies/FastNoise/FastNoise.cpp)
 
 target_link_libraries(Server
         ${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/Math/Math.a
