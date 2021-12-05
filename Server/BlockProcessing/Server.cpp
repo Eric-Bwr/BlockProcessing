@@ -1,8 +1,12 @@
 #include "Server.h"
 #include "iostream"
 
+#define PACKET_MOTD 0
+
 void Server::OnConnect(Network::TCPConnection *connection) {
-    std::cout << "Connect: " << connection->GetIPEndpoint().GetIP() << "\n";
+    auto motd = new Network::Packet(PACKET_MOTD);
+    motd->AppendString("A Test Server");
+    connection->m_Outgoing.Append(motd);
 }
 
 void Server::OnDisconnect(Network::TCPConnection *connection) {

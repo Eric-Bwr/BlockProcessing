@@ -33,8 +33,8 @@ public:
 	float getWidth() const { return width; }
 	float getHeight() const { return height; }
 
-	Vec2 getPosition() const { return Vec2(positionX, positionY); }
-	Vec2 getSize() const { return Vec2(width, height); }
+	Vec2f getPosition() const { return Vec2(positionX, positionY); }
+	Vec2f getSize() const { return Vec2(width, height); }
 
 	virtual void setPosition(float positionX, float positionY) {}
 	virtual void setBounds(float positionX, float positionY, float width, float height) {}

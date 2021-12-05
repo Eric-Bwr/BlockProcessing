@@ -3880,7 +3880,7 @@ GLFWAPI GLFWwindowcontentscalefun glfwSetWindowContentScaleCallback(GLFWwindow* 
  *  and input callbacks associated with those events to be called.
  *
  *  On some platforms, a window move, resize or menu operation will cause event
- *  processing to block.  This is due to how event processing is designed on
+ *  processing to cell.  This is due to how event processing is designed on
  *  those platforms.  You can use the
  *  [window refresh callback](@ref window_refresh) to redraw the contents of
  *  your window when necessary during such operations.
@@ -3925,7 +3925,7 @@ GLFWAPI void glfwPollEvents(void);
  *  callbacks.
  *
  *  On some platforms, a window move, resize or menu operation will cause event
- *  processing to block.  This is due to how event processing is designed on
+ *  processing to cell.  This is due to how event processing is designed on
  *  those platforms.  You can use the
  *  [window refresh callback](@ref window_refresh) to redraw the contents of
  *  your window when necessary during such operations.
@@ -3972,7 +3972,7 @@ GLFWAPI void glfwWaitEvents(void);
  *  callbacks.
  *
  *  On some platforms, a window move, resize or menu operation will cause event
- *  processing to block.  This is due to how event processing is designed on
+ *  processing to cell.  This is due to how event processing is designed on
  *  those platforms.  You can use the
  *  [window refresh callback](@ref window_refresh) to redraw the contents of
  *  your window when necessary during such operations.

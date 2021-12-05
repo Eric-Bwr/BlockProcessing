@@ -25,9 +25,14 @@ void BlockProcessing::onMouseScroll(double x, double y) {
 }
 
 void BlockProcessing::onResize(int width, int height) {
+    bool resize = width < minWidth || height < minHeight;
+    if(width < minWidth)
+        width = minWidth;
+    if(height < minHeight)
+        height = minHeight;
+    if(resize)
+        glfwSetWindowSize(window, width, height);
     glViewport(0, 0, width, height);
-    if(width == 0 || height == 0)
-        return;
     sceneManager.onResize(true, width, height);
     interfaceManager.setSize(width, height);
     postProcessManager.setSize(width, height);

@@ -25,6 +25,7 @@ void BlockProcessing::init(GLFWwindow* window, int width, int height) {
     sceneManager.init(this);
     sceneManager.add(&mainMenuScene);
     sceneManager.add(&gameScene);
+    sceneManager.add(&serverMenuScene);
     sceneManager.setCurrent(&mainMenuScene);
 }
 

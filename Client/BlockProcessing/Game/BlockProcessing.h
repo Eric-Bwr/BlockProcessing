@@ -1,12 +1,14 @@
 #pragma once
 
-#include "BlockProcessing/Game/Game/Interface/InterfaceManager.h"
-#include "BlockProcessing/Game/Game/PostProcess/PostProcessManager.h"
-#include "BlockProcessing/Game/Game/SkyBox/SkyBoxManager.h"
-#include "BlockProcessing/Game/Game/Scene/Scenes/MenuScenes/MainMenuScene/MainMenuScene.h"
-#include "BlockProcessing/Game/Game/Scene/Scenes/GameScene/GameScene.h"
-#include "BlockProcessing/Game/Game/Scene/SceneManager.h"
-#include "BlockProcessing/Game/Network/NetworkManager.h"
+#include "BlockProcessing/Framework/Engine/Logger/Logger.h"
+#include "BlockProcessing/Game/Engine/Interface/InterfaceManager.h"
+#include "BlockProcessing/Framework/Engine/PostProcess/PostProcessManager.h"
+#include "BlockProcessing/Framework/Engine/SkyBox/SkyBoxManager.h"
+#include "BlockProcessing/Game/Features/Scenes/MenuScenes/MainMenuScene/MainMenuScene.h"
+#include "BlockProcessing/Game/Features/Scenes/MenuScenes/ServerMenuScene/ServerMenuScene.h"
+#include "BlockProcessing/Game/Features/Scenes/GameScene/GameScene.h"
+#include "BlockProcessing/Game/Engine/Scene/SceneManager.h"
+#include "BlockProcessing/Game/Features/Network/NetworkManager.h"
 #include <GLFW/glfw3.h>
 
 class BlockProcessing {
@@ -17,7 +19,8 @@ public:
 
     GLFWwindow* window;
     int width, height;
-    Mat4 projection;
+    int minWidth = 1600, minHeight = 800;
+    Mat4f projection;
 
     SkyBoxManager skyBoxManager;
 
@@ -27,6 +30,7 @@ public:
 
     SceneManager sceneManager;
     MainMenuScene mainMenuScene;
+    ServerMenuScene serverMenuScene;
     GameScene gameScene;
 
     NetworkManager networkManager;

@@ -18,3 +18,4 @@
 #define TEXTURE_SKYBOX "../Assets/Textures/Gui/SkyBox/panorama_"
 #define TEXTURE_SKYBOX_ENDING "png"
 #define TEXTURE_GUI "../Assets/Textures/Gui/Gui.png"
+#define TEXTURE_SERVER "../Assets/Textures/Gui/Server.png"

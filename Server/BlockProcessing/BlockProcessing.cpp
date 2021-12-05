@@ -26,11 +26,11 @@ int main() {
 #endif
 
     FILE *file;
-    if (access("Settings.properties", F_OK) == 0) {
+    if (access("Server.properties", F_OK) == 0) {
         file = fopen("Server.properties", "r+");
     } else {
         file = fopen("Server.properties", "w+");
-        fputs("IP: 127.0.0.1\nPort: 25565", file);
+        fputs("IP: 127.0.0.1\nPort: 25566", file);
     }
     fseek(file, 0, SEEK_END);
     uint64_t len = ftell(file);
@@ -64,7 +64,7 @@ int main() {
     for (const auto &line : lines)
         std::cout << line << "\n";
     Server server;
-    server.Initialize(Network::IPEndpoint(lines.at(0).substr(4, lines.at(0).size()).data(), atoi(lines.at(1).substr(6, lines.at(1).size()).data())));
+    server.Initialize(Network::IPEndpoint(lines.at(0).substr(4, lines.at(0).size()).data(), std::stoi(lines.at(1).substr(6, lines.at(1).size()))));
     std::cout << "Initialized Server Successfully\n";
     std::thread thread(frame, &server);
     thread.detach();

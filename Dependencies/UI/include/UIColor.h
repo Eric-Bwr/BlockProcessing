@@ -13,8 +13,8 @@ public:
     UIColor(std::initializer_list<float> colors, int colorMode = COLOR_NORMALIZED);
     explicit UIColor(int hex, float alpha = 1.0f);
 	explicit UIColor(const std::string& hex, float alpha = 1.0f);
-    Vec4 getNormalizedDecimal() const;
-    Vec4 getDecimal() const;
+    Vec4f getNormalizedDecimal() const;
+    Vec4f getDecimal() const;
     std::string getHexString(bool alpha = false, const std::string& heading = "");
     int getHex(bool alpha = false);
     void setHex(int hex, float alpha = 1.0f);

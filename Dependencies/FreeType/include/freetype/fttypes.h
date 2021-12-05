@@ -318,7 +318,7 @@ FT_BEGIN_HEADER
    * @description:
    *   This is equivalent to the ANSI~C `size_t` type, i.e., the largest
    *   _unsigned_ integer type used to express a file size or position, or a
-   *   memory block size.
+   *   memory cell size.
    */
   typedef size_t  FT_Offset;
 

@@ -34,8 +34,8 @@ public:
 	void mouseButtonInput(int button, int action);
 	void render();
     ~UIManager();
-
-    Mat4 ortho;
+private:
+    Mat4f ortho;
     Shader* textShader;
     Shader* quadShader;
     int width, height;

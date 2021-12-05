@@ -28,7 +28,6 @@ target_link_libraries(Client
         ${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/FreeType/freetype.a
         ${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/GLFW/libglfw3.a
         ${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/OpenGL/OpenGL.a
-        ${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/Math/Math.a
         ${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/Network/Network.a
         wsock32
         ws2_32
