@@ -131,9 +131,9 @@ int8_t WorldManager::getBlockDefault(int64_t x, int64_t y, int64_t z) {
     //    }else
     //        id = BLOCK_STONE;
     //}
-    auto second = (fastNoise->GetNoise(x, y, z) + 1.0f) / 2.0f;
-    if(second > 0.9)
-        return BLOCK_PLANKS;
+    //auto second = (fastNoise->GetNoise(x, y, z) + 1.0f) / 2.0f;
+    //if(second > 0.9)
+    //    return BLOCK_PLANKS;
     int height = int(((fastNoise->GetNoise(x, z) + 1.0f) / 2.0f) * 200);
     if (y > height || y < 0) {
         return BLOCK_AIR;

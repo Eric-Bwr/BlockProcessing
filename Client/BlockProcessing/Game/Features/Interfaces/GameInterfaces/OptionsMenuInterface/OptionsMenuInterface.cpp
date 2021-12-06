@@ -60,6 +60,36 @@ void OptionsMenuInterface::init(GameMenuInterface *gameMenuInterface, GameScene 
             gameScenePtr->updateProjection(int(value));
         }
     });
+    static auto chunkingRadius = addOptionSlider(4, 50, -20, int(std::atoi(optionsFileManager.getOption(4).c_str())), 1, 200);
+    chunkingRadius.slider->setCallback([](bool dragging, bool hovered, float value) {
+        if (dragging) {
+            auto data = std::to_string(int(value));
+            chunkingRadius.text->setText(("Chunking-Distance: " + data).data());
+            optionsFileManagerPtr->setOption(data, 4);
+            gameScenePtr->worldManager.setChunkingRadius(int(value));
+        }
+    });
+    gameScenePtr->worldManager.setChunkingRadius(optionsFileManager.getOptionInt(4));
+    static auto chunkingThreads = addOptionSlider(5, -optionWidth - 50, -20, int(std::atoi(optionsFileManager.getOption(5).c_str())), 1, 20);
+    chunkingThreads.slider->setCallback([](bool dragging, bool hovered, float value) {
+        if (dragging) {
+            auto data = std::to_string(int(value));
+            chunkingThreads.text->setText(("Chunking-Threads: " + data).data());
+            optionsFileManagerPtr->setOption(data, 5);
+            gameScenePtr->worldManager.setChunkingThreads(int(value));
+        }
+    });
+    gameScenePtr->worldManager.setChunkingThreads(optionsFileManager.getOptionInt(5));
+    static auto chunksPerThread = addOptionSlider(6, -optionWidth - 50, -100, int(std::atoi(optionsFileManager.getOption(6).c_str())), 1, 100);
+    chunksPerThread.slider->setCallback([](bool dragging, bool hovered, float value) {
+        if (dragging) {
+            auto data = std::to_string(int(value));
+            chunksPerThread.text->setText(("Chunks-Per-Thread: " + data).data());
+            optionsFileManagerPtr->setOption(data, 6);
+            gameScenePtr->worldManager.setChunksPerThread(int(value));
+        }
+    });
+    gameScenePtr->worldManager.setChunksPerThread(optionsFileManager.getOptionInt(6));
 }
 
 void OptionsMenuInterface::load() {
@@ -82,6 +112,7 @@ void OptionsMenuInterface::unload() {
 
 UIButton *OptionsMenuInterface::addOptionButton(std::string text, int line, float xOffset, float yOffset) {
     auto option = new UIButton(width / 2 + xOffset, height / 2 + yOffset, optionWidth, optionHeight);
+    option->text.setMode(UITextMode::LEFT);
     option->setBackgroundTexture(guiTexture, 0, 20, 200, 20, 0, 40, 200, 20, 0, 40, 200, 20);
     if (optionsFileManager.getOption(line) == "1")
         option->setText((text + ": ON").data(), font, optionFontSize);
@@ -98,7 +129,7 @@ OptionsSlider OptionsMenuInterface::addOptionSlider(int line, float xOffset, flo
     option->setDragCoords(30, optionHeight, 201, 20, 8, 20, 201, 20, 8, 20, 201, 40, 8, 20);
     option->setSlideCoords(0, 0, 201, 20, 0, 0, 201, 20, 0, 0, 201, 20);
     options.emplace_back(option);
-    auto optionText = new UIText(optionsFileManager.getLine(line).data(), font, optionFontSize, width / 2 + xOffset, height / 2 + yOffset, optionWidth, optionHeight, UITextMode::CENTERED);
+    auto optionText = new UIText(optionsFileManager.getLine(line).data(), font, optionFontSize, width / 2 + xOffset, height / 2 + yOffset, optionWidth, optionHeight, UITextMode::LEFT);
     options.emplace_back(optionText);
     return {option, optionText};
 }

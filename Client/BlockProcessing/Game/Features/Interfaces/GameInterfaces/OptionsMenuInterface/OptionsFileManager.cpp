@@ -11,7 +11,13 @@ void OptionsFileManager::init() {
         file = fopen(FILE_OPTIONS, "r+");
     } else {
         file = fopen(FILE_OPTIONS, "w+");
-        fputs("Name: Elly\nV-Sync: 1\nFOV: 75\nServer: 127.0.0.1:25566", file);
+        fputs("Name: Elly\n"
+              "V-Sync: 1\n"
+              "FOV: 75\n"
+              "Server: 127.0.0.1:25566\n"
+              "Chunking-Distance: 10\n"
+              "Chunking-Threads: 3\n"
+              "Chunks-Per-Thread: 10", file);
     }
     fseek(file, 0, SEEK_END);
     auto len = ftell(file);
@@ -54,6 +60,12 @@ std::string OptionsFileManager::getOption(int line) {
     auto data = lines.at(line);
     auto it = data.find_first_of(':') + 2;
     return data.substr(it, data.size() - it);
+}
+
+int OptionsFileManager::getOptionInt(int line) {
+    auto data = lines.at(line);
+    auto it = data.find_first_of(':') + 2;
+    return int(std::atoi(data.substr(it, data.size() - it).c_str()));
 }
 
 std::string OptionsFileManager::getLine(int line) {

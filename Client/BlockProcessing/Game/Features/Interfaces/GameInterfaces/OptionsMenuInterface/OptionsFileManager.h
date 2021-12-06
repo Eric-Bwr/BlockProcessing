@@ -8,6 +8,7 @@ public:
     void init();
     void setOption(std::string data, int line);
     std::string getOption(int line);
+    int getOptionInt(int line);
     std::string getLine(int line);
     ~OptionsFileManager();
 private:

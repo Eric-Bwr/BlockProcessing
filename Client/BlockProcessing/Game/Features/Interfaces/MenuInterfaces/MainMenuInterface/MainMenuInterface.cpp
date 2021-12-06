@@ -7,6 +7,9 @@ void MainMenuInterface::init(SceneManager *sceneManager) {
     mainMenuInterfacePtr = this;
     sceneManagerPtr = sceneManager;
     guiTexture = new UITexture(TEXTURE_GUI);
+    guiTexture->minLinear();
+    guiTexture->magLinear();
+    guiTexture->clampBorder();
     logo = new UIImage(width / 2 - 274 * 4.5 / 2, 140, 274 * 4.5, 44 * 4.5);
     logo->setTexture(guiTexture, 0, 61, 274, 44);
     playButton = new UIButton(width / 2 - 200 * 4.9 / 2, 520, 200 * 4.9, 20 * 4.9);
