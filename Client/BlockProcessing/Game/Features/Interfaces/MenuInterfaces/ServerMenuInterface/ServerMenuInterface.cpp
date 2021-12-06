@@ -123,7 +123,6 @@ ServerMenuInterface::~ServerMenuInterface() {
     UI->remove(connectionInfo);
     UI->remove(serverBackground);
     UI->remove(background);
-    delete guiTexture;
     delete serverTexture;
     delete titleText;
     delete nameText;

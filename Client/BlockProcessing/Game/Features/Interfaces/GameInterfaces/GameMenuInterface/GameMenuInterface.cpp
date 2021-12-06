@@ -62,7 +62,6 @@ GameMenuInterface::~GameMenuInterface() {
     UI->remove(gameButton);
     UI->remove(optionsButton);
     UI->remove(mainMenuButton);
-    delete guiTexture;
     delete background;
     delete gameButton;
     delete optionsButton;

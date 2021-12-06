@@ -139,7 +139,6 @@ OptionsMenuInterface::~OptionsMenuInterface() {
     UI->remove(background);
     for (auto option : options)
         UI->remove(option);
-    delete guiTexture;
     delete titleText;
     delete backButton;
     delete background;

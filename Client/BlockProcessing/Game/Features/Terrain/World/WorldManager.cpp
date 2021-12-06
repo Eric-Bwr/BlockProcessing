@@ -120,6 +120,9 @@ Chunk *WorldManager::getChunkFromChunkCoords(int64_t x, int64_t y, int64_t z) {
 }
 
 int8_t WorldManager::getBlockDefault(int64_t x, int64_t y, int64_t z) {
+    if(y == 10)
+        return BLOCK_GRASS;
+    return BLOCK_AIR;
     //auto noise = (fastNoise->GetNoise(x, z) + 1.0f) / 2.0f;
     //if(noise < 0.63)
     //    id = BLOCK_AIR;
@@ -134,16 +137,16 @@ int8_t WorldManager::getBlockDefault(int64_t x, int64_t y, int64_t z) {
     //auto second = (fastNoise->GetNoise(x, y, z) + 1.0f) / 2.0f;
     //if(second > 0.9)
     //    return BLOCK_PLANKS;
-    int height = int(((fastNoise->GetNoise(x, z) + 1.0f) / 2.0f) * 200);
-    if (y > height || y < 0) {
-        return BLOCK_AIR;
-    } else if (y == height) {
-            return BLOCK_GRASS;
-    } else if (y < height && y >= height - 1) {
-        return BLOCK_DIRT;
-    } else {
-        return BLOCK_STONE;
-    }
+    //int height = int(((fastNoise->GetNoise(x, z) + 1.0f) / 2.0f) * 200);
+    //if (y > height || y < 0) {
+    //    return BLOCK_AIR;
+    //} else if (y == height) {
+    //        return BLOCK_GRASS;
+    //} else if (y < height && y >= height - 1) {
+    //    return BLOCK_DIRT;
+    //} else {
+    //    return BLOCK_STONE;
+    //}
 }
 
 int8_t WorldManager::getBlock(int64_t x, int64_t y, int64_t z) {
@@ -207,9 +210,8 @@ void WorldManager::setChunksPerThread(int max) {
 void WorldManager::render(Mat4f &projectionView, Mat4f &view) {
     frustum.update(projectionView);
     chunkManager->setView(&view);
-    for (auto&[coord, octree] : octrees) {
+    for (auto&[coord, octree] : octrees)
         octree->getRoot().render();
-    }
 }
 
 WorldManager::~WorldManager() {

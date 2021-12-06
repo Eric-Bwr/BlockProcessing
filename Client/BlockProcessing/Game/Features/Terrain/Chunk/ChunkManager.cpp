@@ -8,22 +8,25 @@ void ChunkManager::init(CubeManager *cubeManager, BlockManager* blockManager, Wo
     this->worldManager = worldManager;
     this->model.identity();
     stride = 10 * sizeof(float);
+    offset1 = (const void *)(3 * sizeof(float));
+    offset2 = (const void *)(6 * sizeof(float));
+    offset3 = (const void *)(9 * sizeof(float));
 }
 
 void ChunkManager::initChunk(Chunk *chunk) {
     chunk->init = false;
     glGenVertexArrays(1, &chunk->vao);
     glBindVertexArray(chunk->vao);
-    glGenBuffers(1, &chunk->vao);
+    glGenBuffers(1, &chunk->vbo);
     glBindBuffer(GL_ARRAY_BUFFER, chunk->vbo);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, nullptr);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void *) (3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, offset1);
     glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, stride, (void *) (6 * sizeof(float)));
+    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, stride, offset2);
     glEnableVertexAttribArray(3);
-    glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, stride, nullptr);
+    glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, stride, offset3);
 }
 
 void ChunkManager::generateChunkData(Chunk *chunk) {
@@ -40,7 +43,7 @@ void ChunkManager::generateChunkData(Chunk *chunk) {
             }
         }
         generateChunkDefaultVertices(chunk);
-    }else
+    } else
         generateChunkVertices(chunk);
     chunk->vertexCount = chunk->vertices.size() / 10;
     if(chunk->vertexCount == 0)

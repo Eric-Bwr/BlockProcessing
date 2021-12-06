@@ -6,10 +6,6 @@ void GameScene::init() {
     this->width = blockProcessing->width;
     this->height = blockProcessing->height;
     projectionView.identity();
-    terrainManager.init(&cubeManager, &blockManager, &chunkManager, &worldManager, rand(), FastNoise::PerlinFractal, 0.009, 6);
-    terrainManager.setProjection(blockProcessing->projection);
-    player.init(&worldManager, 0, 0, 0, 90, 0);
-    player.setProjection(blockProcessing->projection);
 
     blockProcessing->interfaceManager.add(&chatInterface);
     blockProcessing->interfaceManager.add(&debugInterface);
@@ -30,9 +26,13 @@ void GameScene::init() {
     linePointVisualizer.init();
     linePointVisualizer.setProjection(blockProcessing->projection);
 
+    terrainManager.init(&cubeManager, &blockManager, &chunkManager, &worldManager, rand(), FastNoise::PerlinFractal, 0.009, 6);
+    terrainManager.setProjection(blockProcessing->projection);
+    player.init(&worldManager, 0, 0, 0, 90, 0);
+    player.setProjection(blockProcessing->projection);
+
     commandManager.add(new CommandTP(player));
-    int height = int(((worldManager.fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * 200);
-    player.position.y = height;
+    player.position.y = ((worldManager.fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * 200;
     player.update();
 }
 

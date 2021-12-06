@@ -49,7 +49,6 @@ MainMenuInterface::~MainMenuInterface() {
     UI->remove(quitButton);
     UI->remove(versionText);
     UI->remove(copyrightText);
-    delete guiTexture;
     delete logo;
     delete playButton;
     delete quitButton;

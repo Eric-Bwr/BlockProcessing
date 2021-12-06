@@ -9,14 +9,14 @@ void TerrainManager::init(CubeManager* cubeManager, BlockManager* blockManager, 
     fastNoise->SetSeed(seed);
     fastNoise->SetFrequency(frequency);
     fastNoise->SetFractalOctaves(octaves);
+    shader = new Shader(SHADER_TERRAIN);
+    shader->addUniforms({"projection", "modelView", "intensity", "gradient", "image", "lightPos", "viewPos", "blinn", "skyColor"});
     cubeManager->init();
     blockManager->init();
     chunkManager->init(cubeManager, blockManager, worldManager);
     chunkManager->setShader(shader);
     worldManager->fastNoise = fastNoise;
     worldManager->init(blockManager, chunkManager);
-    shader = new Shader(SHADER_TERRAIN);
-    shader->addUniforms({"projection", "modelView", "intensity", "gradient", "image", "lightPos", "viewPos", "blinn", "skyColor"});
     LOG(shader->getErrorMessage());
 }
 

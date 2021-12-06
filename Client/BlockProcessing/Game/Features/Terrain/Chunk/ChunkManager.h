@@ -27,6 +27,7 @@ private:
     Mat4f* view;
     Shader* shader;
     int stride;
+    const void *offset1, *offset2, *offset3;
     void generateChunkVertices(Chunk* chunk);
     void generateChunkDefaultVertices(Chunk* chunk);
     CubeManager *cubeManager;
