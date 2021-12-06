@@ -7,11 +7,16 @@ void Player::init(WorldManager *worldManager, double x, double y, double z, floa
     front.z = -1;
     view.identity();
     calculateCamera();
+    playerBlockOutline.init();
 }
 
-void Player::render(Mat4f &view) {}
+void Player::render(Mat4f &view) {
+    playerBlockOutline.render(view);
+}
 
-void Player::setProjection(Mat4f &projection) {}
+void Player::setProjection(Mat4f &projection) {
+    playerBlockOutline.setProjection(projection);
+}
 
 void Player::update(double deltaTime) {
     calculateMove(deltaTime);
@@ -28,21 +33,33 @@ void Player::update(double deltaTime) {
 }
 
 void Player::dig() {
-    int radius = 4;
-    auto chunkPtr = worldManager->getChunkFromChunkCoords(chunkX, chunkY, chunkZ);
-    for (int x = -radius; x < radius; x++) {
-        for (int y = -radius; y < radius; y++) {
-            for (int z = -radius; z < radius; z++) {
-                worldManager->chunkManager->setChunkBlock(chunkPtr, 0, blockX + x, blockY  + y - 5, blockZ + z);
+    if (lookedBlockID != BLOCK_AIR)
+        worldManager->setBlock(BLOCK_AIR, lookedBlockX, lookedBlockY, lookedBlockZ);
+}
+
+void Player::place() {
+    if (lookedBlockID != BLOCK_AIR)
+        worldManager->setBlock(BLOCK_PLANKS, prevLookedBlockX, prevLookedBlockY, prevLookedBlockZ);
+}
+
+bool Player::colliding() {
+    int minX = position.x - PLAYER_WIDTH_HALF;
+    int minY = position.y - PLAYER_HEIGHT;
+    int minZ = position.z - PLAYER_WIDTH_HALF;
+
+    int maxX = position.x + PLAYER_WIDTH_HALF;
+    int maxY = position.y + PLAYER_HEIGHT + 1;
+    int maxZ = position.z + PLAYER_WIDTH_HALF;
+
+    for (int x = minX; x <= maxX; x++) {
+        for (int y = minY; y <= maxY; y++) {
+            for (int z = minZ; z <= maxZ; z++) {
+                collisionBlockID = worldManager->getBlock(x, y, z);
+                if (collisionBlockID != 0)
+                    return true;
             }
         }
     }
-    worldManager->updateChunkFromChunkCoords(chunkX, chunkY, chunkZ);
-}
-
-void Player::place() {}
-
-bool Player::colliding() {
     return false;
 }
 
@@ -110,13 +127,36 @@ void Player::castRay() {
         lookedBlockX = round(position.x + end.x - 0.5);
         lookedBlockY = round(position.y + end.y - 0.5);
         lookedBlockZ = round(position.z + end.z - 0.5);
-        if (worldManager->getBlock(lookedBlockX, lookedBlockY, lookedBlockZ) > 0) {
+        lookedBlockID = worldManager->getBlock(lookedBlockX, lookedBlockY, lookedBlockZ);
+        if (lookedBlockID != BLOCK_AIR) {
             lookedBlock.x = lookedBlockX;
             lookedBlock.y = lookedBlockY;
             lookedBlock.z = lookedBlockZ;
+            if (Coord::distanceSquared(lookedBlock, {prevLookedBlockX, prevLookedBlockY, prevLookedBlockZ}) > 1) {
+                Coord offsets[6] = {
+                        {lookedBlockX,     lookedBlockY + 1, lookedBlockZ},
+                        {lookedBlockX,     lookedBlockY - 1, lookedBlockZ},
+                        {lookedBlockX,     lookedBlockY,     lookedBlockZ + 1},
+                        {lookedBlockX,     lookedBlockY,     lookedBlockZ - 1},
+                        {lookedBlockX + 1, lookedBlockY,     lookedBlockZ},
+                        {lookedBlockX - 1, lookedBlockY,     lookedBlockZ}
+                };
+                float smallest = INT64_MAX;
+                for (int i = 0; i < 6; i++) {
+                    auto distance = Coord::distanceSquared(lookedBlock, offsets[i]);
+                    if (distance < smallest) {
+                        smallest = distance;
+                        prevLookedBlockX = offsets[i].x;
+                        prevLookedBlockY = offsets[i].y;
+                        prevLookedBlockZ = offsets[i].z;
+                    }
+                }
+            }
+            playerBlockOutline.update(lookedBlockX, lookedBlockY, lookedBlockZ);
             return;
         }
     }
+    playerBlockOutline.update(0, -99999999, 0);
 }
 
 void Player::calculateCamera() {

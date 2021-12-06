@@ -4,7 +4,9 @@
 #include "BlockProcessing/Game/Features/Terrain/Util/Coordinate.h"
 #include "PlayerDefines.h"
 #include "BlockProcessing/Game/Features/Terrain/World/WorldManager.h"
+#include "BlockProcessing/Game/Features/Terrain/Block/BlockManager.h"
 #include "BlockProcessing/Game/Engine/Entity/Entity.h"
+#include "PlayerBlockOutline.h"
 
 class Player : public Entity {
 public:
@@ -16,11 +18,9 @@ public:
     void place();
     bool colliding();
     bool isOnGround();
-    int64_t blockX, chunkX, octreeX;
-    int64_t blockY, chunkY, octreeY;
-    int64_t blockZ, chunkZ, octreeZ;
-    int64_t prevLookedBlockX, prevLookedBlockY, prevLookedBlockZ;
-    int64_t lookedBlockX, lookedBlockY, lookedBlockZ;
+    int64_t blockX, chunkX, octreeX, lookedBlockX, prevLookedBlockX;
+    int64_t blockY, chunkY, octreeY, lookedBlockY, prevLookedBlockY;
+    int64_t blockZ, chunkZ, octreeZ, lookedBlockZ, prevLookedBlockZ;
     Coord block, chunk, octree, lookedBlock;
     void moveMouse(double xPos, double yPos);
     Mat4f getViewMatrix();
@@ -28,11 +28,13 @@ public:
     Mat4f view;
     bool hasLastPos = false;
     double lastPosX, lastPosY, xOffset, yOffset;
-    float speed = 500.0f;
+    float speed = 250.0f;
     ~Player();
 private:
     WorldManager* worldManager;
+    PlayerBlockOutline playerBlockOutline;
     void calculateMove(double deltaTime);
     void calculateCamera();
     void castRay();
+    int8_t lookedBlockID = BLOCK_AIR, collisionBlockID = BLOCK_AIR;
 };
