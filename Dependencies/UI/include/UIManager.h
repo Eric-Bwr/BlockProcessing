@@ -34,12 +34,12 @@ public:
 	void mouseButtonInput(int button, int action);
 	void render();
     ~UIManager();
+    double mouseX = 0, mouseY = 0;
 private:
     Mat4f ortho;
     Shader* textShader;
     Shader* quadShader;
     int width, height;
-    double mouseX = 0, mouseY = 0;
 	std::map<int, std::vector<UIComponent *>*> components;
 	void renderComponent(UIComponent *);
 	bool cursor = false, scaleOnResize = false;

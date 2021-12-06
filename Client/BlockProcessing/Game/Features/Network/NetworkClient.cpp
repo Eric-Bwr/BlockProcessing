@@ -1,6 +1,7 @@
 #include "NetworkClient.h"
 #include "NetworkManager.h"
-#include "iostream"
+#include <iostream>
+#include <atomic>
 
 static NetworkManager* networkManagerPtr;
 static std::string serverAddress;

@@ -18,11 +18,11 @@ public:
     std::string getHexString(bool alpha = false, const std::string& heading = "");
     int getHex(bool alpha = false);
     void setHex(int hex, float alpha = 1.0f);
-    void setRGBA(float red, float green, float blue, float alpha, int colorMode);
-    void setRed(float red,int colorMode);
-    void setGreen(float green,int colorMode);
-    void setBlue(float blue,int colorMode);
-    void setAlpha(float alpha,int colorMode);
+    void setRGBA(float red, float green, float blue, float alpha, int colorMode = COLOR_NORMALIZED);
+    void setRed(float red, int colorMode = COLOR_NORMALIZED);
+    void setGreen(float green, int colorMode = COLOR_NORMALIZED);
+    void setBlue(float blue, int colorMode = COLOR_NORMALIZED);
+    void setAlpha(float alpha, int colorMode = COLOR_NORMALIZED);
     UIColor darker() const;
     UIColor brighter() const;
     ~UIColor();

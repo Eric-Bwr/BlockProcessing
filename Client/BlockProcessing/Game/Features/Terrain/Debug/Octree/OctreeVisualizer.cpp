@@ -1,5 +1,6 @@
 #include "OctreeVisualizer.h"
 #include "BlockProcessing/Game/Paths.h"
+#include <algorithm>
 
 void OctreeVisualizer::init() {
     shader = new Shader(SHADER_LINE);

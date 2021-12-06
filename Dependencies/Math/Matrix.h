@@ -228,25 +228,25 @@ public:
         m32 = 0.0;
         return *this;
     }
-    Mat4<T> orthographic(T left, T right, T bottom, T top, T near, T far){
+    Mat4<T> orthographic(T left, T right, T bottom, T top, T nearVal, T farVal){
         m00 = 2.0 / (right - left);
         m11 = 2.0 / (top - bottom);
-        m22 = 2.0 / (near - far);
+        m22 = 2.0 / (nearVal - farVal);
 
         m30 = (left + right) / (left - right);
         m31 = (bottom + top) / (bottom - top);
-        m32 = (far + near) / (far - near);
+        m32 = (farVal + nearVal) / (farVal - nearVal);
         return *this;
     }
-    Mat4<T> perspective(T fov, T width, T height, T near, T far){
+    Mat4<T> perspective(T fov, T width, T height, T nearVal, T farVal){
         T aspectRatio = width / height;
         T yScale = std::tan(fov / 2.0 * RADIANS);
 
         m00 = 1.0 / (aspectRatio * yScale);
         m11 = 1.0 / (yScale);
-        m22 = far / (near - far);
+        m22 = farVal / (nearVal - farVal);
         m23 = -1.0;
-        m32 = -(far * near) / (far - near);
+        m32 = -(farVal * nearVal) / (farVal - nearVal);
         return *this;
     }
     Mat4<T> lookAt(const Vec3<T> &eye, const Vec3<T> &center, const Vec3<T> &up){
@@ -312,30 +312,30 @@ Mat4<T> identityMatrix(){
     return Mat4<T>(1.0);
 }
 template<typename T = float>
-Mat4<T> perspectiveMatrix(T fov, T width, T height, T near, T far){
+Mat4<T> perspectiveMatrix(T fov, T width, T height, T nearVal, T farVal){
     Mat4<T> mat = identityMatrix();
     T aspectRatio = width / height;
     T yScale = std::tan(fov / 2.0 * RADIANS);
 
     mat.m00 = 1.0 / (aspectRatio * yScale);
     mat.m11 = 1.0 / (yScale);
-    mat.m22 = far / (near - far);
+    mat.m22 = farVal / (nearVal - farVal);
     mat.m23 = -1.0;
-    mat.m32 = -(far * near) / (far - near);
+    mat.m32 = -(farVal * nearVal) / (farVal - nearVal);
 
     return mat;
 }
 template<typename T = float>
-Mat4<T> orthographicMatrix(T left, T right, T bottom, T top, T near, T far){
+Mat4<T> orthographicMatrix(T left, T right, T bottom, T top, T nearVal, T farVal){
     Mat4<T> mat = identityMatrix();
 
     mat.m00 = 2.0 / (right - left);
     mat.m11 = 2.0 / (top - bottom);
-    mat.m22 = 2.0 / (near - far);
+    mat.m22 = 2.0 / (nearVal - farVal);
 
     mat.m30 = (left + right) / (left - right);
     mat.m31 = (bottom + top) / (bottom - top);
-    mat.m32 = (far + near) / (far - near);
+    mat.m32 = (farVal + nearVal) / (farVal - nearVal);
 
     return mat;
 }
