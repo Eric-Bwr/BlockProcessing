@@ -32,13 +32,13 @@ void ChunkManager::initChunk(Chunk *chunk) {
 void ChunkManager::generateChunkData(Chunk *chunk) {
     if(chunk->init){
         chunk->blocks = std::vector<int8_t>(CHUNK_CUBIC_SIZE);
-        for (int x = 0; x < CHUNK_SIZE_PLUS_ONE; x++) {
+        for (int x = 0; x < CHUNK_SIZE; x++) {
             int64_t posX = chunk->tileX * CHUNK_SIZE + x;
-            for (int y = 0; y < CHUNK_SIZE_PLUS_ONE; y++) {
+            for (int y = 0; y < CHUNK_SIZE; y++) {
                 int64_t posY = chunk->tileY * CHUNK_SIZE + y;
-                for (int z = 0; z < CHUNK_SIZE_PLUS_ONE; z++) {
+                for (int z = 0; z < CHUNK_SIZE; z++) {
                     int64_t posZ = chunk->tileZ * CHUNK_SIZE + z;
-                    chunk->blocks[z * CHUNK_SIZE_PLUS_ONE * CHUNK_SIZE_PLUS_ONE + y * CHUNK_SIZE_PLUS_ONE + x] = worldManager->getBlockDefault(posX, posY, posZ);
+                    chunk->blocks[z * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + x] = worldManager->getBlockDefault(posX, posY, posZ);
                 }
             }
         }
@@ -278,7 +278,7 @@ int8_t ChunkManager::getChunkBlock(Chunk *chunk, int64_t x, int64_t y, int64_t z
 int8_t ChunkManager::getChunkBlock(Chunk *chunk, int64_t x, int64_t y, int64_t z, int64_t indexX, int64_t indexY, int64_t indexZ) {
     if (chunk->blocks.empty())
         return worldManager->getBlockDefault(x, y, z);
-    return chunk->blocks[indexZ * CHUNK_SIZE_PLUS_ONE * CHUNK_SIZE_PLUS_ONE + indexY * CHUNK_SIZE_PLUS_ONE + indexX];
+    return chunk->blocks[indexZ * CHUNK_SIZE * CHUNK_SIZE + indexY * CHUNK_SIZE + indexX];
 }
 
 void ChunkManager::setChunkBlock(Chunk *chunk, int8_t block, int64_t x, int64_t y, int64_t z) {
