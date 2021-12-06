@@ -11,6 +11,5 @@ public:
     ~CrosshairInterface();
 private:
     const int size = 64;
-    UITexture* crosshairTexture;
     UIImage* crosshair;
 };

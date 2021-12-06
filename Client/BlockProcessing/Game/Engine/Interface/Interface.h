@@ -8,6 +8,7 @@ struct Interface {
     Interface() = default;
     UIManager* UI;
     Font* font;
+    Texture* guiTexture;
     void updateInput();
     void updateInput(double mouseX, double mouseY);
     virtual void onResize(int width, int height, float factorX, float factorY) {}

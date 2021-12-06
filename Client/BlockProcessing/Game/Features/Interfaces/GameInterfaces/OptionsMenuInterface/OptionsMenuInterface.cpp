@@ -14,7 +14,6 @@ void OptionsMenuInterface::init(GameMenuInterface *gameMenuInterface, GameScene 
     optionsFileManagerPtr = &optionsFileManager;
     titleText = new UIText("Options", font, 60, 0, 120, width, 100, UITextMode::CENTERED);
     background = new UIImage(0, 0, width, height);
-    guiTexture = new UITexture(TEXTURE_GUI);
     backButton = new UIButton(width / 2 - 200 * 3 / 2, height - 200, 200 * 3, 20 * 3);
     backButton->setBackgroundTexture(guiTexture, 0, 20, 200, 20, 0, 40, 200, 20, 0, 40, 200, 20);
     backButton->setText("Back", font, 40);

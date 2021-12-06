@@ -14,7 +14,6 @@ void GameMenuInterface::init(SceneManager *sceneManager, OptionsMenuInterface* o
     optionsMenuInterfacePtr = optionsMenuInterface;
     background = new UIImage(0, 0, width, height);
     background->setColor({0, 0, 0, 0.35});
-    guiTexture = new UITexture(TEXTURE_GUI);
     gameButton = new UIButton(width / 2 - 200 * 4.9 / 2, height / 2 - 20 * 4.9 * 2, 200 * 4.9, 20 * 4.9);
     gameButton->setBackgroundTexture(guiTexture, 0, 20, 200, 20, 0, 40, 200, 20, 0, 40, 200, 20);
     gameButton->setText("Back to Game", font, 40);

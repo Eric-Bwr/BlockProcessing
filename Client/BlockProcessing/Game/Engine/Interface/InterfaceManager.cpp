@@ -5,6 +5,8 @@ void InterfaceManager::init(int width, int height) {
     this->height = height;
     UI.init(width, height, true);
     font = new Font(FONT);
+    guiTexture = new UITexture(TEXTURE_GUI);
+    guiTexture->nearest();
 }
 
 void InterfaceManager::add(Interface* interface) {
@@ -12,6 +14,7 @@ void InterfaceManager::add(Interface* interface) {
     interface->font = font;
     interface->width = width;
     interface->height = height;
+    interface->guiTexture = guiTexture;
     interfaces.emplace_back(interface);
 }
 
@@ -30,4 +33,9 @@ void InterfaceManager::setSize(int width, int height) {
     }
     this->width = width;
     this->height = height;
+}
+
+InterfaceManager::~InterfaceManager() {
+    delete font;
+    delete guiTexture;
 }

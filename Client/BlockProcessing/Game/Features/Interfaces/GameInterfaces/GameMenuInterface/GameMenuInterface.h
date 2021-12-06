@@ -13,7 +13,6 @@ public:
     void unload();
     ~GameMenuInterface();
 private:
-    Texture* guiTexture;
     UIImage* background;
     UIButton* gameButton;
     UIButton* optionsButton;

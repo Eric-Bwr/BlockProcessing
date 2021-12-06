@@ -1,9 +1,8 @@
 #include "CrosshairInterface.h"
 
 void CrosshairInterface::init() {
-    crosshairTexture = new UITexture(TEXTURE_GUI);
     crosshair = new UIImage(width / 2 - size / 2, height / 2 - size / 2, size, size);
-    crosshair->setTexture(crosshairTexture, 201, 0, 15, 15);
+    crosshair->setTexture(guiTexture, 201, 0, 15, 15);
     crosshair->setColor({1, 1, 1, 0.5});
 }
 
@@ -21,6 +20,5 @@ void CrosshairInterface::onResize(int width, int height, float factorX, float fa
 
 CrosshairInterface::~CrosshairInterface() {
     UI->remove(crosshair);
-    delete crosshairTexture;
     delete crosshair;
 }

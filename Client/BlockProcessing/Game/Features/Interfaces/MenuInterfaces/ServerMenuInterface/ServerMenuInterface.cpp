@@ -21,9 +21,9 @@ void ServerMenuInterface::init(SceneManager *sceneManager) {
     optionsFileManagerPtr = optionsFileManager;
     networkManagerPtr = &sceneManager->blockProcessing->networkManager;
     networkManagerPtr->setServerMenuInterface(this);
-    guiTexture = new UITexture(TEXTURE_GUI);
     serverTexture = new UITexture(TEXTURE_SERVER);
-    serverTexture->repeat();
+    serverTexture->minNear();
+    serverTexture->magNear();
     titleText = new UIText("Server", font, 60, 0, 40, width, 80, UITextMode::CENTERED);
     nameText = new UIText("Your name:", font, 40, width / 2 - fieldWidth / 2, 160, fieldWidth, 40, UITextMode::LEFT);
     nameText->setRGBA(0.7, 0.7, 0.7, 1.0);

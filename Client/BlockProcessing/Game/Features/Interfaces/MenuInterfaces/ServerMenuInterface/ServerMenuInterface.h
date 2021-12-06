@@ -16,7 +16,6 @@ public:
 private:
     const int fieldWidth = 700, fieldHeight = 70;
     OptionsFileManager* optionsFileManager;
-    Texture* guiTexture;
     Texture* serverTexture;
     UIText* titleText;
     UIButton* backButton;

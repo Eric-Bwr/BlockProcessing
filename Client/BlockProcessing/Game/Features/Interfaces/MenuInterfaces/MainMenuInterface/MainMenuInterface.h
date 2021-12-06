@@ -12,7 +12,6 @@ public:
     ~MainMenuInterface();
     bool alive = true;
 private:
-    Texture* guiTexture;
     UIButton* playButton;
     UIButton* quitButton;
     UIImage* logo;
