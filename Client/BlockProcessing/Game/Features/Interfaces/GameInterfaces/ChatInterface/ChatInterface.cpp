@@ -77,19 +77,23 @@ void ChatInterface::revertDown() {
 void ChatInterface::update(double deltaFrameTime) {
     if (!shouldDisplay) {
         for (auto component : components) {
-            if (component->blending > 0.0f) {
-                component->staying -= blendSpeed * deltaFrameTime;
-                if(component->staying > 0.0f)
-                    component->blending = 1.0f;
-                else
-                    component->blending -= blendSpeed * deltaFrameTime;
-                component->textElement->a = component->textColor.a * component->blending;
-                component->background->color.a = backgroundColor.a * component->blending;
-                if (component->blending < 0.0f) {
-                    component->background->color.a = 0.0f;
-                    component->blending = -1.0f;
-                    UI->remove(component->background);
-                    UI->remove(component->textElement);
+            if(component->textElement != nullptr) {
+                if (component->blending > 0.0f) {
+                    component->staying -= blendSpeed * deltaFrameTime;
+                    if (component->staying > 0.0f)
+                        component->blending = 1.0f;
+                    else
+                        component->blending -= blendSpeed * deltaFrameTime;
+                    component->textElement->a = component->textColor.a * component->blending;
+                    component->background->color.a = backgroundColor.a * component->blending;
+                    if (component->blending < 0.0f) {
+                        component->background->color.a = 0.0f;
+                        component->blending = -1.0f;
+                        UI->remove(component->background);
+                        UI->remove(component->textElement);
+                        delete component->background;
+                        delete component->textElement;
+                    }
                 }
             }
         }
@@ -99,11 +103,13 @@ void ChatInterface::update(double deltaFrameTime) {
 void ChatInterface::load() {
     shouldDisplay = true;
     for (auto component : components) {
-        UI->add(component->textElement, 1);
-        if(component->blending == -1.0f)
-            UI->add(component->background);
-        component->textElement->a = component->textColor.a;
-        component->background->color.a = backgroundColor.a;
+        if(component->textElement != nullptr) {
+            UI->add(component->textElement, 1);
+            if (component->blending == -1.0f)
+                UI->add(component->background);
+            component->textElement->a = component->textColor.a;
+            component->background->color.a = backgroundColor.a;
+        }
     }
     revertStep = components.size() + 1;
     UI->add(textField, 1);
@@ -115,8 +121,10 @@ void ChatInterface::unload() {
     shouldDisplay = false;
     for (auto component : components) {
         if(component->blending == -1.0f) {
-            UI->remove(component->textElement);
-            UI->remove(component->background);
+            if(component->textElement != nullptr) {
+                UI->remove(component->textElement);
+                UI->remove(component->background);
+            }
         }
     }
     UI->remove(textField);

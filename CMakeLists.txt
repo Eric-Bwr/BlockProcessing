@@ -21,7 +21,7 @@ include_directories(Client)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Client/Build)
 
-add_executable(Client ${SOURCE_FILES_CLIENT} Dependencies/FastNoise/FastNoise.h Dependencies/FastNoise/FastNoise.cpp)
+add_executable(Client ${SOURCE_FILES_CLIENT} Dependencies/FastNoise/FastNoise.h Dependencies/FastNoise/FastNoise.cpp Client/BlockProcessing/Game/Features/Commands/CommandHelp/CommandHelp.cpp Client/BlockProcessing/Game/Features/Commands/CommandHelp/CommandHelp.h)
 
 target_link_libraries(Client
         ${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/UI/UI.a
