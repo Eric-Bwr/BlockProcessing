@@ -22,8 +22,8 @@ public:
 private:
     UIButton* addOptionButton(std::string text, int line, float xOffset, float yOffset);
     OptionsSlider addOptionSlider(int line, float xOffset, float yOffset, float value, float min, float max);
-    const float optionWidth = 400, optionHeight = 60;
-    const int optionFontSize = 36;
+    const float optionWidth = 400, optionHeight = 60, textPadding = 5;
+    const int optionFontSize = 32;
     UIText* titleText;
     UIButton* backButton;
     UIImage* background;

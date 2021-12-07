@@ -61,12 +61,12 @@ void WorldManager::generate(const Coord &playerChunkCoord) {
 
     for (auto coord : modifiedChunks) {
         Coord coords[7] = {coord,
-                          {coord.x, coord.y + 1, coord.z},
-                          {coord.x, coord.y - 1, coord.z},
-                          {coord.x + 1, coord.y, coord.z},
-                          {coord.x - 1, coord.y, coord.z},
-                          {coord.x, coord.y, coord.z + 1},
-                          {coord.x, coord.y, coord.z - 1}};
+                           {coord.x, coord.y + 1, coord.z},
+                           {coord.x, coord.y - 1, coord.z},
+                           {coord.x + 1, coord.y, coord.z},
+                           {coord.x - 1, coord.y, coord.z},
+                           {coord.x, coord.y, coord.z + 1},
+                           {coord.x, coord.y, coord.z - 1}};
         for (auto chunkCoord : coords) {
             auto leaf = octrees.find(getOctreeFromChunk(chunkCoord))->second->getRoot().getLeaf(chunkCoord);
             leaf->chunk->loaded = false;

@@ -14,6 +14,8 @@ void OptionsMenuInterface::init(GameMenuInterface *gameMenuInterface, GameScene 
     optionsFileManagerPtr = &optionsFileManager;
     titleText = new UIText("Options", font, 60, 0, 120, width, 100, UITextMode::CENTERED);
     background = new UIImage(0, 0, width, height);
+    background->setTexture(nullptr);
+    background->setColor({0, 0, 0, 0.35});
     backButton = new UIButton(width / 2 - 200 * 3 / 2, height - 200, 200 * 3, 20 * 3);
     backButton->setBackgroundTexture(guiTexture, 0, 20, 200, 20, 0, 40, 200, 20, 0, 40, 200, 20);
     backButton->setText("Back", font, 40);
@@ -59,7 +61,7 @@ void OptionsMenuInterface::init(GameMenuInterface *gameMenuInterface, GameScene 
             gameScenePtr->updateProjection(int(value));
         }
     });
-    static auto chunkingRadius = addOptionSlider(4, 50, -20, int(std::atoi(optionsFileManager.getOption(4).c_str())), 1, 200);
+    static auto chunkingRadius = addOptionSlider(4, 50, -100, int(std::atoi(optionsFileManager.getOption(4).c_str())), 1, 200);
     chunkingRadius.slider->setCallback([](bool dragging, bool hovered, float value) {
         if (dragging) {
             auto data = std::to_string(int(value));
@@ -78,6 +80,7 @@ void OptionsMenuInterface::init(GameMenuInterface *gameMenuInterface, GameScene 
             gameScenePtr->worldManager.setChunkingThreads(int(value));
         }
     });
+    options.push_back(new UIText("<==== Restart needed!", font, optionFontSize, width / 2 + 50, height / 2 - 20, optionWidth, optionHeight, UITextMode::CENTERED));
     gameScenePtr->worldManager.setChunkingThreads(optionsFileManager.getOptionInt(5));
     static auto chunksPerThread = addOptionSlider(6, -optionWidth - 50, -100, int(std::atoi(optionsFileManager.getOption(6).c_str())), 1, 100);
     chunksPerThread.slider->setCallback([](bool dragging, bool hovered, float value) {
@@ -95,8 +98,6 @@ void OptionsMenuInterface::load() {
     UI->add(titleText, 1);
     UI->add(backButton, 1);
     UI->add(background);
-    background->setTexture(nullptr);
-    background->setColor({0, 0, 0, 0.35});
     for (auto option : options)
         UI->add(option, 1);
 }
@@ -111,12 +112,16 @@ void OptionsMenuInterface::unload() {
 
 UIButton *OptionsMenuInterface::addOptionButton(std::string text, int line, float xOffset, float yOffset) {
     auto option = new UIButton(width / 2 + xOffset, height / 2 + yOffset, optionWidth, optionHeight);
-    option->text.setMode(UITextMode::LEFT);
+    option->text.setMode(UITextMode::CENTERED_VERTICAL_LEFT);
     option->setBackgroundTexture(guiTexture, 0, 20, 200, 20, 0, 40, 200, 20, 0, 40, 200, 20);
-    if (optionsFileManager.getOption(line) == "1")
+    if (optionsFileManager.getOption(line) == "1") {
         option->setText((text + ": ON").data(), font, optionFontSize);
-    else
+    }
+    else {
         option->setText((text + ": OFF").data(), font, optionFontSize);
+    }
+    option->text.setPosition(option->text.getX() + textPadding, option->text.getY());
+    option->text.setSize(option->text.getWidth() - textPadding * 2, option->text.getHeight());
     options.emplace_back(option);
     return option;
 }
@@ -128,7 +133,7 @@ OptionsSlider OptionsMenuInterface::addOptionSlider(int line, float xOffset, flo
     option->setDragCoords(30, optionHeight, 201, 20, 8, 20, 201, 20, 8, 20, 201, 40, 8, 20);
     option->setSlideCoords(0, 0, 201, 20, 0, 0, 201, 20, 0, 0, 201, 20);
     options.emplace_back(option);
-    auto optionText = new UIText(optionsFileManager.getLine(line).data(), font, optionFontSize, width / 2 + xOffset, height / 2 + yOffset, optionWidth, optionHeight, UITextMode::LEFT);
+    auto optionText = new UIText(optionsFileManager.getLine(line).data(), font, optionFontSize, width / 2 + xOffset + textPadding, height / 2 + yOffset, optionWidth - textPadding * 2, optionHeight, UITextMode::CENTERED_VERTICAL_LEFT);
     options.emplace_back(optionText);
     return {option, optionText};
 }
