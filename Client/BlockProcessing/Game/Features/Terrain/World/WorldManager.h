@@ -41,6 +41,7 @@ public:
 private:
     int chunkingThreads;
     int chunksPerThread;
+    int chunkingRadius;
     int chunkingRadiusSquared;
     int chunkingDeletionRadiusSquared;
 };

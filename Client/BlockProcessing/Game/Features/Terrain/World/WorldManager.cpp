@@ -194,6 +194,7 @@ void WorldManager::updateChunkFromChunkCoords(int64_t x, int64_t y, int64_t z){
 }
 
 void WorldManager::setChunkingRadius(int radius) {
+    this->chunkingRadius = radius;
     this->chunkingRadiusSquared = radius * radius;
     this->chunkingDeletionRadiusSquared = (radius + 2) * (radius + 2);
     for (auto&[coord, octree] : octrees)

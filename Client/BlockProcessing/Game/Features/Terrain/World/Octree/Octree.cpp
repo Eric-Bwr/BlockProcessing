@@ -180,9 +180,9 @@ void OctreeNode::updateHierarchyLoadedAndEmptyStatus(bool isChunkLoaded, bool is
     node->loadedChildren = !isChunkLoaded ? 0b00000000 : OctreeNode::ALL_ONES_FLAG;
     node->emptyChildren = !isChunkEmpty ? 0b00000000 : OctreeNode::ALL_ONES_FLAG;
     while (node->parent != nullptr) {
-        OctreeNode *parent = node->parent;
+        OctreeNode *nodeParent = node->parent;
         int index = 0;
-        while (parent->children[index] != node) {
+        while (nodeParent->children[index] != node) {
             index++;
         }
 
@@ -190,9 +190,9 @@ void OctreeNode::updateHierarchyLoadedAndEmptyStatus(bool isChunkLoaded, bool is
             number ^= (-value ^ number) & (1UL << n);
         };
 
-        setBit(parent->loadedChildren, index, node->loadedChildren == OctreeNode::ALL_ONES_FLAG);
-        setBit(parent->emptyChildren, index, node->emptyChildren == OctreeNode::ALL_ONES_FLAG);
-        node = parent;
+        setBit(nodeParent->loadedChildren, index, node->loadedChildren == OctreeNode::ALL_ONES_FLAG);
+        setBit(nodeParent->emptyChildren, index, node->emptyChildren == OctreeNode::ALL_ONES_FLAG);
+        node = nodeParent;
     }
 }
 

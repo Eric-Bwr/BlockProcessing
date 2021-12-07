@@ -151,7 +151,7 @@ void ChunkManager::generateChunkVertices(Chunk *chunk) {
             int64_t posY = chunk->tileY * CHUNK_SIZE + y;
             for (int z = 0; z < CHUNK_SIZE; z++) {
                 int64_t posZ = chunk->tileZ * CHUNK_SIZE + z;
-                chunkBlock = getChunkBlock(chunk, posX, posY, posZ);
+                chunkBlock = getChunkBlock(chunk, posX, posY, posZ, x, y, z);
                 block = blockManager->getBlockByID(chunkBlock);
                 if (chunkBlock != BLOCK_AIR) {
                     if (y == 0) {
