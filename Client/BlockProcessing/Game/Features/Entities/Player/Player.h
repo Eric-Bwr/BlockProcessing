@@ -28,7 +28,7 @@ public:
     Mat4f view;
     bool hasLastPos = false;
     double lastPosX, lastPosY, xOffset, yOffset;
-    float speed = 250.0f;
+    float speed = 100.0f;
     ~Player();
 private:
     WorldManager* worldManager;

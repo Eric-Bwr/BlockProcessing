@@ -32,6 +32,7 @@ void GameScene::init() {
     player.setProjection(blockProcessing->projection);
 
     commandManager.add(new CommandTP(player));
+    commandManager.add(new CommandSpeed(player));
     player.position.y = ((worldManager.fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * 200;
     player.update();
 }

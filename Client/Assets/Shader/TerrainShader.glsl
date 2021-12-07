@@ -10,7 +10,7 @@ uniform mat4 projection;
 uniform mat4 modelView;
 
 out vec3 textureCoords;
-out vec3 normals;
+flat out vec3 normals;
 out vec3 fragPosition;
 flat out float blockID;
 out float visibility;
@@ -32,7 +32,7 @@ void main(){
 #version 430 core
 
 in vec3 textureCoords;
-in vec3 normals;
+flat in vec3 normals;
 in vec3 fragPosition;
 flat in float blockID;
 in float visibility;

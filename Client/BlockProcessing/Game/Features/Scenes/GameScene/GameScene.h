@@ -17,6 +17,7 @@
 #include "BlockProcessing/Game/Features/Terrain/World/WorldManager.h"
 #include "BlockProcessing/Game/Features/Terrain/TerrainManager.h"
 #include "BlockProcessing/Game/Features/Commands/CommandTP/CommandTP.h"
+#include "BlockProcessing/Game/Features/Commands/CommandSpeed/CommandSpeed.h"
 
 class OptionsMenuInterface;
 
