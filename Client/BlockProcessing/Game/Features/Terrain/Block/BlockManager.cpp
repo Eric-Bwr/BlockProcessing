@@ -11,11 +11,12 @@ void BlockManager::init() {
     texture->setWidth(TEXTURE_TILE_SIZE);
     texture->setHeight(TEXTURE_TILE_SIZE);
     texture->setFormat(GL_RGB);
-    texture->setInternalFormat(GL_RGB16F);
+    texture->setInternalFormat(GL_RGB8);
     texture->clampEdge();
-    texture->minNearMipLinear();
+    //texture->minNearMipLinear();
+    texture->minNear();
     texture->magNear();
-    texture->setLodBias(TEXTURE_LOD_BIAS);
+    //texture->setLodBias(TEXTURE_LOD_BIAS);
     texture->setData(nullptr);
     texture->setDepth(6 * blocks.size());
     texture->load();

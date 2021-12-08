@@ -8,7 +8,7 @@ uniform mat4 projection;
 uniform mat4 view;
 uniform mat4 model;
 
-out float id;
+flat out float id;
 
 void main(){
     id = inID;
@@ -18,7 +18,7 @@ void main(){
     #fragment
     #version 330 core
 
-in float id;
+flat in float id;
 
 out vec4 FragColor;
 

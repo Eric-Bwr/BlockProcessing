@@ -72,4 +72,6 @@ void main(){
     vec3 specular = vec3(0.175) * spec;// assuming bright white light color
     FragColor = vec4(ambient + diffuse + specular, 1.0);
     FragColor = mix(vec4(skyColor, 1.0), FragColor, visibility);
+    //FragColor = vec4((normals.x + 1) / 2, (normals.y + 1) / 2, (normals.z + 1 / 2), 1);
+   // FragColor = vec4(color, 1);
 }
