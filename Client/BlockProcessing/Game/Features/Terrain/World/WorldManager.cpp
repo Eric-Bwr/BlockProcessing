@@ -37,11 +37,12 @@ void WorldManager::init(BlockManager *blockManager, ChunkManager *chunkManager) 
 
 void WorldManager::generate(const Coord &playerChunkCoord) {
     chunkCandidatesForGenerating.clear();
+   // const int OCTREE_DELETION_RADIUS_SQUARED = (3 * OCTREE_LENGTH + OCTREE_LENGTH / 2) * (3 * OCTREE_LENGTH + OCTREE_LENGTH / 2);
 
     for (auto it = octrees.begin(), next_it = it; it != octrees.end(); it = next_it) {
         ++next_it;
         it->second->getRoot().deleteFurthestLoadedChunks(playerChunkCoord);
-        if (Coord::distanceSquared(playerChunkCoord, it->second->getRoot().coord) >= OCTREE_DELETION_RADIUS_SQUARED)
+        if (Coord::distanceSquared(playerChunkCoord, it->second->getRoot().coord) >= octreeDeletionRadius)
             octrees.erase(it);
     }
 
@@ -77,9 +78,9 @@ void WorldManager::generate(const Coord &playerChunkCoord) {
     //modifiedChunks.clear();
 
     auto playerOctreeCoord = getOctreeFromChunk(playerChunkCoord);
-    for (int64_t xx = playerOctreeCoord.x - OCTREE_LENGTH; xx <= playerOctreeCoord.x + OCTREE_LENGTH; xx += OCTREE_LENGTH) {
-        for (int64_t yy = playerOctreeCoord.y - OCTREE_LENGTH; yy <= playerOctreeCoord.y + OCTREE_LENGTH; yy += OCTREE_LENGTH) {
-            for (int64_t zz = playerOctreeCoord.z - OCTREE_LENGTH; zz <= playerOctreeCoord.z + OCTREE_LENGTH; zz += OCTREE_LENGTH) {
+    for (int64_t xx = playerOctreeCoord.x - octreeRadius; xx <= playerOctreeCoord.x + octreeRadius; xx += OCTREE_LENGTH) {
+        for (int64_t yy = playerOctreeCoord.y - octreeRadius; yy <= playerOctreeCoord.y + octreeRadius; yy += OCTREE_LENGTH) {
+            for (int64_t zz = playerOctreeCoord.z - octreeRadius; zz <= playerOctreeCoord.z + octreeRadius; zz += OCTREE_LENGTH) {
                 auto octreeCoord = Coord{xx, yy, zz};
                 Octree *octree = nullptr;
                 auto it = octrees.find(octreeCoord);
@@ -194,7 +195,8 @@ void WorldManager::updateChunkFromChunkCoords(int64_t x, int64_t y, int64_t z){
 }
 
 void WorldManager::setChunkingRadius(int radius) {
-    this->chunkingRadius = radius;
+    this->octreeRadius = (round(radius / OCTREE_LENGTH) + 1) * OCTREE_LENGTH;
+    this->octreeDeletionRadius = (octreeRadius + OCTREE_LENGTH) * (octreeRadius + OCTREE_LENGTH);
     this->chunkingRadiusSquared = radius * radius;
     this->chunkingDeletionRadiusSquared = (radius + 2) * (radius + 2);
     for (auto&[coord, octree] : octrees)
