@@ -29,9 +29,9 @@ void ChatInterface::append(ChatComponent *chatComponent) {
         delete components.front();
         components.erase(components.begin());
     }
-    chatComponent->textElement = new UIText((char *) chatComponent->text.data(), font, 30, 0, (float)height - chatHistoryHeight - chatOffset, chatWidth, chatHistoryHeight, UITextMode::LEFT);
+    chatComponent->textElement = new UIText((char *) chatComponent->text.data(), font, 30, 0, (float) height - chatHistoryHeight - chatOffset, chatWidth, chatHistoryHeight, UITextMode::LEFT);
     chatComponent->background = new UIImage(0, chatComponent->textElement->getY(), chatWidth, chatHistoryHeight);
-    for (auto component : components) {
+    for (auto component: components) {
         component->textElement->setPosition(0, component->textElement->getY() - chatHistoryHeight);
         component->background->setPosition(0, component->textElement->getY());
     }
@@ -76,24 +76,20 @@ void ChatInterface::revertDown() {
 
 void ChatInterface::update(double deltaFrameTime) {
     if (!shouldDisplay) {
-        for (auto component : components) {
-            if(component->textElement != nullptr) {
-                if (component->blending > 0.0f) {
-                    component->staying -= blendSpeed * deltaFrameTime;
-                    if (component->staying > 0.0f)
-                        component->blending = 1.0f;
-                    else
-                        component->blending -= blendSpeed * deltaFrameTime;
-                    component->textElement->a = component->textColor.a * component->blending;
-                    component->background->color.a = backgroundColor.a * component->blending;
-                    if (component->blending < 0.0f) {
-                        component->background->color.a = 0.0f;
-                        component->blending = -1.0f;
-                        UI->remove(component->background);
-                        UI->remove(component->textElement);
-                        delete component->background;
-                        delete component->textElement;
-                    }
+        for (auto component: components) {
+            if (component->blending > 0.0f) {
+                component->staying -= blendSpeed * deltaFrameTime;
+                if (component->staying > 0.0f)
+                    component->blending = 1.0f;
+                else
+                    component->blending -= blendSpeed * deltaFrameTime;
+                component->textElement->a = component->textColor.a * component->blending;
+                component->background->color.a = backgroundColor.a * component->blending;
+                if (component->blending < 0.0f) {
+                    component->background->color.a = 0.0f;
+                    component->blending = -1.0f;
+                    UI->remove(component->background);
+                    UI->remove(component->textElement);
                 }
             }
         }
@@ -102,14 +98,12 @@ void ChatInterface::update(double deltaFrameTime) {
 
 void ChatInterface::load() {
     shouldDisplay = true;
-    for (auto component : components) {
-        if(component->textElement != nullptr) {
-            UI->add(component->textElement, 1);
-            if (component->blending == -1.0f)
-                UI->add(component->background);
-            component->textElement->a = component->textColor.a;
-            component->background->color.a = backgroundColor.a;
-        }
+    for (auto component: components) {
+        UI->add(component->textElement, 1);
+        if (component->blending == -1.0f)
+            UI->add(component->background);
+        component->textElement->a = component->textColor.a;
+        component->background->color.a = backgroundColor.a;
     }
     revertStep = components.size() + 1;
     UI->add(textField, 1);
@@ -119,12 +113,10 @@ void ChatInterface::load() {
 
 void ChatInterface::unload() {
     shouldDisplay = false;
-    for (auto component : components) {
-        if(component->blending == -1.0f) {
-            if(component->textElement != nullptr) {
-                UI->remove(component->textElement);
-                UI->remove(component->background);
-            }
+    for (auto component: components) {
+        if (component->blending == -1.0f) {
+            UI->remove(component->textElement);
+            UI->remove(component->background);
         }
     }
     UI->remove(textField);
@@ -133,7 +125,7 @@ void ChatInterface::unload() {
 }
 
 static bool hasCharacter(const std::string &text) {
-    for (auto character : text)
+    for (auto character: text)
         if (character != ' ' && character != '\t' && character != '\n')
             return true;
     return false;
@@ -151,15 +143,15 @@ void ChatInterface::enter() {
 }
 
 void ChatInterface::onMousePosition(double x, double y) {
-    if(shouldDisplay){
-        for(auto component : components){
+    if (shouldDisplay) {
+        for (auto component: components) {
             if (x >= component->textElement->getX() && x <= component->textElement->getX() + component->textElement->getWidth() &&
                 y >= component->textElement->getY() && y <= component->textElement->getY() + component->textElement->getHeight()) {
-                if(component->callback != nullptr && !component->hovered)
+                if (component->callback != nullptr && !component->hovered)
                     component->callback(true, component->pressed);
                 component->hovered = true;
-            }else {
-                if(component->callback != nullptr && component->hovered)
+            } else {
+                if (component->callback != nullptr && component->hovered)
                     component->callback(false, component->pressed);
                 component->hovered = false;
             }
@@ -168,15 +160,15 @@ void ChatInterface::onMousePosition(double x, double y) {
 }
 
 void ChatInterface::onMouseButton(int button, int action) {
-    if(shouldDisplay && button == MOUSE_BUTTON_PRESSED){
-        for(auto component : components){
-            if(component->hovered && action == INPUT_PRESSED){
+    if (shouldDisplay && button == MOUSE_BUTTON_PRESSED) {
+        for (auto component: components) {
+            if (component->hovered && action == INPUT_PRESSED) {
                 component->pressed = true;
-                if(component->callback != nullptr)
+                if (component->callback != nullptr)
                     component->callback(true, true);
-            }else {
+            } else {
                 component->pressed = false;
-                if(component->callback != nullptr)
+                if (component->callback != nullptr)
                     component->callback(component->hovered, false);
             }
         }
@@ -191,7 +183,7 @@ void ChatInterface::onResize(int width, int height, float factorX, float factorY
 }
 
 ChatInterface::~ChatInterface() {
-    for (auto component : components) {
+    for (auto component: components) {
         UI->remove(component->textElement);
         UI->remove(component->background);
         delete component->textElement;
