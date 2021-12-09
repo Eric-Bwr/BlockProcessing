@@ -5,10 +5,10 @@
 class CommandManager;
 
 struct ChatComponent {
-    explicit ChatComponent(const std::string& text, const UIColor& textColor = COLOR_WHITE, void(*callback)(bool pressed, bool hovered) = nullptr);
+    explicit ChatComponent(const std::string& text, const UIColor& textColor = COLOR_WHITE, void(*callback)(bool pressed, bool hovered, ChatComponent* chatComponent) = nullptr);
     std::string text, typed;
     UIColor textColor;
-    void (*callback)(bool pressed, bool hovered) = nullptr;
+    void (*callback)(bool pressed, bool hovered, ChatComponent* chatComponent) = nullptr;
     UIText* textElement;
     UIImage* background;
     float blending, staying;

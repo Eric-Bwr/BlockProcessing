@@ -2,11 +2,15 @@
 #include "BlockProcessing/Game/Engine/Interface/Messages.h"
 #include "BlockProcessing/Game/Engine/Command/CommandManager.h"
 
+static ChatInterface* chat;
+
 CommandHelp::CommandHelp(){
         prefix = "help";
 }
 
-void CommandHelp::init() {}
+void CommandHelp::init() {
+    chat = chatInterface;
+}
 
 void CommandHelp::execute(const std::string& typed, int length, const std::vector<std::string>& arguments) {
     auto chatComponent = new ChatComponent(MESSAGES_SUCCESS_HELP, MESSAGES_DEFAULT_COLOR);
@@ -19,5 +23,9 @@ void CommandHelp::execute(const std::string& typed, int length, const std::vecto
 void CommandHelp::addHelpEntry(char* text, char* typed){
     auto chatComponent = new ChatComponent(text, MESSAGES_DEFAULT_COLOR);
     chatComponent->typed = typed;
+    chatComponent->callback = ([](bool hovered, bool pressed, ChatComponent* chatComponent) {
+        if (hovered && pressed)
+            chat->textField->setText(chatComponent->typed.c_str());
+    });
     chatInterface->append(chatComponent);
 }

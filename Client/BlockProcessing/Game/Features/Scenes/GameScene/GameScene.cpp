@@ -151,7 +151,7 @@ void GameScene::onKey(int key, int scancode, int action, int mods) {
     if (key == KEY_ENTER && action == PRESS)
         if (chat)
             chatInterface.enter();
-    if (action == PRESS && chat) {
+    if ((action == PRESS || action == GLFW_REPEAT) && chat) {
         if (key == KEY_UP)
             chatInterface.revertUp();
         else if (key == KEY_DOWN)

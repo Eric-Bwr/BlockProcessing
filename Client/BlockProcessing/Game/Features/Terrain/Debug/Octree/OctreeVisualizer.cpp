@@ -50,11 +50,10 @@ void OctreeVisualizer::visualizeNode(const std::vector<Coord>& candidates, int c
     if(octreeNode->level == OCTREE_MAX_LEVEL)
         glDrawArrays(GL_LINES, 0, 24);
     if(octreeNode->level == 0) {
-        const auto& evenMoreFucked = [&](const Coord& c){
+        const auto& coordinate = [&](const Coord& c){
             return Coord::isEqual(c, octreeNode->coord);
         };
-        const auto fucked = std::find_if(candidates.begin(), candidates.end(), evenMoreFucked);
-        if(fucked != candidates.end()){
+        if(std::find_if(candidates.begin(), candidates.end(), coordinate) != candidates.end()){
             glDrawArrays(GL_LINES, 0, 24);
         }
     }

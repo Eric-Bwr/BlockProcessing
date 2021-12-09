@@ -1,7 +1,7 @@
 #include "ChatInterface.h"
 #include "BlockProcessing/Game/Engine/Command/CommandManager.h"
 
-ChatComponent::ChatComponent(const std::string &text, const UIColor &textColor, void (*callback)(bool pressed, bool hovered)) {
+ChatComponent::ChatComponent(const std::string &text, const UIColor &textColor, void (*callback)(bool pressed, bool hovered, ChatComponent* chatComponent)) {
     this->text = text;
     this->textColor = textColor;
     this->callback = callback;
@@ -148,11 +148,11 @@ void ChatInterface::onMousePosition(double x, double y) {
             if (x >= component->textElement->getX() && x <= component->textElement->getX() + component->textElement->getWidth() &&
                 y >= component->textElement->getY() && y <= component->textElement->getY() + component->textElement->getHeight()) {
                 if (component->callback != nullptr && !component->hovered)
-                    component->callback(true, component->pressed);
+                    component->callback(true, component->pressed, component);
                 component->hovered = true;
             } else {
                 if (component->callback != nullptr && component->hovered)
-                    component->callback(false, component->pressed);
+                    component->callback(false, component->pressed, component);
                 component->hovered = false;
             }
         }
@@ -165,11 +165,11 @@ void ChatInterface::onMouseButton(int button, int action) {
             if (component->hovered && action == INPUT_PRESSED) {
                 component->pressed = true;
                 if (component->callback != nullptr)
-                    component->callback(true, true);
+                    component->callback(true, true, component);
             } else {
                 component->pressed = false;
                 if (component->callback != nullptr)
-                    component->callback(component->hovered, false);
+                    component->callback(component->hovered, false, component);
             }
         }
     }
