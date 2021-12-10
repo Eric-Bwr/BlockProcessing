@@ -8,12 +8,12 @@ class Coord;
 struct Plane {
 public:
     double distanceToOrigin;
-    Vec3f normal;
+    Vec3d normal;
 };
 
 class Frustum {
 public:
-    void update(Mat4f& projectionView);
+    void update(Mat4d& projectionView);
     bool isInside(const Coord& center, float radius);
 private:
     float distanceToPlane(const Plane& plane, const Coord& point);

@@ -59,8 +59,9 @@ public:
     OptionsMenuInterface optionsMenuInterface;
 
     GLFWwindow* window;
-    Mat4f view;
-    Mat4f projectionView;
+    Mat4d view;
+    Mat4f viewf;
+    Mat4d projectionView;
     int width, height;
     bool mode = false;
     bool modeCursor = false;

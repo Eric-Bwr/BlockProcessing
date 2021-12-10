@@ -5,7 +5,7 @@ enum Planes {
     Near, Far, Left, Right, Top, Bottom
 };
 
-void Frustum::update(Mat4f& projectionView) {
+void Frustum::update(Mat4d& projectionView) {
     planes[Planes::Left].normal.x = projectionView.m03 + projectionView.m00;
     planes[Planes::Left].normal.y = projectionView.m13 + projectionView.m10;
     planes[Planes::Left].normal.z = projectionView.m23 + projectionView.m20;

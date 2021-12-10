@@ -15,7 +15,7 @@ public:
     void generateChunkData(Chunk* chunk);
     void loadChunkData(Chunk* chunk);
     void setShader(Shader* shader);
-    void setView(Mat4f& view);
+    void setView(Mat4d& view);
     void renderChunk(Chunk* chunk);
     void unloadChunk(Chunk* chunk);
     int8_t getChunkBlock(Chunk *chunk, int64_t x, int64_t y, int64_t z);

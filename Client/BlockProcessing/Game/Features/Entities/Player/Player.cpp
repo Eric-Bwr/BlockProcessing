@@ -10,7 +10,7 @@ void Player::init(WorldManager *worldManager, double x, double y, double z, floa
     playerBlockOutline.init();
 }
 
-void Player::render(Mat4f &view) {
+void Player::render(Mat4d &view) {
     playerBlockOutline.render(view);
 }
 
@@ -116,42 +116,22 @@ void Player::calculateMove(double deltaTime) {
 }
 
 void Player::castRay() {
-    Vec3 direction = front;
+    Vec3d direction = front;
     direction.norm();
-    Vec3 end = {};
+    Vec3d end = {};
     while (end.dot(end) <= PLAYER_BLOCK_DISTANCE * PLAYER_BLOCK_DISTANCE) {
         end += (direction * PLAYER_STEP_SIZE);
         prevLookedBlockX = lookedBlockX;
         prevLookedBlockY = lookedBlockY;
         prevLookedBlockZ = lookedBlockZ;
-        lookedBlockX = round(position.x + end.x - 0.5);
-        lookedBlockY = round(position.y + end.y - 0.5);
-        lookedBlockZ = round(position.z + end.z - 0.5);
+        lookedBlockX = floor(position.x + end.x);
+        lookedBlockY = floor(position.y + end.y);
+        lookedBlockZ = floor(position.z + end.z);
         lookedBlockID = worldManager->getBlock(lookedBlockX, lookedBlockY, lookedBlockZ);
         if (lookedBlockID != BLOCK_AIR) {
             lookedBlock.x = lookedBlockX;
             lookedBlock.y = lookedBlockY;
             lookedBlock.z = lookedBlockZ;
-            if (Coord::distanceSquared(lookedBlock, {prevLookedBlockX, prevLookedBlockY, prevLookedBlockZ}) > 1) {
-                Coord offsets[6] = {
-                        {lookedBlockX,     lookedBlockY + 1, lookedBlockZ},
-                        {lookedBlockX,     lookedBlockY - 1, lookedBlockZ},
-                        {lookedBlockX,     lookedBlockY,     lookedBlockZ + 1},
-                        {lookedBlockX,     lookedBlockY,     lookedBlockZ - 1},
-                        {lookedBlockX + 1, lookedBlockY,     lookedBlockZ},
-                        {lookedBlockX - 1, lookedBlockY,     lookedBlockZ}
-                };
-                float smallest = INT64_MAX;
-                for (int i = 0; i < 6; i++) {
-                    auto distance = Coord::distanceSquared(lookedBlock, offsets[i]);
-                    if (distance < smallest) {
-                        smallest = distance;
-                        prevLookedBlockX = offsets[i].x;
-                        prevLookedBlockY = offsets[i].y;
-                        prevLookedBlockZ = offsets[i].z;
-                    }
-                }
-            }
             playerBlockOutline.update(lookedBlockX, lookedBlockY, lookedBlockZ);
             return;
         }
@@ -191,8 +171,8 @@ void Player::moveMouse(double xPos, double yPos) {
     calculateCamera();
 }
 
-Mat4f Player::getViewMatrix() {
-    return view.lookAt(position, position + front, up);
+Mat4d Player::getViewMatrix() {
+    return view.lookAtModified(position, front, up);
 }
 
 Player::~Player() = default;

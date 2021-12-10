@@ -11,7 +11,7 @@
 class Player : public Entity {
 public:
     void init(WorldManager* worldManager, double x, double y, double z, float yaw, float pitch);
-    void render(Mat4f& view);
+    void render(Mat4d& view);
     void setProjection(Mat4f& projection);
     void update(double deltaTime = 0.0);
     void dig();
@@ -23,9 +23,9 @@ public:
     int64_t blockZ, chunkZ, octreeZ, lookedBlockZ, prevLookedBlockZ;
     Coord block, chunk, octree, lookedBlock;
     void moveMouse(double xPos, double yPos);
-    Mat4f getViewMatrix();
-    Vec3f front, up, right, worldUp;
-    Mat4f view;
+    Mat4d getViewMatrix();
+    Vec3d front, up, right, worldUp;
+    Mat4d view;
     bool hasLastPos = false;
     double lastPosX, lastPosY, xOffset, yOffset;
     float speed = 100.0f;

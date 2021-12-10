@@ -9,7 +9,7 @@ public:
     inline double getX(){ return position.x; }
     inline double getY(){ return position.y; }
     inline double getZ(){ return position.z; }
-    Vec3f position;
+    Vec3d position;
     double yaw, pitch;
     float moveForward = 0.0f;
     float moveStrafe = 0.0f;

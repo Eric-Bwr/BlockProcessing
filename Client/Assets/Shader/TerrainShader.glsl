@@ -7,7 +7,7 @@ layout (location = 2) in vec3 inNormal;
 layout (location = 3) in float inBlockID;
 
 uniform mat4 projection;
-uniform mat4 modelView;
+uniform mat4 viewModel;
 
 out vec3 textureCoords;
 flat out vec3 normals;
@@ -19,7 +19,7 @@ uniform float intensity = 0.0015;
 uniform float gradient = 1.2;
 
 void main(){
-    vec4 pos = modelView * vec4(inPosition, 1.0f);
+    vec4 pos = viewModel * vec4(inPosition, 1.0f);
     normals = inNormal;
     fragPosition = inPosition;
     gl_Position = projection * pos;

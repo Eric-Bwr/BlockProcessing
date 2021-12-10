@@ -240,23 +240,8 @@ void ChunkManager::setShader(Shader* shader){
     this->shader = shader;
 }
 
-void ChunkManager::setView(Mat4f& view){
-    this->view.m00 = (double)view.m00;
-    this->view.m01 = (double)view.m01;
-    this->view.m02 = (double)view.m02;
-    this->view.m03 = (double)view.m03;
-    this->view.m10 = (double)view.m10;
-    this->view.m11 = (double)view.m11;
-    this->view.m12 = (double)view.m12;
-    this->view.m13 = (double)view.m13;
-    this->view.m20 = (double)view.m20;
-    this->view.m21 = (double)view.m21;
-    this->view.m22 = (double)view.m22;
-    this->view.m23 = (double)view.m23;
-    this->view.m30 = (double)view.m30;
-    this->view.m31 = (double)view.m31;
-    this->view.m32 = (double)view.m32;
-    this->view.m33 = (double)view.m33;
+void ChunkManager::setView(Mat4d& view){
+    this->view = view;
 }
 
 void ChunkManager::renderChunk(Chunk *chunk) {
@@ -264,8 +249,7 @@ void ChunkManager::renderChunk(Chunk *chunk) {
         model.m30 = chunk->tileX * CHUNK_SIZE;
         model.m31 = chunk->tileY * CHUNK_SIZE;
         model.m32 = chunk->tileZ * CHUNK_SIZE;
-        auto res = multiplyMatrix(view, model);
-        shader->setUniformMatrix4f("modelView", res.getBuffer());
+        shader->setUniformMatrix4f("viewModel", multiplyMatrix(view, model).getBuffer());
         glBindVertexArray(chunk->vao);
         glDrawArrays(GL_TRIANGLES, 0, chunk->vertexCount);
     }

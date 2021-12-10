@@ -10,7 +10,7 @@ void TerrainManager::init(CubeManager* cubeManager, BlockManager* blockManager, 
     fastNoise->SetFrequency(frequency);
     fastNoise->SetFractalOctaves(octaves);
     shader = new Shader(SHADER_TERRAIN);
-    shader->addUniforms({"projection", "modelView", "intensity", "gradient", "image", "lightPos", "viewPos", "blinn", "skyColor"});
+    shader->addUniforms({"projection", "viewModel", "intensity", "gradient", "image", "lightPos", "viewPos", "blinn", "skyColor"});
     cubeManager->init();
     blockManager->init();
     chunkManager->init(cubeManager, blockManager, worldManager);
@@ -24,7 +24,7 @@ void TerrainManager::generate(const Coord& coord) {
     worldManager->generate(coord);
 }
 
-void TerrainManager::render(Mat4f &projectionView, Mat4f &view) {
+void TerrainManager::render(Mat4d &projectionView, Mat4d &view) {
     shader->bind();
     shader->setUniform3f("viewPos", view.m32, view.m30, view.m31);
     blockManager->texture->bind();

@@ -33,7 +33,7 @@ void PlayerBlockOutline::init() {
             0 - offset, 1 + offset, 0 - offset
     };
     shader = new Shader(SHADER_LINE);
-    shader->addUniforms({"projection", "view", "model", "color"});
+    shader->addUniforms({"projection", "viewModel", "color"});
     model.identity();
     model.translate(0, 0, 0);
     auto layout = VertexBufferObjectLayout();
@@ -51,11 +51,10 @@ void PlayerBlockOutline::update(int64_t x, int64_t y, int64_t z) {
     model.m32 = z;
 }
 
-void PlayerBlockOutline::render(Mat4f& view) {
+void PlayerBlockOutline::render(Mat4d& view) {
     glLineWidth(PLAYER_BLOCK_OUTLINE_WIDTH);
     shader->bind();
-    shader->setUniformMatrix4f("view", view.getBuffer());
-    shader->setUniformMatrix4f("model", model.getBuffer());
+    shader->setUniformMatrix4f("viewModel", multiplyMatrix(view, model).getBuffer());
     shader->setUniform3f("color", color.r, color.g, color.b);
     vao.bind();
     glDrawArrays(GL_LINES, 0, vertexCount);

@@ -205,7 +205,7 @@ void WorldManager::setChunksPerThread(int max) {
     this->chunksPerThread = chunkingThreads * max;
 }
 
-void WorldManager::render(Mat4f &projectionView, Mat4f &view) {
+void WorldManager::render(Mat4d &projectionView, Mat4d &view) {
     frustum.update(projectionView);
     chunkManager->setView(view);
     for (auto&[coord, octree] : octrees)

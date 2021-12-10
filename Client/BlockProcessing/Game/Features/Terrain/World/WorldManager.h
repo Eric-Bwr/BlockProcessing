@@ -28,7 +28,7 @@ public:
     void setChunkingRadius(int radius);
     void setChunkingThreads(int threads);
     void setChunksPerThread(int max);
-    void render(Mat4f& projectionView, Mat4f& view);
+    void render(Mat4d& projectionView, Mat4d& view);
     ~WorldManager();
     FastNoise* fastNoise;
     std::unordered_map<Coord, std::shared_ptr<Octree>, CoordHash, CoordCompare> octrees;

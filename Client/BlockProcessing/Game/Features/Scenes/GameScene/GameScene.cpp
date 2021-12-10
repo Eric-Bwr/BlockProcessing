@@ -49,8 +49,7 @@ void GameScene::load() {
 void GameScene::unload() {
     if (crosshair)
         crosshairInterface.unload();
-    if (chat)
-        chatInterface.unload();
+    chatInterface.unload();
     if (debug)
         debugInterface.unload();
     if (gameMenu)
@@ -77,16 +76,17 @@ void GameScene::render(double deltaFrameTime) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(0.8, 0.9, 0.9, 1.0);
     view = player.getViewMatrix();
-    projectionView = projectionView.multiply(blockProcessing->projection, view);
+    viewf = toFloat(view);
+    projectionView = projectionView.multiply(toDouble(blockProcessing->projection), view);
     terrainManager.render(projectionView, view);
-    octreeVisualizer.setView(view);
+    octreeVisualizer.setView(viewf);
     player.render(view);
     if (collision)
         for (auto&[coord, octree] : worldManager.octrees)
             octreeVisualizer.visualize(worldManager.chunkCandidatesForGenerating, OCTREE_MAX_LEVEL, player.chunk, &octree->getRoot());
     if (wireFrame)
-        chunkBorderVisualizer.render(view);
-    linePointVisualizer.setView(view);
+        chunkBorderVisualizer.render(viewf);
+    linePointVisualizer.setView(viewf);
 }
 
 void GameScene::updateProjection(float fov) {
