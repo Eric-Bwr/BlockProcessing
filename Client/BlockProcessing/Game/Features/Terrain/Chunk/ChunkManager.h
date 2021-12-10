@@ -23,8 +23,8 @@ public:
     void setChunkBlock(Chunk *chunk, int8_t block, int64_t x, int64_t y, int64_t z);
     void setChunkBlockIndexed(Chunk *chunk, int8_t block, int x, int y, int z);
 private:
-    Mat4f model;
-    Mat4f view;
+    Mat4d model;
+    Mat4d view;
     Shader* shader;
     int stride;
     const void *offset1, *offset2, *offset3;

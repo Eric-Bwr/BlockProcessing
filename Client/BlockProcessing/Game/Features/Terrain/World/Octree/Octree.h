@@ -60,4 +60,8 @@ public:
     }
     std::vector<OctreeNode> nodes;
     std::vector<Chunk> chunks;
+    ~Octree(){
+        nodes.clear();
+        chunks.clear();
+    }
 };
