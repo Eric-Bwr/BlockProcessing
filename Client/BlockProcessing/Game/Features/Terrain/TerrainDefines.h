@@ -17,4 +17,4 @@ const float OCTREE_VISUALIZING_COLORS[(OCTREE_MAX_LEVEL + 1) * 3]{
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------
 const int CHUNK_CUBIC_SIZE = (CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE);
 const int OCTREE_LENGTH = OCTREE_MAX_LEVEL * OCTREE_MAX_LEVEL;
-const int OCTREE_FRUSTUM_CULLING = CHUNK_SIZE * 2;
+const int OCTREE_FRUSTUM_CULLING = CHUNK_SIZE * 1.5;
