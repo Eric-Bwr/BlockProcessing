@@ -37,12 +37,11 @@ void WorldManager::init(BlockManager *blockManager, ChunkManager *chunkManager) 
 
 void WorldManager::generate(const Coord &playerChunkCoord) {
     chunkCandidatesForGenerating.clear();
-   // const int OCTREE_DELETION_RADIUS_SQUARED = (3 * OCTREE_LENGTH + OCTREE_LENGTH / 2) * (3 * OCTREE_LENGTH + OCTREE_LENGTH / 2);
 
     for (auto it = octrees.begin(), next_it = it; it != octrees.end(); it = next_it) {
         ++next_it;
         it->second->getRoot().deleteFurthestLoadedChunks(playerChunkCoord);
-        if (Coord::distanceSquared(playerChunkCoord, it->second->getRoot().coord) >= octreeDeletionRadius)
+        if (Coord::distanceSquared(playerChunkCoord, it->second->getRoot().coord) >= octreeDeletionRadiusSquared)
             octrees.erase(it);
     }
 
@@ -60,22 +59,21 @@ void WorldManager::generate(const Coord &playerChunkCoord) {
     if (idlingGenerators == 0)
         return;
 
-    //for (auto coord : modifiedChunks) {
-    //    Coord coords[7] = {coord,
-    //                       {coord.x, coord.y + 1, coord.z},
-    //                       {coord.x, coord.y - 1, coord.z},
-    //                       {coord.x + 1, coord.y, coord.z},
-    //                       {coord.x - 1, coord.y, coord.z},
-    //                       {coord.x, coord.y, coord.z + 1},
-    //                       {coord.x, coord.y, coord.z - 1}};
-    //    for (auto chunkCoord : coords) {
-    //        auto leaf = octrees.find(getOctreeFromChunk(chunkCoord))->second->getRoot().getLeaf(chunkCoord);
-    //        leaf->chunk->loaded = false;
-    //        leaf->chunk->generating = true;
-    //        chunkCandidatesForGenerating.push_back(chunkCoord);
-    //    }
-    //}
-    //modifiedChunks.clear();
+    for (auto coord : modifiedChunks) {
+        Coord coords[7] = {coord,
+                           {coord.x, coord.y + 1, coord.z},
+                           {coord.x, coord.y - 1, coord.z},
+                           {coord.x + 1, coord.y, coord.z},
+                           {coord.x - 1, coord.y, coord.z},
+                           {coord.x, coord.y, coord.z + 1},
+                           {coord.x, coord.y, coord.z - 1}};
+        for (auto chunkCoord : coords) {
+            auto leaf = octrees.find(getOctreeFromChunk(chunkCoord))->second->getRoot().getLeaf(chunkCoord);
+            leaf->chunk->generating = true;
+            chunkCandidatesForGenerating.push_back(chunkCoord);
+        }
+    }
+    modifiedChunks.clear();
 
     auto playerOctreeCoord = getOctreeFromChunk(playerChunkCoord);
     for (int64_t xx = playerOctreeCoord.x - octreeRadius; xx <= playerOctreeCoord.x + octreeRadius; xx += OCTREE_LENGTH) {
@@ -86,7 +84,6 @@ void WorldManager::generate(const Coord &playerChunkCoord) {
                 auto it = octrees.find(octreeCoord);
                 if (it == octrees.end()) {
                     octree = new Octree(&frustum, chunkManager, octreeCoord);
-                    print("created")
                     octree->updateProperties(chunkingRadiusSquared, chunkingDeletionRadiusSquared);
                     octrees.insert(std::pair<Coord, Octree *>(octreeCoord, octree));
                 } else
@@ -122,34 +119,30 @@ Chunk *WorldManager::getChunkFromChunkCoords(int64_t x, int64_t y, int64_t z) {
 }
 
 int8_t WorldManager::getBlockDefault(int64_t x, int64_t y, int64_t z) {
-   //if(y == 10)
-   //    return BLOCK_GRASS;
-   //return BLOCK_AIR;
-
-    //auto noise = (fastNoise->GetNoise(x, z) + 1.0f) / 2.0f;
-    //if(noise < 0.63)
-    //    id = BLOCK_AIR;
-    //else{
-    //    if((fastNoise->GetNoise(x, y + 1, z) + 1.0f) / 2.0f < 0.63){
-    //        id = BLOCK_GRASS;
-    //    }else if((fastNoise->GetNoise(x, y + 2, z) + 1.0f) / 2.0f < 0.63){
-    //        id = BLOCK_DIRT;
-    //    }else
-    //        id = BLOCK_STONE;
-    //}
-    //auto second = (fastNoise->GetNoise(x, y, z) + 1.0f) / 2.0f;
-    //if(second > 0.9)
-    //    return BLOCK_PLANKS;
-    int height = int(((fastNoise->GetNoise(x, z) + 1.0f) / 2.0f) * 200);
-    if (y > height || y < 0) {
+    auto noise = (fastNoise->GetNoise(x, y, z) + 1.0f) / 2.0f;
+    if(noise < 0.63)
         return BLOCK_AIR;
-    } else if (y == height) {
+    else{
+        if((fastNoise->GetNoise(x, y + 1, z) + 1.0f) / 2.0f < 0.63){
             return BLOCK_GRASS;
-    } else if (y < height && y >= height - 1) {
-        return BLOCK_DIRT;
-    } else {
-        return BLOCK_STONE;
+        }else if((fastNoise->GetNoise(x, y + 2, z) + 1.0f) / 2.0f < 0.63){
+            return BLOCK_DIRT;
+        }else
+            return BLOCK_STONE;
     }
+    auto second = (fastNoise->GetNoise(x, y, z) + 1.0f) / 2.0f;
+    if(second > 0.9)
+        return BLOCK_PLANKS;
+   // int height = int(((fastNoise->GetNoise(x, z) + 1.0f) / 2.0f) * 200);
+   // if (y > height || y < 0) {
+   //     return BLOCK_AIR;
+   // } else if (y == height) {
+   //         return BLOCK_GRASS;
+   // } else if (y < height && y >= height - 1) {
+   //     return BLOCK_DIRT;
+   // } else {
+   //     return BLOCK_STONE;
+   // }
 }
 
 int8_t WorldManager::getBlock(int64_t x, int64_t y, int64_t z) {
@@ -196,9 +189,8 @@ void WorldManager::updateChunkFromChunkCoords(int64_t x, int64_t y, int64_t z){
 }
 
 void WorldManager::setChunkingRadius(int radius) {
-    this->octreeRadius = (round(radius / OCTREE_LENGTH) + 1) * OCTREE_LENGTH;
-    this->octreeDeletionRadius = (radius * OCTREE_LENGTH / 2);
-    this->octreeDeletionRadius *= octreeDeletionRadius;
+    this->octreeRadius = ((radius / OCTREE_LENGTH) + 1) * OCTREE_LENGTH;
+    this->octreeDeletionRadiusSquared = (octreeRadius + 2.5 * OCTREE_LENGTH) * (octreeRadius + 2.5 * OCTREE_LENGTH);
     this->chunkingRadiusSquared = radius * radius;
     this->chunkingDeletionRadiusSquared = (radius + 2) * (radius + 2);
     for (auto&[coord, octree] : octrees)

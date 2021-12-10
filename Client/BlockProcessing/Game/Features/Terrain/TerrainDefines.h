@@ -1,6 +1,6 @@
 #pragma once
 
-const int CHUNK_SIZE = 20;
+const int CHUNK_SIZE = 16;
 
 const int OCTREE_MAX_LEVEL = 4;
 

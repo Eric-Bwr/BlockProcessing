@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cassert>
-#include <cmath>
 #include <thread>
 #include <FastNoise.h>
 #include <unordered_map>
@@ -44,5 +43,5 @@ private:
     int chunkingRadiusSquared;
     int chunkingDeletionRadiusSquared;
     int octreeRadius;
-    int octreeDeletionRadius;
+    int octreeDeletionRadiusSquared;
 };
