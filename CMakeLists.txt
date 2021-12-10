@@ -33,27 +33,3 @@ target_link_libraries(Client
         ws2_32
         -static
         )
-
-project(Server)
-
-set(CMAKE_CXX_STANDARD 20)
-
-file(GLOB_RECURSE SOURCE_FILES_SERVER "Server/BlockProcessing/*.cpp" "Server/BlockProcessing/*.h")
-
-include_directories(Dependencies)
-include_directories("Dependencies/Network/include")
-include_directories("Dependencies/Math/include")
-include_directories("Dependencies/FastNoise")
-include_directories(Server)
-
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Server/Build)
-
-add_executable(Server ${SOURCE_FILES_SERVER} Dependencies/FastNoise/FastNoise.h Dependencies/FastNoise/FastNoise.cpp)
-
-target_link_libraries(Server
-        ${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/Math/Math.a
-        ${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/Network/Network.a
-        wsock32
-        ws2_32
-        -static
-        )
