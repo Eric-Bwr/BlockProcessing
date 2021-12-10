@@ -86,6 +86,7 @@ void WorldManager::generate(const Coord &playerChunkCoord) {
                 auto it = octrees.find(octreeCoord);
                 if (it == octrees.end()) {
                     octree = new Octree(&frustum, chunkManager, octreeCoord);
+                    print("created")
                     octree->updateProperties(chunkingRadiusSquared, chunkingDeletionRadiusSquared);
                     octrees.insert(std::pair<Coord, Octree *>(octreeCoord, octree));
                 } else
@@ -196,7 +197,8 @@ void WorldManager::updateChunkFromChunkCoords(int64_t x, int64_t y, int64_t z){
 
 void WorldManager::setChunkingRadius(int radius) {
     this->octreeRadius = (round(radius / OCTREE_LENGTH) + 1) * OCTREE_LENGTH;
-    this->octreeDeletionRadius = (octreeRadius + OCTREE_LENGTH) * (octreeRadius + OCTREE_LENGTH);
+    this->octreeDeletionRadius = (radius * OCTREE_LENGTH / 2);
+    this->octreeDeletionRadius *= octreeDeletionRadius;
     this->chunkingRadiusSquared = radius * radius;
     this->chunkingDeletionRadiusSquared = (radius + 2) * (radius + 2);
     for (auto&[coord, octree] : octrees)
