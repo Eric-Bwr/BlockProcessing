@@ -240,7 +240,7 @@ void ChunkManager::setShader(Shader* shader){
     this->shader = shader;
 }
 
-void ChunkManager::setView(Mat4f* view){
+void ChunkManager::setView(Mat4f& view){
     this->view = view;
 }
 
@@ -249,7 +249,7 @@ void ChunkManager::renderChunk(Chunk *chunk) {
         model.m30 = chunk->tileX * CHUNK_SIZE;
         model.m31 = chunk->tileY * CHUNK_SIZE;
         model.m32 = chunk->tileZ * CHUNK_SIZE;
-        shader->setUniformMatrix4f("modelView", multiplyMatrix(*view, model).getBuffer());
+        shader->setUniformMatrix4f("modelView", multiplyMatrix(view, model).getBuffer());
         glBindVertexArray(chunk->vao);
         glDrawArrays(GL_TRIANGLES, 0, chunk->vertexCount);
     }

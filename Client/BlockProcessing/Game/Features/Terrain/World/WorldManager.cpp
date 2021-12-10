@@ -207,7 +207,7 @@ void WorldManager::setChunksPerThread(int max) {
 
 void WorldManager::render(Mat4f &projectionView, Mat4f &view) {
     frustum.update(projectionView);
-    chunkManager->setView(&view);
+    chunkManager->setView(view);
     for (auto&[coord, octree] : octrees)
         octree->getRoot().render();
 }

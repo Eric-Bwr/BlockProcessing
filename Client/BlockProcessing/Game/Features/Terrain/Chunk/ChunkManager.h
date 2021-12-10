@@ -15,7 +15,7 @@ public:
     void generateChunkData(Chunk* chunk);
     void loadChunkData(Chunk* chunk);
     void setShader(Shader* shader);
-    void setView(Mat4f* view);
+    void setView(Mat4f& view);
     void renderChunk(Chunk* chunk);
     void unloadChunk(Chunk* chunk);
     int8_t getChunkBlock(Chunk *chunk, int64_t x, int64_t y, int64_t z);
@@ -24,7 +24,7 @@ public:
     void setChunkBlockIndexed(Chunk *chunk, int8_t block, int x, int y, int z);
 private:
     Mat4f model;
-    Mat4f* view;
+    Mat4f view;
     Shader* shader;
     int stride;
     const void *offset1, *offset2, *offset3;
