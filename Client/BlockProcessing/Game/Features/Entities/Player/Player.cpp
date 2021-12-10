@@ -116,17 +116,51 @@ void Player::calculateMove(double deltaTime) {
 }
 
 void Player::castRay() {
-    Vec3d direction = front;
+    Vec3d direction = Vec3d(front);
     direction.norm();
-    Vec3d end = {};
-    while (end.dot(end) <= PLAYER_BLOCK_DISTANCE * PLAYER_BLOCK_DISTANCE) {
-        end += (direction * PLAYER_STEP_SIZE);
+	
+	Vec3d currentPos = Vec3d(position);
+	
+    while ((currentPos - position).dot(currentPos - position) <= PLAYER_BLOCK_DISTANCE * PLAYER_BLOCK_DISTANCE) {
         prevLookedBlockX = lookedBlockX;
         prevLookedBlockY = lookedBlockY;
         prevLookedBlockZ = lookedBlockZ;
-        lookedBlockX = floor(position.x + end.x);
-        lookedBlockY = floor(position.y + end.y);
-        lookedBlockZ = floor(position.z + end.z);
+		
+		const auto& nextWholeCoord = [](int64_t lookedBlock, double currentPos, double direction){
+			double t = 0.0;
+		
+			//lookedBlock <= currentPos < lookedBlock + 1.0 //by definition of floor
+			
+			lookedBlock = floor(currentPos);
+			if(direction > 0.0){
+				//currentPos + t * direction == lookedBlockX+1;
+				t = (lookedBlock + 1.0 - currentPos) / direction;
+			}else if(direction < 0.0){
+				if(currentPos > lookedBlock){
+					//currentPos + t * direction == lookedBlockX;
+					t = (lookedBlock - currentPos) / direction;
+				}else{
+					//currentPos + t * direction == lookedBlockX-1;
+					t = (lookedBlock - 1.0 - currentPos) / direction;
+				}
+			}
+			return t;
+		};
+		
+		double tx = nextWholeCoord(lookedBlockX, currentPos.x, direction.x);
+		double ty = nextWholeCoord(lookedBlockY, currentPos.y, direction.y);
+		double tz = nextWholeCoord(lookedBlockZ, currentPos.z, direction.z);
+		
+		double t = std::min(tx, std::min(ty, tz));
+		
+		assert(t > 0);
+		currentPos += direction * t;
+		
+        lookedBlockX = floor(currentPos.x);
+        lookedBlockY = floor(currentPos.y);
+        lookedBlockZ = floor(currentPos.z);
+		
+		
         lookedBlockID = worldManager->getBlock(lookedBlockX, lookedBlockY, lookedBlockZ);
         if (lookedBlockID != BLOCK_AIR) {
             lookedBlock.x = lookedBlockX;

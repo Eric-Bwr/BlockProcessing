@@ -1,2 +1,7 @@
 # Project exclude paths
 /cmake-build-debug/
+CMakeFiles/*
+Makefile
+cmake_install.cmake
+Client/Build/Client.exe
+CMakeCache.txt
