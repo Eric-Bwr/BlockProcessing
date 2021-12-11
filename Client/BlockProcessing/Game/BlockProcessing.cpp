@@ -35,10 +35,10 @@ void BlockProcessing::update(double frameDeltaTime) {
 }
 
 void BlockProcessing::render(double frameDeltaTime) {
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_DEPTH_TEST);
     sceneManager.render(frameDeltaTime);
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
     interfaceManager.render();
-    glEnable(GL_CULL_FACE);
-    glEnable(GL_DEPTH_TEST);
 }
