@@ -22,7 +22,7 @@ public:
     void append(const std::string& text, const UIColor& textColor = COLOR_WHITE);
     void update(double deltaFrameTime);
     void load();
-    void unload();
+    void unload(bool close);
     void revertUp();
     void revertDown();
     void enter();

@@ -98,10 +98,9 @@ void ChatInterface::update(double deltaFrameTime) {
 
 void ChatInterface::load() {
     shouldDisplay = true;
-    for (auto component: components) {
+    for (auto component : components) {
         UI->add(component->textElement, 1);
-        if (component->blending == -1.0f)
-            UI->add(component->background);
+        UI->add(component->background);
         component->textElement->a = component->textColor.a;
         component->background->color.a = backgroundColor.a;
     }
@@ -111,10 +110,10 @@ void ChatInterface::load() {
     textField->hovered = true;
 }
 
-void ChatInterface::unload() {
+void ChatInterface::unload(bool close) {
     shouldDisplay = false;
     for (auto component: components) {
-        if (component->blending == -1.0f) {
+        if (component->blending == -1.0f || close) {
             UI->remove(component->textElement);
             UI->remove(component->background);
         }

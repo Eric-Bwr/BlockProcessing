@@ -116,18 +116,17 @@ void Player::calculateMove(double deltaTime) {
 }
 
 void Player::castRay() {
-    Vec3d direction = Vec3d(front);
+    auto direction = Vec3d(front);
     direction.norm();
 	
-	Vec3d currentPos = Vec3d(position);
-	
+	auto currentPos = Vec3d(position);
     while ((currentPos - position).dot(currentPos - position) <= PLAYER_BLOCK_DISTANCE * PLAYER_BLOCK_DISTANCE) {
         prevLookedBlockX = lookedBlockX;
         prevLookedBlockY = lookedBlockY;
         prevLookedBlockZ = lookedBlockZ;
 		
 		const auto& nextWholeCoord = [](int64_t lookedBlock, double currentPos, double direction){
-			double t = 0.0;
+			double t = INFINITY;
 		
 			//lookedBlock <= currentPos < lookedBlock + 1.0 //by definition of floor
 			
@@ -152,14 +151,12 @@ void Player::castRay() {
 		double tz = nextWholeCoord(lookedBlockZ, currentPos.z, direction.z);
 		
 		double t = std::min(tx, std::min(ty, tz));
-		
-		assert(t > 0);
-		currentPos += direction * t;
-		
+
+        //assert(t > 0);
+        currentPos += direction * t;
         lookedBlockX = floor(currentPos.x);
         lookedBlockY = floor(currentPos.y);
         lookedBlockZ = floor(currentPos.z);
-		
 		
         lookedBlockID = worldManager->getBlock(lookedBlockX, lookedBlockY, lookedBlockZ);
         if (lookedBlockID != BLOCK_AIR) {

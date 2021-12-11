@@ -49,7 +49,7 @@ void GameScene::load() {
 void GameScene::unload() {
     if (crosshair)
         crosshairInterface.unload();
-    chatInterface.unload();
+    chatInterface.unload(true);
     if (debug)
         debugInterface.unload();
     if (gameMenu)
@@ -118,7 +118,7 @@ void GameScene::onKey(int key, int scancode, int action, int mods) {
             glfwSetCursorPos(window, width / 2, height / 2);
             player.hasLastPos = false;
             chat = false;
-            chatInterface.unload();
+            chatInterface.unload(false);
             crosshairInterface.load();
             crosshair = true;
         } else if (optionsMenu) {
@@ -253,8 +253,7 @@ void GameScene::onResize(bool show, int width, int height) {
     if (show) {
         if (crosshair)
             crosshairInterface.unload();
-        if (!chat)
-            chatInterface.load();
+        chatInterface.load();
         if (!debug)
             debugInterface.load();
         if (!gameMenu)
@@ -264,8 +263,7 @@ void GameScene::onResize(bool show, int width, int height) {
     } else {
         if (crosshair)
             crosshairInterface.load();
-        if (!chat)
-            chatInterface.unload();
+        chatInterface.unload(true);
         if (!debug)
             debugInterface.unload();
         if (!gameMenu)
