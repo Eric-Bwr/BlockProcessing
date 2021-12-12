@@ -54,37 +54,30 @@ void CubeManager::init() {
 void CubeManager::addFace(std::vector<float>& data, Block* block, int x, int y, int z, int face) {
     data.resize(data.size() + 60);
     float* dataPtr = data.data() + (data.size() - 60);
-    float faceData = 0;
     int texture = block->index * 6;
     switch (face) {
         case FACE_TOP:
             memcpy(dataPtr, topFace, 60 * sizeof(float));
-            faceData = (float)block->id;
             texture += block->textureTop;
             break;
         case FACE_BOTTOM:
             memcpy(dataPtr, bottomFace, 60 * sizeof(float));
-            faceData = (float)block->id;
             texture += block->textureBottom;
             break;
         case FACE_FRONT:
             memcpy(dataPtr, frontFace, 60 * sizeof(float));
-            faceData = (float)block->id;
             texture += block->textureFront;
             break;
         case FACE_BACK:
             memcpy(dataPtr, backFace, 60 * sizeof(float));
-            faceData = (float)block->id;
             texture += block->textureBack;
             break;
         case FACE_LEFT:
             memcpy(dataPtr, leftFace, 60 * sizeof(float));
-            faceData = (float)block->id;
             texture += block->textureLeft;
             break;
         case FACE_RIGHT:
             memcpy(dataPtr, rightFace, 60 * sizeof(float));
-            faceData = (float)block->id;
             texture += block->textureRight;
             break;
         default:
@@ -95,7 +88,7 @@ void CubeManager::addFace(std::vector<float>& data, Block* block, int x, int y, 
         dataPtr[i + 1] += (float)y;
         dataPtr[i + 2] += (float)z;
         dataPtr[i + 5] = (float)texture;
-        dataPtr[i + 9] = faceData;
+        dataPtr[i + 9] = (float)block->id;
     }
 }
 

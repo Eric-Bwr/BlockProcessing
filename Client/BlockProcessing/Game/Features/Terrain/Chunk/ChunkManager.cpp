@@ -61,7 +61,7 @@ void ChunkManager::generateChunkDefaultVertices(Chunk *chunk) {
             for (int z = 0; z < CHUNK_SIZE; z++) {
                 int64_t posZ = chunk->tileZ * CHUNK_SIZE + z;
                 chunkBlock = getChunkBlock(chunk, posX, posY, posZ);
-                if (chunkBlock != BLOCK_AIR) {
+                if (chunkBlock != BLOCK_AIR && chunkBlock != BLOCK_UNDEFINED) {
                     block = blockManager->getBlockByID(chunkBlock);
                     if (y == 0) {
                         neighbor = worldManager->getBlockDefault(posX, posY - 1, posZ);
@@ -153,7 +153,7 @@ void ChunkManager::generateChunkVertices(Chunk *chunk) {
                 int64_t posZ = chunk->tileZ * CHUNK_SIZE + z;
                 chunkBlock = getChunkBlock(chunk, posX, posY, posZ, x, y, z);
                 block = blockManager->getBlockByID(chunkBlock);
-                if (chunkBlock != BLOCK_AIR) {
+                if (chunkBlock != BLOCK_AIR && chunkBlock != BLOCK_UNDEFINED) {
                     if (y == 0) {
                         neighbor = getChunkBlock(neighborChunkBottom, posX, posY - 1, posZ);
                         if (neighbor == BLOCK_AIR)
@@ -266,16 +266,20 @@ void ChunkManager::unloadChunk(Chunk *chunk) {
 }
 
 int8_t ChunkManager::getChunkBlock(Chunk *chunk, int64_t x, int64_t y, int64_t z) {
-    if (chunk->blocks.empty())
-        return worldManager->getBlockDefault(x, y, z);
     int indexX = x - (chunk->tileX * CHUNK_SIZE);
     int indexY = y - (chunk->tileY * CHUNK_SIZE);
     int indexZ = z - (chunk->tileZ * CHUNK_SIZE);
+    if (chunk->blocks.empty())
+        return worldManager->getBlockDefault(x, y, z);
+    if(chunk->blocks[indexZ * CHUNK_SIZE * CHUNK_SIZE + indexY * CHUNK_SIZE + indexX] == 0)
+        return worldManager->getBlockDefault(x, y, z);
     return chunk->blocks[indexZ * CHUNK_SIZE * CHUNK_SIZE + indexY * CHUNK_SIZE + indexX];
 }
 
 int8_t ChunkManager::getChunkBlock(Chunk *chunk, int64_t x, int64_t y, int64_t z, int64_t indexX, int64_t indexY, int64_t indexZ) {
     if (chunk->blocks.empty())
+        return worldManager->getBlockDefault(x, y, z);
+    if(chunk->blocks[indexZ * CHUNK_SIZE * CHUNK_SIZE + indexY * CHUNK_SIZE + indexX] == 0)
         return worldManager->getBlockDefault(x, y, z);
     return chunk->blocks[indexZ * CHUNK_SIZE * CHUNK_SIZE + indexY * CHUNK_SIZE + indexX];
 }

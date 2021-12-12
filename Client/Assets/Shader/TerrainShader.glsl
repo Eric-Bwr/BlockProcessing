@@ -49,7 +49,7 @@ out vec4 FragColor;
 
 void main(){
     vec3 color = texture(image, textureCoords).rgb;
-    if (blockID == 3 && normals.y == 1)
+    if (blockID == 4 && normals.y == 1)
         color *= grassColor;
     // ambient
     vec3 ambient = 0.1005 * color;

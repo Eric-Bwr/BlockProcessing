@@ -35,6 +35,6 @@ private:
     PlayerBlockOutline playerBlockOutline;
     void calculateMove(double deltaTime);
     void calculateCamera();
-    void castRay();
+    void traverseRay();
     int8_t lookedBlockID = BLOCK_AIR, collisionBlockID = BLOCK_AIR;
 };

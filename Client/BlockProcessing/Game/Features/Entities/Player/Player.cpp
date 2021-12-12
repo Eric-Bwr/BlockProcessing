@@ -29,7 +29,7 @@ void Player::update(double deltaTime) {
     octree.x = octreeX = getOctreeFromChunk(chunkX);
     octree.y = octreeY = getOctreeFromChunk(chunkY);
     octree.z = octreeZ = getOctreeFromChunk(chunkZ);
-    castRay();
+    traverseRay();
 }
 
 void Player::dig() {
@@ -115,72 +115,55 @@ void Player::calculateMove(double deltaTime) {
     position.z += velocityZ * speed * deltaTime;
 }
 
-void Player::castRay() {
+void Player::traverseRay() {
     auto direction = Vec3d(front);
     direction.norm();
-	
-	auto currentPos = Vec3d(position);
-    while ((currentPos - position).dot(currentPos - position) <= PLAYER_BLOCK_DISTANCE * PLAYER_BLOCK_DISTANCE) {
 
-    	prevLookedBlockX = lookedBlockX;
+    auto currentPos = Vec3d(position);
+    Vec3d currentPosMinusPosition;
+    while ((currentPosMinusPosition).dot(currentPosMinusPosition) <= PLAYER_BLOCK_DISTANCE_SQUARED) {
+        prevLookedBlockX = lookedBlockX;
         prevLookedBlockY = lookedBlockY;
         prevLookedBlockZ = lookedBlockZ;
-		
-		const auto& nextWholeCoord = [](int64_t lookedBlock, double currentPos, double direction){
-			double t = INFINITY;
-		
-			//lookedBlock <= currentPos < lookedBlock + 1.0 //by definition of floor
 
-			lookedBlock = floor(currentPos);
-			if(direction > 0.0){
-				//currentPos + t * direction == lookedBlockX+1;
-				t = (lookedBlock + 1.0 - currentPos) / direction;
-			}else if(direction < 0.0){
-				if(currentPos > lookedBlock){
-					//currentPos + t * direction == lookedBlockX;
-					t = (lookedBlock - currentPos) / direction;
-				}else{
-					//currentPos + t * direction == lookedBlockX-1;
-					t = (lookedBlock - 1.0 - currentPos) / direction;
-				}
-			}
+        const auto &nextWholeCoord = [](int64_t lookedBlock, double currentPos, double direction) {
+            lookedBlock = floor(currentPos);
+            if (direction > 0.0)
+                return (lookedBlock + 1.0 - currentPos) / direction;
+            else if (direction < 0.0) {
+                if (currentPos > lookedBlock)
+                    return (lookedBlock - currentPos) / direction;
+                else
+                    return (lookedBlock - 1.0 - currentPos) / direction;
+            }
+            return (double) INFINITY;
+        };
 
+        double tx = nextWholeCoord(lookedBlockX, currentPos.x, direction.x);
+        double ty = nextWholeCoord(lookedBlockY, currentPos.y, direction.y);
+        double tz = nextWholeCoord(lookedBlockZ, currentPos.z, direction.z);
 
-			return t;
-		};
-		
-		double tx = nextWholeCoord(lookedBlockX, currentPos.x, direction.x);
-		double ty = nextWholeCoord(lookedBlockY, currentPos.y, direction.y);
-		double tz = nextWholeCoord(lookedBlockZ, currentPos.z, direction.z);
-		
-		double t = std::min(tx, std::min(ty, tz));
+        double t = std::min(tx, std::min(ty, tz));
 
         currentPos += direction * t;
 
-        if(t == tx){
-        	currentPos.x = round(currentPos.x);
-        }else if(t == ty){
-        	currentPos.y = round(currentPos.y);
-        }else if(t == tz){
-        	currentPos.z = round(currentPos.z);
-        }
+        if (t == tx)
+            currentPos.x = round(currentPos.x);
+        else if (t == ty)
+            currentPos.y = round(currentPos.y);
+        else if (t == tz)
+            currentPos.z = round(currentPos.z);
 
-		lookedBlockX = floor(currentPos.x);
-		lookedBlockY = floor(currentPos.y);
-		lookedBlockZ = floor(currentPos.z);
+        lookedBlockX = floor(currentPos.x);
+        lookedBlockY = floor(currentPos.y);
+        lookedBlockZ = floor(currentPos.z);
 
-		if(t == tx && direction.x < 0){
-			lookedBlockX--;
-		}else if(t == ty && direction.y < 0){
-			lookedBlockY--;
-		}else if(t == tz && direction.z < 0){
-			lookedBlockZ--;
-		}
-
-		//     \/
-		// X ____ y=1   <--- good
-		// X   /\
-		//
+        if (t == tx && direction.x < 0)
+            lookedBlockX--;
+        else if (t == ty && direction.y < 0)
+            lookedBlockY--;
+        else if (t == tz && direction.z < 0)
+            lookedBlockZ--;
 
         lookedBlockID = worldManager->getBlock(lookedBlockX, lookedBlockY, lookedBlockZ);
         if (lookedBlockID != BLOCK_AIR) {
@@ -190,6 +173,7 @@ void Player::castRay() {
             playerBlockOutline.update(lookedBlockX, lookedBlockY, lookedBlockZ);
             return;
         }
+        currentPosMinusPosition = currentPos - position;
     }
     playerBlockOutline.update(0, -99999999, 0);
 }

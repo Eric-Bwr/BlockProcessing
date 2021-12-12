@@ -9,6 +9,8 @@
 #include "BlockProcessing/Game/Features/Terrain/Block/Blocks/BlockGrass.h"
 #include "BlockProcessing/Game/Features/Terrain/Block/Blocks/BlockPlanks.h"
 
+#define BLOCK_UNDEFINED 0
+
 class BlockManager {
 public:
     void init();
