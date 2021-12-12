@@ -119,30 +119,32 @@ Chunk *WorldManager::getChunkFromChunkCoords(int64_t x, int64_t y, int64_t z) {
 }
 
 int8_t WorldManager::getBlockDefault(int64_t x, int64_t y, int64_t z) {
-    auto noise = (fastNoise->GetNoise(x, y, z) + 1.0f) / 2.0f;
-    if(noise < 0.63)
+//    auto noise = (fastNoise->GetNoise(x, y, z) + 1.0f) / 2.0f;
+//    if(noise < 0.63)
+//        return BLOCK_AIR;
+//    else{
+//        if((fastNoise->GetNoise(x, y + 1, z) + 1.0f) / 2.0f < 0.63){
+//            return BLOCK_GRASS;
+//        }else if((fastNoise->GetNoise(x, y + 2, z) + 1.0f) / 2.0f < 0.63){
+//            return BLOCK_DIRT;
+//        }else
+//            return BLOCK_STONE;
+//    }
+//    auto second = (fastNoise->GetNoise(x, y, z) + 1.0f) / 2.0f;
+//    if(second > 0.9)
+//        return BLOCK_PLANKS;
+    int height = int(((fastNoise->GetNoise(x, z) + 1.0f) / 2.0f) * 200);
+    height = 0;
+
+    if (y > height || y < 0) {
         return BLOCK_AIR;
-    else{
-        if((fastNoise->GetNoise(x, y + 1, z) + 1.0f) / 2.0f < 0.63){
+    } else if (y == height) {
             return BLOCK_GRASS;
-        }else if((fastNoise->GetNoise(x, y + 2, z) + 1.0f) / 2.0f < 0.63){
-            return BLOCK_DIRT;
-        }else
-            return BLOCK_STONE;
+    } else if (y < height && y >= height - 1) {
+        return BLOCK_DIRT;
+    } else {
+        return BLOCK_STONE;
     }
-    auto second = (fastNoise->GetNoise(x, y, z) + 1.0f) / 2.0f;
-    if(second > 0.9)
-        return BLOCK_PLANKS;
-   // int height = int(((fastNoise->GetNoise(x, z) + 1.0f) / 2.0f) * 200);
-   // if (y > height || y < 0) {
-   //     return BLOCK_AIR;
-   // } else if (y == height) {
-   //         return BLOCK_GRASS;
-   // } else if (y < height && y >= height - 1) {
-   //     return BLOCK_DIRT;
-   // } else {
-   //     return BLOCK_STONE;
-   // }
 }
 
 int8_t WorldManager::getBlock(int64_t x, int64_t y, int64_t z) {

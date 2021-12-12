@@ -121,7 +121,8 @@ void Player::castRay() {
 	
 	auto currentPos = Vec3d(position);
     while ((currentPos - position).dot(currentPos - position) <= PLAYER_BLOCK_DISTANCE * PLAYER_BLOCK_DISTANCE) {
-        prevLookedBlockX = lookedBlockX;
+
+    	prevLookedBlockX = lookedBlockX;
         prevLookedBlockY = lookedBlockY;
         prevLookedBlockZ = lookedBlockZ;
 		
@@ -129,7 +130,7 @@ void Player::castRay() {
 			double t = INFINITY;
 		
 			//lookedBlock <= currentPos < lookedBlock + 1.0 //by definition of floor
-			
+
 			lookedBlock = floor(currentPos);
 			if(direction > 0.0){
 				//currentPos + t * direction == lookedBlockX+1;
@@ -143,6 +144,8 @@ void Player::castRay() {
 					t = (lookedBlock - 1.0 - currentPos) / direction;
 				}
 			}
+
+
 			return t;
 		};
 		
@@ -152,12 +155,33 @@ void Player::castRay() {
 		
 		double t = std::min(tx, std::min(ty, tz));
 
-        //assert(t > 0);
         currentPos += direction * t;
-        lookedBlockX = floor(currentPos.x);
-        lookedBlockY = floor(currentPos.y);
-        lookedBlockZ = floor(currentPos.z);
-		
+
+        if(t == tx){
+        	currentPos.x = round(currentPos.x);
+        }else if(t == ty){
+        	currentPos.y = round(currentPos.y);
+        }else if(t == tz){
+        	currentPos.z = round(currentPos.z);
+        }
+
+		lookedBlockX = floor(currentPos.x);
+		lookedBlockY = floor(currentPos.y);
+		lookedBlockZ = floor(currentPos.z);
+
+		if(t == tx && direction.x < 0){
+			lookedBlockX--;
+		}else if(t == ty && direction.y < 0){
+			lookedBlockY--;
+		}else if(t == tz && direction.z < 0){
+			lookedBlockZ--;
+		}
+
+		//     \/
+		// X ____ y=1   <--- good
+		// X   /\
+		//
+
         lookedBlockID = worldManager->getBlock(lookedBlockX, lookedBlockY, lookedBlockZ);
         if (lookedBlockID != BLOCK_AIR) {
             lookedBlock.x = lookedBlockX;

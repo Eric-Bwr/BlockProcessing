@@ -5,3 +5,8 @@ Makefile
 cmake_install.cmake
 Client/Build/Client.exe
 CMakeCache.txt
+Debug/*
+Release/*
+.cproject
+.project
+.settings/*
