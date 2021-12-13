@@ -10,7 +10,7 @@ class OctreeVisualizer {
 public:
     void init();
     void visualize(const std::vector<Coord>& candidates, int closestNodeLevel, Coord& playerCoord, OctreeNode* octreeNode);
-    void setView(Mat4f& view);
+    void setView(Mat4d& view);
     void setProjection(Mat4f& projection);
     ~OctreeVisualizer();
 private:
@@ -18,5 +18,6 @@ private:
     Shader *shader;
     VertexArrayObject vao;
     VertexBufferObject vbo;
-    Mat4f model;
+    Mat4d view;
+    Mat4d model;
 };

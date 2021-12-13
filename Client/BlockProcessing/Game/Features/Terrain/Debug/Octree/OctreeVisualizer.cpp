@@ -4,7 +4,7 @@
 
 void OctreeVisualizer::init() {
     shader = new Shader(SHADER_LINE);
-    shader->addUniforms({"projection", "view", "model", "color"});
+    shader->addUniforms({"projection", "viewModel", "color"});
     const float vertices[72]{
             0, 0, 0,
             0, CHUNK_SIZE, 0,
@@ -45,7 +45,7 @@ void OctreeVisualizer::visualizeNode(const std::vector<Coord>& candidates, int c
     model.identity();
     model.translate(octreeNode->coord.x * CHUNK_SIZE, octreeNode->coord.y * CHUNK_SIZE, octreeNode->coord.z * CHUNK_SIZE);
     model.scale(octreeNode->scaling);
-    shader->setUniformMatrix4f("model", model.getBuffer());
+    shader->setUniformMatrix4f("viewModel", multiplyMatrix(view, model).getBuffer());
     shader->setUniform3f("color", OCTREE_VISUALIZING_COLORS[octreeNode->level * 3 + 0], OCTREE_VISUALIZING_COLORS[octreeNode->level * 3 + 1], OCTREE_VISUALIZING_COLORS[octreeNode->level * 3 + 2]);
     if(octreeNode->level == OCTREE_MAX_LEVEL)
         glDrawArrays(GL_LINES, 0, 24);
@@ -71,9 +71,8 @@ void OctreeVisualizer::visualize(const std::vector<Coord>& candidates, int close
     visualizeNode(candidates, closestNodeLevel, {}, playerCoord, octreeNode);
 }
 
-void OctreeVisualizer::setView(Mat4f &view) {
-    shader->bind();
-    shader->setUniformMatrix4f("view", view.getBuffer());
+void OctreeVisualizer::setView(Mat4d &view) {
+    this->view = view;
 }
 
 void OctreeVisualizer::setProjection(Mat4f &projection) {

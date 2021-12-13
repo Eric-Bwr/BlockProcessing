@@ -79,7 +79,7 @@ void GameScene::render(double deltaFrameTime) {
     viewf = toFloat(view);
     projectionView = projectionView.multiply(toDouble(blockProcessing->projection), view);
     terrainManager.render(projectionView, view);
-    octreeVisualizer.setView(viewf);
+    octreeVisualizer.setView(view);
     player.render(view);
     if (collision)
         for (auto&[coord, octree] : worldManager.octrees)
