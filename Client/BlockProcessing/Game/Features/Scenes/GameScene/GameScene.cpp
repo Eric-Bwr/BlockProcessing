@@ -65,7 +65,8 @@ void GameScene::update(double deltaFrameTime) {
     chatInterface.update(deltaFrameTime);
     player.update(deltaFrameTime);
     terrainManager.setLightPosition(player.position.x, player.position.y + 1000, player.position.z);
-    terrainManager.generate(player.chunk);
+    if(!leftControl)
+        terrainManager.generate(player.chunk);
     if (wireFrame)
         chunkBorderVisualizer.generate(player.chunk);
     if (debug)
