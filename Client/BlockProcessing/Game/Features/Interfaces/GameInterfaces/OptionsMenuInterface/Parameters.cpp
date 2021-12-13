@@ -3,43 +3,37 @@
 
 #include <iostream>
 #include <fstream>
-#include <sstream>
 #include <vector>
 #include <algorithm>
 #include <string>
-
-#include <mutex>
 
 static std::mutex mutex = std::mutex();
 std::unordered_map<std::string, std::string> Parameters::stringParams;
 std::unordered_map<std::string, int> Parameters::intParams;
 std::unordered_map<std::string, float> Parameters::floatParams;
 std::unordered_map<std::string, bool> Parameters::boolParams;
-std::unordered_map<std::string, glm::vec2> Parameters::vec2Params;
-std::unordered_map<std::string, glm::vec3> Parameters::vec3Params;
-std::unordered_map<std::string, glm::vec4> Parameters::vec4Params;
+std::unordered_map<std::string, Vec2f> Parameters::vec2Params;
+std::unordered_map<std::string, Vec3f> Parameters::vec3Params;
+std::unordered_map<std::string, Vec4f> Parameters::vec4Params;
 std::unordered_map<std::string, std::shared_ptr<Parameters::Registrable>> Parameters::customParams;
 int Parameters::instances = 0;
 
 struct DefaultRegistrable : Parameters::Registrable{
 	std::string s;
-	DefaultRegistrable(const std::string& s) : s(s){
+	explicit DefaultRegistrable(std::string s) : s(std::move(s)){}
+
+	~DefaultRegistrable() override = default;
+
+	void init(const std::string& s) override{
 
 	}
-	virtual ~DefaultRegistrable() {
-
-	}
-
-	virtual void init(const std::string& s) override{
-
-	}
-	virtual std::string toString() const override{
+	std::string toString() const override{
 		return s;
 	}
 };
 
-Parameters::Parameters(const std::string &className) :
-		className(className) {
+Parameters::Parameters(std::string className) :
+		className(std::move(className)) {
 	std::lock_guard<std::mutex> lock(mutex);
 	if (instances == 0) {
 		readParams();
@@ -97,7 +91,7 @@ bool& Parameters::getBool(const std::string &name, bool defaultValue) const{
 	}
 }
 
-glm::vec2& Parameters::getVec2(const std::string &name, glm::vec2 defaultValue) const{
+Vec2f& Parameters::getVec2(const std::string &name, const Vec2f& defaultValue) const{
 	auto p = vec2Params.find(name.find('#') == std::string::npos ? className + "#" + name : name);
 	if (p == vec2Params.end()) {
 		vec2Params[className + "#" + name] = defaultValue;
@@ -107,7 +101,7 @@ glm::vec2& Parameters::getVec2(const std::string &name, glm::vec2 defaultValue) 
 	}
 }
 
-glm::vec3& Parameters::getVec3(const std::string &name, glm::vec3 defaultValue) const{
+Vec3f& Parameters::getVec3(const std::string &name, const Vec3f& defaultValue) const{
 	auto p = vec3Params.find(name.find('#') == std::string::npos ? className + "#" + name : name);
 	if (p == vec3Params.end()) {
 		vec3Params[className + "#" + name] = defaultValue;
@@ -117,7 +111,7 @@ glm::vec3& Parameters::getVec3(const std::string &name, glm::vec3 defaultValue) 
 	}
 }
 
-glm::vec4& Parameters::getVec4(const std::string &name, glm::vec4 defaultValue) const{
+Vec4f& Parameters::getVec4(const std::string &name, const Vec4f& defaultValue) const{
 	auto p = vec4Params.find(name.find('#') == std::string::npos ? className + "#" + name : name);
 	if (p == vec4Params.end()) {
 		vec4Params[className + "#" + name] = defaultValue;
@@ -127,10 +121,10 @@ glm::vec4& Parameters::getVec4(const std::string &name, glm::vec4 defaultValue) 
 	}
 }
 
-void Parameters::putRegistrable(const std::string &name, std::shared_ptr<Parameters::Registrable> defaultValue){
+void Parameters::putRegistrable(const std::string &name, const std::shared_ptr<Parameters::Registrable>& defaultValue){
 	auto p = customParams.find(className + "#" + name);
 	if (p != customParams.end()) {
-		DefaultRegistrable* value = dynamic_cast<DefaultRegistrable*>(p->second.get());
+		auto* value = dynamic_cast<DefaultRegistrable*>(p->second.get());
 		if(value == nullptr){
 			std::cout <<"Warning: Attempted to register an already existing param on "
 					<<className << "#" << name
@@ -153,7 +147,6 @@ Parameters::Registrable& Parameters::get(const std::string &name) const{
 	}
 }
 
-
 void Parameters::readParams() {
 	std::ifstream f;
 	f.open("params.txt");
@@ -169,8 +162,6 @@ void Parameters::readParams() {
 
 	while (std::getline(f, str)) {
 		ss = std::stringstream(str);
-
-//		std::cout << str << std::endl;
 
 		std::string name, type;
 		ss >> name >> type;
@@ -198,18 +189,18 @@ void Parameters::readParams() {
 		} else if (type == "vec2") {
 			float x, y;
 			ss >> x >> y;
-			vec2Params[name] = glm::vec2(x, y);
+			vec2Params[name] = Vec2f(x, y);
 		} else if (type == "vec2") {
 			float x, y, z;
 			ss >> x >> y >> z;
-			vec3Params[name] = glm::vec3(x, y, z);
+			vec3Params[name] = Vec3f(x, y, z);
 		} else if (type == "vec4") {
 			float x, y, z, w;
 			ss >> x >> y >> z >> w;
-			vec4Params[name] = glm::vec4(x, y, z, w);
+			vec4Params[name] = Vec4f(x, y, z, w);
 		} else if (type == "custom") {
 			std::string s;
-			int n1 = 0, n2 = 0;
+			int n1, n2;
 			do{
 				std::string tmp;
 				ss >> tmp;
