@@ -34,6 +34,7 @@ public:
 	void mouseButtonInput(int button, int action);
 	void render();
     ~UIManager();
+    inline std::map<int, std::vector<UIComponent *>*> getComponents() {return components; }
     double mouseX = 0, mouseY = 0;
 private:
     Mat4f ortho;
