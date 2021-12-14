@@ -3,6 +3,7 @@
 #include "BlockProcessing/Game/Engine/Interface/Interface.h"
 #include "BlockProcessing/Game/Engine/Scene/SceneManager.h"
 #include "OptionsFileManager.h"
+#include "Parameters.h"
 
 class GameMenuInterface;
 class GameScene;

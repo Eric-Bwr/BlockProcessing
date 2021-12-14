@@ -2,10 +2,12 @@
 #include "Parameters.h"
 
 #include <iostream>
+#include <mutex>
 #include <fstream>
 #include <vector>
 #include <algorithm>
 #include <string>
+#include "BlockProcessing/Framework/Engine/Logger/Logger.h"
 
 static std::mutex mutex = std::mutex();
 std::unordered_map<std::string, std::string> Parameters::stringParams;
@@ -126,10 +128,10 @@ void Parameters::putRegistrable(const std::string &name, const std::shared_ptr<P
 	if (p != customParams.end()) {
 		auto* value = dynamic_cast<DefaultRegistrable*>(p->second.get());
 		if(value == nullptr){
-			std::cout <<"Warning: Attempted to register an already existing param on "
-					<<className << "#" << name
-					<<", the already existing param will be kept"
-					<<std::endl;
+            LOG<ERROR, PA>("Warning: Attempted to register an already existing param on ");
+            LOG<ERROR, A>(className);
+            LOG<ERROR, A>(name);
+            LOG<ERROR, LA>(", the already existing param will be kept");
 			return;
 		}
 		defaultValue->init(value->s);
@@ -152,10 +154,10 @@ void Parameters::readParams() {
 	f.open("params.txt");
 
 	if (!f.is_open()) {
-		std::cout << "Couldn't open params.txt" << std::endl;
+		LOG<ERROR>("Couldn't open params.txt");
 		return;
 	}
-	std::cout << "Reading params.txt" << std::endl;
+    LOG<INFO>("Reading Parameters");
 
 	std::string str;
 	std::stringstream ss;
@@ -223,10 +225,10 @@ void Parameters::writeParams() {
 	f.open("params.txt");
 
 	if (!f.is_open()) {
-		std::cout << "Couldn't open params.txt" << std::endl;
+        LOG<ERROR>("Couldn't open params.txt");
 		return;
 	}
-	std::cout << "Writting params.txt" << std::endl;
+    LOG<INFO>("Writing Parameters");
 
 	std::vector<std::string> v;
 

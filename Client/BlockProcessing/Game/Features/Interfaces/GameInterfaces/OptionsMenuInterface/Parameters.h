@@ -10,7 +10,7 @@
 
 class Parameters {
 public:
-	explicit Parameters(std::string  className);
+	Parameters(std::string className);
 	virtual ~Parameters();
 
 	Parameters extend(const std::string& className){
