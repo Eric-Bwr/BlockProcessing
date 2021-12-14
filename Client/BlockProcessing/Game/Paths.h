@@ -2,7 +2,7 @@
 
 #include "iostream"
 
-#define print(x) std::cout << x << "\n";
+#define print(x) std::cout << x << "\n"
 
 #define FILE_OPTIONS "Client.properties"
 
@@ -14,7 +14,7 @@
 #define SHADER_LINE "../Assets/Shader/LineShader.glsl"
 
 #define TEXTURE_WINDOW_ICON "../Assets/Textures/Icon.png"
-#define TEXTURE_BLOCKS "../Assets/Textures/Blocks/";
+#define TEXTURE_BLOCKS "../Assets/Textures/Blocks/"
 #define TEXTURE_SKYBOX "../Assets/Textures/Gui/SkyBox/panorama_"
 #define TEXTURE_SKYBOX_ENDING "png"
 #define TEXTURE_GUI "../Assets/Textures/Gui/Gui.png"

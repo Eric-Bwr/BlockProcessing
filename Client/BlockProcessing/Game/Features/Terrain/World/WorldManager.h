@@ -11,7 +11,8 @@
 #include "BlockProcessing/Game/Features/Terrain/Util/Coordinate.h"
 #include "BlockProcessing/Game/Features/Terrain/World/Octree/Octree.h"
 #include "BlockProcessing/Game/Features/Terrain/World/Octree/Frustum/Frustum.h"
-#include "SafeQueue.h"
+#include "AsyncLoader.h"
+
 
 class WorldManager {
 public:
@@ -29,17 +30,28 @@ public:
     void setChunkingThreads(int threads);
     void setChunksPerThread(int max);
     void render(Mat4d& projectionView, Mat4d& view);
+//    void lockOctree(){
+//    	lock.lock();
+//    }
+//    void unlockOctree(){
+//    	lock.unlock();
+//    }
     ~WorldManager();
     FastNoise* fastNoise;
     std::unordered_map<Coord, std::shared_ptr<Octree>, CoordHash, CoordCompare> octrees;
     std::vector<Coord> modifiedChunks;
-    std::vector<Coord> chunkCandidatesForGenerating;
+    std::vector<OctreeNode*> chunkCandidatesForGenerating;
     Frustum frustum;
     BlockManager* blockManager;
     ChunkManager* chunkManager;
+
+    std::atomic_bool finishedUpdatingOctree = true;
+    std::unique_ptr<AsyncLoader<OctreeNode*>> loader;
+    std::mutex octreeAccess;
+	//std::unique_lock<std::mutex> lock = std::unique_lock<std::mutex>(octreeAccess);
 private:
     int chunkingThreads;
-    int chunksPerThread;
+    int maxPendingJobs;
     int chunkingRadiusSquared;
     int chunkingDeletionRadiusSquared;
     int octreeRadius;

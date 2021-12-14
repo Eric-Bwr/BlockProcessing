@@ -23,7 +23,7 @@ public:
     void render();
     Coord closestContainedChunk(const Coord& playerChunkCoord) const;
     Coord furthestContainedChunk(const Coord& playerChunkCoord) const;
-    void getClosestUnloadedChunks(std::vector<Coord>& candidates, int maxCandidates, const Coord& playerChunkCoord);
+    void getClosestUnloadedChunks(std::vector<OctreeNode*>& candidates, int maxCandidates, const Coord& playerChunkCoord);
     void deleteFurthestLoadedChunks(const Coord& playerChunkCoord);
     OctreeNode* getLeaf(const Coord& coord);
     Chunk* chunk = nullptr;

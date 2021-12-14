@@ -82,30 +82,30 @@ Coord OctreeNode::furthestContainedChunk(const Coord &playerChunkCoord) const {
     return furthest;
 }
 
-static void sort(std::vector<Coord> &candidates, const Coord &coord, const Coord &playerChunkCoord) {
-    auto it = std::max_element(candidates.begin(), candidates.end(), [&](const Coord &a, const Coord &b) {
-        return Coord::distanceSquared(playerChunkCoord, a) - Coord::distanceSquared(playerChunkCoord, b) < 0;
+static void sort(std::vector<OctreeNode*> &candidates, const Coord &coord, const Coord &playerChunkCoord) {
+    auto it = std::max_element(candidates.begin(), candidates.end(), [&](OctreeNode* a, OctreeNode* b) {
+        return Coord::distanceSquared(playerChunkCoord, a->coord) - Coord::distanceSquared(playerChunkCoord, b->coord) < 0;
     });
     std::swap(*it, candidates.back());
 }
 
-void OctreeNode::getClosestUnloadedChunks(std::vector<Coord> &candidates, int maxCandidates, const Coord &playerChunkCoord) {
+void OctreeNode::getClosestUnloadedChunks(std::vector<OctreeNode*> &candidates, int maxCandidates, const Coord &playerChunkCoord) {
     if (loadedChildren == OctreeNode::ALL_ONES_FLAG)
         return;
     if (level == 0) {
         if (!chunk->generating && !chunk->loaded) {
             if (candidates.size() >= maxCandidates) {
-                auto currentMaxDist = Coord::distanceSquared(playerChunkCoord, candidates.back());
+                auto currentMaxDist = Coord::distanceSquared(playerChunkCoord, candidates.back()->coord);
                 auto distance = Coord::distanceSquared(playerChunkCoord, coord);
                 if (distance < currentMaxDist) {
                     candidates.pop_back();
-                    candidates.push_back(coord);
+                    candidates.push_back(this);
                     sort(candidates, coord, playerChunkCoord);
                 }
             } else {
                 auto distance = Coord::distanceSquared(playerChunkCoord, coord);
                 if (distance < chunkingRadiusSquared) {
-                    candidates.push_back(coord);
+                    candidates.push_back(this);
                     sort(candidates, coord, playerChunkCoord);
                 }
             }
@@ -117,7 +117,7 @@ void OctreeNode::getClosestUnloadedChunks(std::vector<Coord> &candidates, int ma
             int64_t minDistance = INT64_MAX;
             for (int i = 0; i < 8; i++) {
                 auto child = children[i];
-                int64_t currentMaxDist = candidates.size() < maxCandidates ? INT64_MAX : Coord::distanceSquared(playerChunkCoord, candidates.back());
+                int64_t currentMaxDist = candidates.size() < maxCandidates ? INT64_MAX : Coord::distanceSquared(playerChunkCoord, candidates.back()->coord);
                 auto closestChunk = child->closestContainedChunk(playerChunkCoord);
                 auto d2 = Coord::distanceSquared(closestChunk, playerChunkCoord);
                 if (child->loadedChildren != OctreeNode::ALL_ONES_FLAG && d2 < currentMaxDist && d2 < minDistance && !visited[i]) {

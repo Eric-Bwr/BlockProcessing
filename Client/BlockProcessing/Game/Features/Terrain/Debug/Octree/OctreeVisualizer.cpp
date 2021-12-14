@@ -40,7 +40,7 @@ void OctreeVisualizer::init() {
     vao.addBuffer(vbo, layout);
 }
 
-void OctreeVisualizer::visualizeNode(const std::vector<Coord>& candidates, int closestNodeLevel, Coord minCorner, const Coord& playerCoord, OctreeNode *octreeNode) {
+void OctreeVisualizer::visualizeNode(const std::vector<OctreeNode*>& candidates, int closestNodeLevel, Coord minCorner, const Coord& playerCoord, OctreeNode *octreeNode) {
     glLineWidth(OCTREE_LINE_WIDTH + octreeNode->level * OCTREE_LINE_WIDTH_AMPLIFIER);
     model.identity();
     model.translate(octreeNode->coord.x * CHUNK_SIZE, octreeNode->coord.y * CHUNK_SIZE, octreeNode->coord.z * CHUNK_SIZE);
@@ -50,8 +50,8 @@ void OctreeVisualizer::visualizeNode(const std::vector<Coord>& candidates, int c
     if(octreeNode->level == OCTREE_MAX_LEVEL)
         glDrawArrays(GL_LINES, 0, 24);
     if(octreeNode->level == 0) {
-        const auto& coordinate = [&](const Coord& c){
-            return Coord::isEqual(c, octreeNode->coord);
+        const auto& coordinate = [&](OctreeNode* c){
+            return Coord::isEqual(c->coord, octreeNode->coord);
         };
         if(std::find_if(candidates.begin(), candidates.end(), coordinate) != candidates.end()){
             glDrawArrays(GL_LINES, 0, 24);
@@ -65,7 +65,7 @@ void OctreeVisualizer::visualizeNode(const std::vector<Coord>& candidates, int c
     }
 }
 
-void OctreeVisualizer::visualize(const std::vector<Coord>& candidates, int closestNodeLevel, Coord& playerCoord, OctreeNode *octreeNode) {
+void OctreeVisualizer::visualize(const std::vector<OctreeNode*>& candidates, int closestNodeLevel, Coord& playerCoord, OctreeNode *octreeNode) {
     shader->bind();
     vao.bind();
     visualizeNode(candidates, closestNodeLevel, {}, playerCoord, octreeNode);

@@ -3,40 +3,30 @@
 
 #include <mutex>
 #include <condition_variable>
+#include <algorithm>
 
-static std::atomic<bool> killGenerators = false;
-static std::atomic<int> terminatedThreads = 0;
-static std::mutex mutex;
-static std::condition_variable condition;
-static SafeQueue<std::pair<std::shared_ptr<Octree>, OctreeNode *>> toGenerateQueue;
-static SafeQueue<std::pair<std::shared_ptr<Octree>, OctreeNode *>> finishedGeneratedQueue;
-
-static void chunkGenerationLoop(ChunkManager *chunkManager) {
-    while (!killGenerators) {
-        auto pair = std::pair<std::shared_ptr<Octree>, OctreeNode *>(nullptr, nullptr);
-        bool success = toGenerateQueue.dequeue(pair, 50);
-        if (!success)
-            continue;
-        auto[octree, leaf] = pair;
-        chunkManager->generateChunkData(leaf->chunk);
-        finishedGeneratedQueue.enqueue(std::pair<std::shared_ptr<Octree>, OctreeNode *>(octree, leaf));
-    }
-    std::lock_guard<std::mutex> lock(mutex);
-    terminatedThreads++;
-    condition.notify_all();
-}
+#include "BlockProcessing/Framework/Engine/Performance/SpeedTester.h"
 
 void WorldManager::init(BlockManager *blockManager, ChunkManager *chunkManager) {
     this->blockManager = blockManager;
     this->chunkManager = chunkManager;
-    for (int i = 0; i < chunkingThreads; i++) {
-        std::thread t(chunkGenerationLoop, chunkManager);
-        t.detach();
-    }
+    loader = std::make_unique<AsyncLoader<OctreeNode*>>(chunkingThreads);
 }
 
 void WorldManager::generate(const Coord &playerChunkCoord) {
-    chunkCandidatesForGenerating.clear();
+
+	bool success = true;
+	while(success){
+		OctreeNode* result = nullptr;
+		loader->getResult(result, std::chrono::milliseconds(0), success);
+		if(success){
+			if (result->chunk->init)
+				chunkManager->initChunk(result->chunk);
+			chunkManager->loadChunkData(result->chunk);
+			result->updateHierarchyLoadedAndEmptyStatus(true, result->chunk->vertexCount == 0);
+			result->chunk->generating = false;
+		}
+	}
 
     for (auto it = octrees.begin(), next_it = it; it != octrees.end(); it = next_it) {
         ++next_it;
@@ -45,64 +35,79 @@ void WorldManager::generate(const Coord &playerChunkCoord) {
             octrees.erase(it);
     }
 
-    auto pair = std::pair<std::shared_ptr<Octree>, OctreeNode *>(nullptr, nullptr);
-    while (finishedGeneratedQueue.try_dequeue(pair)) {
-        const auto&[octree, leaf] = pair;
-        if (leaf->chunk->init)
-            chunkManager->initChunk(leaf->chunk);
-        chunkManager->loadChunkData(leaf->chunk);
-        leaf->updateHierarchyLoadedAndEmptyStatus(true, leaf->chunk->vertexCount == 0);
-        leaf->chunk->generating = false;
-    }
-
-    int idlingGenerators = chunksPerThread - toGenerateQueue.size();
-    if (idlingGenerators == 0)
+    int idlingGenerators = maxPendingJobs - loader->getItemsCount();
+    if (idlingGenerators <= 0)
         return;
 
-    //for (auto coord : modifiedChunks) {
-    //    Coord coords[7] = {coord,
-    //                       {coord.x, coord.y + 1, coord.z},
-    //                       {coord.x, coord.y - 1, coord.z},
-    //                       {coord.x + 1, coord.y, coord.z},
-    //                       {coord.x - 1, coord.y, coord.z},
-    //                       {coord.x, coord.y, coord.z + 1},
-    //                       {coord.x, coord.y, coord.z - 1}};
-    //    for (auto chunkCoord : coords) {
-    //        auto leaf = octrees.find(getOctreeFromChunk(chunkCoord))->second->getRoot().getLeaf(chunkCoord);
-    //        leaf->chunk->generating = true;
-    //        chunkCandidatesForGenerating.push_back(chunkCoord);
-    //    }
-    //}
-    //modifiedChunks.clear();
-
-    auto playerOctreeCoord = getOctreeFromChunk(playerChunkCoord);
-    for (int64_t xx = playerOctreeCoord.x - octreeRadius; xx <= playerOctreeCoord.x + octreeRadius; xx += OCTREE_LENGTH) {
-        for (int64_t yy = playerOctreeCoord.y - octreeRadius; yy <= playerOctreeCoord.y + octreeRadius; yy += OCTREE_LENGTH) {
-            for (int64_t zz = playerOctreeCoord.z - octreeRadius; zz <= playerOctreeCoord.z + octreeRadius; zz += OCTREE_LENGTH) {
-                auto octreeCoord = Coord{xx, yy, zz};
-                Octree *octree = nullptr;
-                auto it = octrees.find(octreeCoord);
-                if (it == octrees.end()) {
-                    octree = new Octree(&frustum, chunkManager, octreeCoord);
-                    octree->updateProperties(chunkingRadiusSquared, chunkingDeletionRadiusSquared);
-                    octrees.insert(std::pair<Coord, Octree *>(octreeCoord, octree));
-                } else
-                    octree = it->second.get();
-                if (octree->getRoot().loadedChildren != 0b11111111)
-                    octree->getRoot().getClosestUnloadedChunks(chunkCandidatesForGenerating, idlingGenerators, playerChunkCoord);
-            }
-        }
+    if(!finishedUpdatingOctree){
+    	return;
     }
 
-    for (auto candidate : chunkCandidatesForGenerating) {
-        auto &octree = octrees.find(getOctreeFromChunk(candidate))->second;
-        auto leaf = octree->getRoot().getLeaf(candidate);
-        leaf->chunk->generating = true;
-        toGenerateQueue.enqueue(std::pair<std::shared_ptr<Octree>, OctreeNode *>(octree, leaf));
-    }
+    finishedUpdatingOctree = false;
+    loader->exec([this, idlingGenerators, playerChunkCoord](){
+
+		chunkCandidatesForGenerating.clear();
+		for (auto coord : modifiedChunks) {
+			Coord coords[7] = {coord,
+							   {coord.x, coord.y + 1, coord.z},
+							   {coord.x, coord.y - 1, coord.z},
+							   {coord.x + 1, coord.y, coord.z},
+							   {coord.x - 1, coord.y, coord.z},
+							   {coord.x, coord.y, coord.z + 1},
+							   {coord.x, coord.y, coord.z - 1}};
+			for (auto chunkCoord : coords) {
+				auto leaf = octrees.find(getOctreeFromChunk(chunkCoord))->second->getRoot().getLeaf(chunkCoord);
+				leaf->chunk->generating = true;
+				chunkCandidatesForGenerating.push_back(leaf);
+			}
+		}
+		modifiedChunks.clear();
+
+
+		long totalNanos = 0;
+
+		auto playerOctreeCoord = getOctreeFromChunk(playerChunkCoord);
+		for (int64_t xx = playerOctreeCoord.x - octreeRadius; xx <= playerOctreeCoord.x + octreeRadius; xx += OCTREE_LENGTH) {
+			for (int64_t yy = playerOctreeCoord.y - octreeRadius; yy <= playerOctreeCoord.y + octreeRadius; yy += OCTREE_LENGTH) {
+				for (int64_t zz = playerOctreeCoord.z - octreeRadius; zz <= playerOctreeCoord.z + octreeRadius; zz += OCTREE_LENGTH) {
+					auto octreeCoord = Coord{xx, yy, zz};
+					Octree *octree = nullptr;
+
+					{
+						std::lock_guard<std::mutex> lock(octreeAccess);
+						auto it = octrees.find(octreeCoord);
+						if (it == octrees.end()) {
+							octree = new Octree(&frustum, chunkManager, octreeCoord);
+							octree->updateProperties(chunkingRadiusSquared, chunkingDeletionRadiusSquared);
+							octrees.insert(std::pair<Coord, Octree *>(octreeCoord, octree));
+						} else {
+							octree = it->second.get();
+						}
+					}
+
+					if (octree->getRoot().loadedChildren != 0b11111111)
+						octree->getRoot().getClosestUnloadedChunks(chunkCandidatesForGenerating, idlingGenerators, playerChunkCoord);
+				}
+			}
+		}
+
+		for (auto candidate : chunkCandidatesForGenerating) {
+			candidate->chunk->generating = true;
+			loader->scheduleTask([this, candidate](){
+				chunkManager->generateChunkData(candidate->chunk);
+				return candidate;
+			});
+		}
+
+
+		finishedUpdatingOctree = true;
+    });
+
 }
 
 Chunk *WorldManager::getChunkFromBlockCoords(int64_t x, int64_t y, int64_t z) {
+	std::lock_guard<std::mutex> lock(octreeAccess);
+
     auto chunk = getChunkFromBlock({x, y, z});
     auto it = octrees.find(getOctreeFromChunk(chunk));
     if (it == octrees.end())
@@ -111,6 +116,8 @@ Chunk *WorldManager::getChunkFromBlockCoords(int64_t x, int64_t y, int64_t z) {
 }
 
 Chunk *WorldManager::getChunkFromChunkCoords(int64_t x, int64_t y, int64_t z) {
+	std::lock_guard<std::mutex> lock(octreeAccess);
+
     auto chunk = Coord{x, y, z};
     auto it = octrees.find(getOctreeFromChunk(chunk));
     if (it == octrees.end())
@@ -146,6 +153,8 @@ int8_t WorldManager::getBlockDefault(int64_t x, int64_t y, int64_t z) {
 }
 
 int8_t WorldManager::getBlock(int64_t x, int64_t y, int64_t z) {
+	std::lock_guard<std::mutex> lock(octreeAccess);
+
     auto chunkCoord = getChunkFromBlock({x, y, z});
     auto it = octrees.find(getOctreeFromChunk(chunkCoord));
     if (it != octrees.end()) {
@@ -157,6 +166,8 @@ int8_t WorldManager::getBlock(int64_t x, int64_t y, int64_t z) {
 }
 
 void WorldManager::setBlock(int8_t block, int64_t x, int64_t y, int64_t z) {
+	std::lock_guard<std::mutex> lock(octreeAccess);
+
     auto chunkCoord = getChunkFromBlock({x, y, z});
     auto it = octrees.find(getOctreeFromChunk(chunkCoord));
     if (it != octrees.end()) {
@@ -169,6 +180,8 @@ void WorldManager::setBlock(int8_t block, int64_t x, int64_t y, int64_t z) {
 }
 
 void WorldManager::setBlocks(const std::vector<int8_t> &blocks, int64_t x, int64_t y, int64_t z) {
+	std::lock_guard<std::mutex> lock(octreeAccess);
+
     Coord chunkCoord = {x, y, z};
     auto it = octrees.find(getOctreeFromChunk(chunkCoord));
     if (it != octrees.end()) {
@@ -189,6 +202,8 @@ void WorldManager::updateChunkFromChunkCoords(int64_t x, int64_t y, int64_t z){
 }
 
 void WorldManager::setChunkingRadius(int radius) {
+	std::lock_guard<std::mutex> lock(octreeAccess);
+
     this->octreeRadius = ((radius / OCTREE_LENGTH) + 1) * OCTREE_LENGTH;
     this->octreeDeletionRadiusSquared = (octreeRadius + 2.5 * OCTREE_LENGTH) * (octreeRadius + 2.5 * OCTREE_LENGTH);
     this->chunkingRadiusSquared = radius * radius;
@@ -202,10 +217,11 @@ void WorldManager::setChunkingThreads(int threads) {
 }
 
 void WorldManager::setChunksPerThread(int max) {
-    this->chunksPerThread = chunkingThreads * max;
+    this->maxPendingJobs = chunkingThreads * max;
 }
 
 void WorldManager::render(Mat4d &projectionView, Mat4d &view) {
+	std::lock_guard<std::mutex> lock(octreeAccess);
     frustum.update(projectionView);
     chunkManager->setView(view);
     for (auto&[coord, octree] : octrees)
@@ -213,8 +229,6 @@ void WorldManager::render(Mat4d &projectionView, Mat4d &view) {
 }
 
 WorldManager::~WorldManager() {
-    killGenerators = true;
-    std::unique_lock<std::mutex> lock(mutex);
-    condition.wait(lock, [this]() { return terminatedThreads == chunkingThreads; });
+	std::lock_guard<std::mutex> lock(octreeAccess);
     octrees.clear();
 }
