@@ -1,11 +1,8 @@
 #include "WorldManager.h"
 #include "BlockProcessing/Game/BlockProcessing.h"
-
 #include <mutex>
 #include <condition_variable>
 #include <algorithm>
-
-#include "BlockProcessing/Framework/Engine/Performance/SpeedTester.h"
 
 void WorldManager::init(BlockManager *blockManager, ChunkManager *chunkManager) {
     this->blockManager = blockManager;
@@ -14,7 +11,6 @@ void WorldManager::init(BlockManager *blockManager, ChunkManager *chunkManager) 
 }
 
 void WorldManager::generate(const Coord &playerChunkCoord) {
-
 	bool success = true;
 	while(success){
 		OctreeNode* result = nullptr;
@@ -39,9 +35,8 @@ void WorldManager::generate(const Coord &playerChunkCoord) {
     if (idlingGenerators <= 0)
         return;
 
-    if(!finishedUpdatingOctree){
+    if(!finishedUpdatingOctree)
     	return;
-    }
 
     finishedUpdatingOctree = false;
     loader->exec([this, idlingGenerators, playerChunkCoord](){
@@ -63,16 +58,12 @@ void WorldManager::generate(const Coord &playerChunkCoord) {
 		}
 		modifiedChunks.clear();
 
-
-		long totalNanos = 0;
-
 		auto playerOctreeCoord = getOctreeFromChunk(playerChunkCoord);
 		for (int64_t xx = playerOctreeCoord.x - octreeRadius; xx <= playerOctreeCoord.x + octreeRadius; xx += OCTREE_LENGTH) {
 			for (int64_t yy = playerOctreeCoord.y - octreeRadius; yy <= playerOctreeCoord.y + octreeRadius; yy += OCTREE_LENGTH) {
 				for (int64_t zz = playerOctreeCoord.z - octreeRadius; zz <= playerOctreeCoord.z + octreeRadius; zz += OCTREE_LENGTH) {
 					auto octreeCoord = Coord{xx, yy, zz};
 					Octree *octree = nullptr;
-
 					{
 						std::lock_guard<std::mutex> lock(octreeAccess);
 						auto it = octrees.find(octreeCoord);
@@ -84,7 +75,6 @@ void WorldManager::generate(const Coord &playerChunkCoord) {
 							octree = it->second.get();
 						}
 					}
-
 					if (octree->getRoot().loadedChildren != 0b11111111)
 						octree->getRoot().getClosestUnloadedChunks(chunkCandidatesForGenerating, idlingGenerators, playerChunkCoord);
 				}
@@ -98,7 +88,6 @@ void WorldManager::generate(const Coord &playerChunkCoord) {
 				return candidate;
 			});
 		}
-
 
 		finishedUpdatingOctree = true;
     });
@@ -126,30 +115,31 @@ Chunk *WorldManager::getChunkFromChunkCoords(int64_t x, int64_t y, int64_t z) {
 }
 
 int8_t WorldManager::getBlockDefault(int64_t x, int64_t y, int64_t z) {
-   //auto noise = (fastNoise->GetNoise(x, y, z) + 1.0f) / 2.0f;
-   //if(noise < 0.63)
-   //    return BLOCK_AIR;
-   //else{
-   //    if((fastNoise->GetNoise(x, y + 1, z) + 1.0f) / 2.0f < 0.63){
-   //        return BLOCK_GRASS;
-   //    }else if((fastNoise->GetNoise(x, y + 2, z) + 1.0f) / 2.0f < 0.63){
-   //        return BLOCK_DIRT;
-   //    }else
-   //        return BLOCK_STONE;
-   //}
-    auto second = (fastNoise->GetNoise(x, y, z) + 1.0f) / 2.0f;
-    if(second > 0.65)
-        return BLOCK_PLANKS;
-    int height = int(((fastNoise->GetNoise(x, z) + 1.0f) / 2.0f) * 200);
-    if (y > height || y < 0) {
+    float threshold = 0.4;
+    auto noise = (fastNoise->GetNoise(x, y, z) + 1.0f) / 2.0f;
+    if(noise < threshold)
         return BLOCK_AIR;
-    } else if (y == height) {
-        return BLOCK_GRASS;
-    } else if (y < height && y >= height - 1) {
-        return BLOCK_DIRT;
-    } else {
-        return BLOCK_STONE;
+    else{
+        if((fastNoise->GetNoise(x, y + 1, z) + 1.0f) / 2.0f < threshold){
+            return BLOCK_GRASS;
+        }else if((fastNoise->GetNoise(x, y + 2, z) + 1.0f) / 2.0f < threshold){
+            return BLOCK_DIRT;
+        }else
+            return BLOCK_STONE;
     }
+    //auto second = (fastNoise->GetNoise(x, y, z) + 1.0f) / 2.0f;
+    //if(second > 0.65)
+    //    return BLOCK_PLANKS;
+    //int height = int(((fastNoise->GetNoise(x, z) + 1.0f) / 2.0f) * 200);
+    //if (y > height || y < 0) {
+    //    return BLOCK_AIR;
+    //} else if (y == height) {
+    //    return BLOCK_GRASS;
+    //} else if (y < height && y >= height - 1) {
+    //    return BLOCK_DIRT;
+    //} else {
+    //    return BLOCK_STONE;
+    //}
 }
 
 int8_t WorldManager::getBlock(int64_t x, int64_t y, int64_t z) {

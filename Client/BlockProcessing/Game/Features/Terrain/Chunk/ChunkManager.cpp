@@ -230,6 +230,7 @@ void ChunkManager::loadChunkData(Chunk *chunk) {
     if (chunk->vertexCount != 0) {
         glBindBuffer(GL_ARRAY_BUFFER, chunk->vbo);
         glBufferData(GL_ARRAY_BUFFER, stride * chunk->vertexCount, chunk->vertices.data(), GL_STATIC_DRAW);
+        //glCopyBufferSubData();
         std::vector<float>().swap(chunk->vertices);
     }
     chunk->loaded = true;

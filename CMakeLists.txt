@@ -23,7 +23,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Client/Build)
 
 add_executable(Client ${SOURCE_FILES_CLIENT} Dependencies/FastNoise/FastNoise.h Dependencies/FastNoise/FastNoise.cpp)
 
-#target_compile_options(Client PRIVATE -w)
+target_compile_options(Client PRIVATE -w)
 
 target_link_libraries(Client
         ${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/UI/UI.a
