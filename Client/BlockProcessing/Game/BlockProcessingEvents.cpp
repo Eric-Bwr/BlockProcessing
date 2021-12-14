@@ -17,15 +17,7 @@ void BlockProcessing::onMousePosition(double x, double y) {
 
 void BlockProcessing::onMouseButton(int button, int action, int mods) {
     sceneManager.onMouseButton(button, action, mods);
-    if (button == MOUSE_BUTTON_PRESSED) {
-        for (auto const &componentList : interfaceManager.UI.getComponents()) {
-            for (auto component : *componentList.second) {
-                component->mouseButtonInput(action);
-                component->mousePositionInput(interfaceManager.UI.mouseX, interfaceManager.UI.mouseY);
-            }
-        }
-    }
-    //interfaceManager.UI.mouseButtonInput(button, action);
+    interfaceManager.UI.mouseButtonInput(button, action);
 }
 
 void BlockProcessing::onMouseScroll(double x, double y) {

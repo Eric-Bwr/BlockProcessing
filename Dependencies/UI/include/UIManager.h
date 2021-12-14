@@ -34,7 +34,6 @@ public:
 	void mouseButtonInput(int button, int action);
 	void render();
     ~UIManager();
-    inline std::map<int, std::vector<UIComponent *>*> getComponents() {return components; }
     double mouseX = 0, mouseY = 0;
 private:
     Mat4f ortho;
@@ -42,7 +41,7 @@ private:
     Shader* quadShader;
     int width, height;
 	std::map<int, std::vector<UIComponent *>*> components;
-	void renderComponent(UIComponent *);
+	void renderComponent(UIComponent *component);
 	bool cursor = false, scaleOnResize = false;
     std::chrono::time_point<std::chrono::system_clock> start;
 };
