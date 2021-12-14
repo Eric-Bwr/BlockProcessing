@@ -23,8 +23,8 @@ void BlockManager::init() {
         auto block = blocks.at(i);
         for(int x = 0; x < 6; x++){
             if(!block->paths[x].empty()){
-                auto data = UITexture((blockTexturesPath + block->paths[x]).c_str(), block->desiredChannels).getData();
-                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, (i - 2) * 6 + x, TEXTURE_TILE_SIZE, TEXTURE_TILE_SIZE, 1, GL_RGB, GL_UNSIGNED_BYTE, data);
+                textures.push_back(new UITexture((blockTexturesPath + block->paths[x]).c_str(), block->desiredChannels));
+                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, (i - 2) * 6 + x, TEXTURE_TILE_SIZE, TEXTURE_TILE_SIZE, 1, GL_RGB, GL_UNSIGNED_BYTE, textures.back()->getData());
             }
         }
     }
@@ -46,4 +46,8 @@ BlockManager::~BlockManager() {
     for (auto block : blocks)
         delete block.second;
     blocks.clear();
+    delete texture;
+    for(auto texture : textures)
+        delete texture;
+    textures.clear();
 }

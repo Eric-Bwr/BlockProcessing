@@ -23,4 +23,5 @@ private:
     const float TEXTURE_LOD_BIAS = -2.5;
     std::string blockTexturesPath = TEXTURE_BLOCKS;
     std::map<unsigned int, Block*> blocks;
+    std::vector<Texture*> textures;
 };
