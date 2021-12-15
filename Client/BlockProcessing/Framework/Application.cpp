@@ -67,7 +67,6 @@ void Application::preInit() {
 
     glfwSetCursorPos(window, width / 2, height / 2);
     glViewport(0, 0, width, height);
-    glfwSwapInterval(1);
     LOG("Constructed Window");
 }
 
