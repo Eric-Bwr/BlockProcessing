@@ -74,7 +74,6 @@ private:
 
 template<typename T>
 AsyncLoader<T>::AsyncLoader(int threads) {
-
 	for (int ID = 0; ID < threads; ID++) {
 		std::function < void() > f = [this, ID]() {
 			this->thread_loop(ID);
@@ -85,11 +84,11 @@ AsyncLoader<T>::AsyncLoader(int threads) {
 
 template<typename T>
 AsyncLoader<T>::~AsyncLoader() {
-    LOG<INFO>("Deleting Async loader...");
+    LOG<INFO_LVL>("Deleting Async loader...");
 	should_exit = true;
 	for (std::thread &thread : threads)
 		thread.join();
-    LOG<INFO>("Async loader deleted.");
+    LOG<INFO_LVL>("Async loader deleted.");
 }
 
 template<typename T>
@@ -191,9 +190,9 @@ void AsyncLoader<T>::thread_loop(int ID) {
 			try{
 				task();
 			} catch(std::string& s){
-                LOG<ERROR, PA>("An exception occurred in thread: ");
-                LOG<ERROR, LA>(ID);
-                LOG<ERROR>(s);
+                LOG<ERROR_LVL, PA>("An exception occurred in thread: ");
+                LOG<ERROR_LVL, LA>(ID);
+                LOG<ERROR_LVL>(s);
 			}
 		}
 	}

@@ -24,7 +24,6 @@ void MainMenuScene::load() {
 void MainMenuScene::unload() {
     if(!((GameScene*)sceneManager->getScene(ID_GAME))->optionsMenuInterface.shouldVsync)
         glfwSwapInterval(0);
-    print(((GameScene*)sceneManager->getScene(ID_GAME))->optionsMenuInterface.shouldVsync);
     mainMenuInterface.unload();
     blockProcessing->postProcessManager.gaussianBlur(0.0f);
     blockProcessing->skyBoxManager.set(nullptr);

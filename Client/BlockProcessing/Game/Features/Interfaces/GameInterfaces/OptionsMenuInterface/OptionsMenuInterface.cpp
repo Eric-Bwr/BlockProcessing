@@ -71,31 +71,31 @@ void OptionsMenuInterface::init(GameMenuInterface *gameMenuInterface, GameScene 
             auto data = std::to_string(int(value));
             chunkingRadius.text->setText(("Chunking-Distance: " + data).data());
             optionsFileManagerPtr->setOption(data, 4);
-            gameScenePtr->worldManager.setChunkingRadius(int(value));
+            gameScenePtr->terrainManager.getWorldManager()->setChunkingRadius(int(value));
         }
     });
-    gameScenePtr->worldManager.setChunkingRadius(optionsFileManager.getOptionInt(4));
+    gameScenePtr->terrainManager.getWorldManager()->setChunkingRadius(optionsFileManager.getOptionInt(4));
     static auto chunkingThreads = addOptionSlider(5, -optionWidth - 50, -20, int(std::atoi(optionsFileManager.getOption(5).c_str())), 1, 20);
     chunkingThreads.slider->setCallback([](bool dragging, bool hovered, float value) {
         if (dragging) {
             auto data = std::to_string(int(value));
             chunkingThreads.text->setText(("Chunking-Threads: " + data).data());
             optionsFileManagerPtr->setOption(data, 5);
-            gameScenePtr->worldManager.setChunkingThreads(int(value));
+            gameScenePtr->terrainManager.getWorldManager()->setChunkingThreads(int(value));
         }
     });
     options.push_back(new UIText("<==== Restart needed!", font, optionFontSize, width / 2 + 50, height / 2 - 20, optionWidth, optionHeight, UITextMode::CENTERED));
-    gameScenePtr->worldManager.setChunkingThreads(optionsFileManager.getOptionInt(5));
+    gameScenePtr->terrainManager.getWorldManager()->setChunkingThreads(optionsFileManager.getOptionInt(5));
     static auto chunksPerThread = addOptionSlider(6, -optionWidth - 50, -100, int(std::atoi(optionsFileManager.getOption(6).c_str())), 1, 100);
     chunksPerThread.slider->setCallback([](bool dragging, bool hovered, float value) {
         if (dragging) {
             auto data = std::to_string(int(value));
             chunksPerThread.text->setText(("Chunks-Per-Thread: " + data).data());
             optionsFileManagerPtr->setOption(data, 6);
-            gameScenePtr->worldManager.setChunksPerThread(int(value));
+            gameScenePtr->terrainManager.getWorldManager()->setChunksPerThread(int(value));
         }
     });
-    gameScenePtr->worldManager.setChunksPerThread(optionsFileManager.getOptionInt(6));
+    gameScenePtr->terrainManager.getWorldManager()->setChunksPerThread(optionsFileManager.getOptionInt(6));
 }
 
 void OptionsMenuInterface::load() {

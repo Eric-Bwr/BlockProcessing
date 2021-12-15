@@ -26,15 +26,15 @@ void GameScene::init() {
     linePointVisualizer.init();
     linePointVisualizer.setProjection(blockProcessing->projection);
 
-    terrainManager.init(&cubeManager, &blockManager, &chunkManager, &worldManager, rand(), FastNoise::PerlinFractal, 0.009, 6);
+    terrainManager.init(rand(), FastNoise::PerlinFractal, 0.009, 6);
     terrainManager.setProjection(blockProcessing->projection);
-    player.init(&worldManager, 0, 0, 0, 90, 0);
+    player.init(terrainManager.getWorldManager(), 0, 0, 0, 90, 0);
     player.setProjection(blockProcessing->projection);
 
     commandManager.add(new CommandTP(player));
     commandManager.add(new CommandSpeed(player));
     commandManager.add(new CommandHelp());
-    player.position.y = ((worldManager.fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * 200;
+    player.position.y = ((terrainManager.fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * 200;
     player.update();
 }
 
@@ -83,8 +83,8 @@ void GameScene::render(double deltaFrameTime) {
     octreeVisualizer.setView(view);
     player.render(view);
     if (collision)
-        for (auto&[coord, octree] : worldManager.octrees)
-            octreeVisualizer.visualize(worldManager.chunkCandidatesForGenerating, OCTREE_MAX_LEVEL, player.chunk, &octree->getRoot());
+        for (auto&[coord, octree] : terrainManager.getWorldManager()->octrees)
+            octreeVisualizer.visualize(terrainManager.getWorldManager()->chunkCandidatesForGenerating, OCTREE_MAX_LEVEL, player.chunk, &octree->getRoot());
     if (wireFrame)
         chunkBorderVisualizer.render(viewf);
     linePointVisualizer.setView(viewf);

@@ -11,10 +11,6 @@
 #include "BlockProcessing/Game/Features/Terrain/Debug/ChunkBorder/ChunkBorderVisualizer.h"
 #include "BlockProcessing/Game/Features/Terrain/Debug/LinePoint/LinePointVisualizer.h"
 #include "BlockProcessing/Game/Features/Terrain/Debug/Octree/OctreeVisualizer.h"
-#include "BlockProcessing/Game/Features/Terrain/Block/BlockManager.h"
-#include "BlockProcessing/Game/Features/Terrain/Chunk/ChunkManager.h"
-#include "BlockProcessing/Game/Features/Terrain/Cube/CubeManager.h"
-#include "BlockProcessing/Game/Features/Terrain/World/WorldManager.h"
 #include "BlockProcessing/Game/Features/Terrain/TerrainManager.h"
 #include "BlockProcessing/Game/Features/Commands/CommandTP/CommandTP.h"
 #include "BlockProcessing/Game/Features/Commands/CommandSpeed/CommandSpeed.h"
@@ -50,10 +46,6 @@ public:
     LinePointVisualizer linePointVisualizer;
     OctreeVisualizer octreeVisualizer;
 
-    CubeManager cubeManager;
-    BlockManager blockManager;
-    ChunkManager chunkManager;
-    WorldManager worldManager;
     TerrainManager terrainManager;
 
     OptionsMenuInterface optionsMenuInterface;

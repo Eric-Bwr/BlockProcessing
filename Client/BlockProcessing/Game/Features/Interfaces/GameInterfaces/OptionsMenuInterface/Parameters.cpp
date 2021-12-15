@@ -128,10 +128,10 @@ void Parameters::putRegistrable(const std::string &name, const std::shared_ptr<P
 	if (p != customParams.end()) {
 		auto* value = dynamic_cast<DefaultRegistrable*>(p->second.get());
 		if(value == nullptr){
-            LOG<ERROR, PA>("Warning: Attempted to register an already existing param on ");
-            LOG<ERROR, A>(className);
-            LOG<ERROR, A>(name);
-            LOG<ERROR, LA>(", the already existing param will be kept");
+            LOG<ERROR_LVL, PA>("Warning: Attempted to register an already existing param on ");
+            LOG<ERROR_LVL, A>(className);
+            LOG<ERROR_LVL, A>(name);
+            LOG<ERROR_LVL, LA>(", the already existing param will be kept");
 			return;
 		}
 		defaultValue->init(value->s);
@@ -154,10 +154,10 @@ void Parameters::readParams() {
 	f.open("params.txt");
 
 	if (!f.is_open()) {
-		LOG<ERROR>("Couldn't open params.txt");
+		LOG<ERROR_LVL>("Couldn't open params.txt");
 		return;
 	}
-    LOG<INFO>("Reading Parameters");
+    LOG<INFO_LVL>("Reading Parameters");
 
 	std::string str;
 	std::stringstream ss;
@@ -225,10 +225,10 @@ void Parameters::writeParams() {
 	f.open("params.txt");
 
 	if (!f.is_open()) {
-        LOG<ERROR>("Couldn't open params.txt");
+        LOG<ERROR_LVL>("Couldn't open params.txt");
 		return;
 	}
-    LOG<INFO>("Writing Parameters");
+    LOG<INFO_LVL>("Writing Parameters");
 
 	std::vector<std::string> v;
 
