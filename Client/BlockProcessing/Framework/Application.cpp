@@ -101,6 +101,7 @@ void Application::run() {
 
 void Application::end() {
     LOG("Shutting down...");
+    delete blockProcessing;
     glfwDestroyWindow(window);
     Logger::write();
 }

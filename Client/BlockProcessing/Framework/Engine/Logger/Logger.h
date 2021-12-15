@@ -50,6 +50,10 @@ public:
     static void LOG(std::string content){
         logContent(LEVEL, mode, content.data());
     }
+    template<int LEVEL = INFO, int mode = DF>
+    static void LOG(std::stringstream content){
+        logContent(LEVEL, mode, content.str().data());
+    }
     static std::string getPrefix(int level);
     static void setLevel(int level);
     static void setPath(char* path);
