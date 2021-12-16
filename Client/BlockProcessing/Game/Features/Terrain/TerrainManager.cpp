@@ -1,9 +1,7 @@
 #include "TerrainManager.h"
 #include "UITexture.h"
 
-void TerrainManager::init(CubeManager* cubeManager, BlockManager* blockManager, ChunkManager* chunkManager, WorldManager* worldManager, int seed, FastNoise::NoiseType noiseType, float frequency, int octaves) {
-    this->blockManager = blockManager;
-    this->worldManager = worldManager;
+void TerrainManager::init(int seed, FastNoise::NoiseType noiseType, float frequency, int octaves) {
     fastNoise = new FastNoise;
     fastNoise->SetNoiseType(noiseType);
     fastNoise->SetSeed(seed);
@@ -11,24 +9,22 @@ void TerrainManager::init(CubeManager* cubeManager, BlockManager* blockManager, 
     fastNoise->SetFractalOctaves(octaves);
     shader = new Shader(SHADER_TERRAIN);
     shader->addUniforms({"projection", "viewModel", "intensity", "gradient", "image", "lightPos", "viewPos", "blinn", "skyColor"});
-    cubeManager->init();
-    blockManager->init();
-    chunkManager->init(cubeManager, blockManager, worldManager);
-    chunkManager->setShader(shader);
-    worldManager->fastNoise = fastNoise;
-    worldManager->init(blockManager, chunkManager);
+    blockManager.init();
+    worldManager.getChunkManager()->setShader(shader);
+    worldManager.fastNoise = fastNoise;
+    worldManager.init(&blockManager);
     LOG(shader->getErrorMessage());
 }
 
 void TerrainManager::generate(const Coord& coord) {
-    worldManager->generate(coord);
+    worldManager.generate(coord);
 }
 
 void TerrainManager::render(Mat4d &projectionView, Mat4d &view) {
     shader->bind();
     shader->setUniform3f("viewPos", view.m32, view.m30, view.m31);
-    blockManager->texture->bind();
-    worldManager->render(projectionView, view);
+    blockManager.texture->bind();
+    worldManager.render(projectionView, view);
 }
 
 void TerrainManager::setProjection(Mat4f &projection) {

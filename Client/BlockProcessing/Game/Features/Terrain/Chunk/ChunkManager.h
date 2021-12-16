@@ -2,15 +2,15 @@
 
 #include <Math/Matrix.h>
 #include "Chunk.h"
+#include "../Cube/CubeManager.h"
 
 class Shader;
-class CubeManager;
 class BlockManager;
 class WorldManager;
 
 class ChunkManager {
 public:
-    void init(CubeManager *cubeManager, BlockManager* blockManager, WorldManager* worldManager);
+    void init(BlockManager* blockManager, WorldManager* worldManager);
     void initChunk(Chunk* chunk);
     void generateChunkData(Chunk* chunk);
     void loadChunkData(Chunk* chunk);
@@ -30,7 +30,7 @@ private:
     const void *offset1, *offset2, *offset3;
     void generateChunkVertices(Chunk* chunk);
     void generateChunkDefaultVertices(Chunk* chunk);
-    CubeManager *cubeManager;
+    CubeManager cubeManager;
     BlockManager *blockManager;
     WorldManager *worldManager;
 };

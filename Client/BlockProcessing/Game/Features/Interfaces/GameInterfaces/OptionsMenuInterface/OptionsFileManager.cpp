@@ -16,7 +16,6 @@ void OptionsFileManager::init() {
               "FOV: 75\n"
               "Server: 127.0.0.1:25566\n"
               "Chunking-Distance: 10\n"
-              "Chunking-Threads: 3\n"
               "Chunks-Per-Thread: 10", file);
     }
     fseek(file, 0, SEEK_END);

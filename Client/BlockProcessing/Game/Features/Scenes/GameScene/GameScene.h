@@ -50,10 +50,6 @@ public:
     LinePointVisualizer linePointVisualizer;
     OctreeVisualizer octreeVisualizer;
 
-    CubeManager cubeManager;
-    BlockManager blockManager;
-    ChunkManager chunkManager;
-    WorldManager worldManager;
     TerrainManager terrainManager;
 
     OptionsMenuInterface optionsMenuInterface;
