@@ -4,12 +4,12 @@
 Application application;
 
 void terminateHandler() {
-    LOG<ERROR>("Unhandled exception");
+    LOG<ERROR_LVL>("Unhandled exception");
     std::abort();
 }
 
 extern "C" void handleAborts(int signalNumber) {
-    LOG<ERROR>("Signal received, shutting down.");
+    LOG<ERROR_LVL>("Signal received, shutting down.");
     std::flush(std::cerr);
     std::flush(std::cout);
 }
@@ -32,7 +32,7 @@ void Application::preInit() {
     Logger::trace(true);
     Logger::setPath("Logs/");
     Logger::setLevel(0);
-    LOG("Pre init...");
+    LOG<INFO_LVL>("Pre init...");
     width = 1920 - 100;
     height = 1080 - 100;
     if(!glfwInit())
@@ -67,11 +67,11 @@ void Application::preInit() {
 
     glfwSetCursorPos(window, width / 2, height / 2);
     glViewport(0, 0, width, height);
-    LOG("Constructed Window");
+    LOG<INFO_LVL>("Constructed Window");
 }
 
 void Application::init() {
-    LOG("Init...");
+    LOG<INFO_LVL>("Init...");
     blockProcessing = new BlockProcessing();
     blockProcessing->init(window, width, height);
     initCallbacks();
@@ -79,7 +79,7 @@ void Application::init() {
 }
 
 void Application::run() {
-    LOG("Run...");
+    LOG<INFO_LVL>("Run...");
     while(alive){
         double lastFrameTime = glfwGetTime();
         glfwSwapBuffers(window);
@@ -100,7 +100,8 @@ void Application::run() {
 }
 
 void Application::end() {
-    LOG("Shutting down...");
+    LOG<INFO_LVL>("Shutting down...");
+    delete blockProcessing;
     glfwDestroyWindow(window);
     Logger::write();
 }

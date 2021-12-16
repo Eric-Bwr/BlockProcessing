@@ -7,9 +7,9 @@
 #include <iomanip>
 #include <vector>
 
-#define INFO 0
-#define WARN 1
-#define ERROR 2
+#define INFO_LVL 0
+#define WARN_LVL 1
+#define ERROR_LVL 2
 
 #define DF 0
 #define PA 1
@@ -18,37 +18,41 @@
 
 class Logger {
 public:
-    template<int LEVEL = INFO, int mode = DF>
+    template<int LEVEL = INFO_LVL, int mode = DF>
     static void LOG(int content){
         logContent(LEVEL, mode, std::to_string(content).data());
     }
-    template<int LEVEL = INFO, int mode = DF>
+    template<int LEVEL = INFO_LVL, int mode = DF>
     static void LOG(unsigned int content){
         logContent(LEVEL, mode, std::to_string(content).data());
     }
-    template<int LEVEL = INFO, int mode = DF>
+    template<int LEVEL = INFO_LVL, int mode = DF>
     static void LOG(float content){
         logContent(LEVEL, mode, std::to_string(content).data());
     }
-    template<int LEVEL = INFO, int mode = DF>
+    template<int LEVEL = INFO_LVL, int mode = DF>
     static void LOG(double content){
         logContent(LEVEL, mode, std::to_string(content).data());
     }
-    template<int LEVEL = INFO, int mode = DF>
+    template<int LEVEL = INFO_LVL, int mode = DF>
     static void LOG(char content){
         logContent(LEVEL, mode, std::to_string(content).data());
     }
-    template<int LEVEL = INFO, int mode = DF>
+    template<int LEVEL = INFO_LVL, int mode = DF>
     static void LOG(char* content){
         logContent(LEVEL, mode, content);
     }
-    template<int LEVEL = INFO, int mode = DF>
+    template<int LEVEL = INFO_LVL, int mode = DF>
     static void LOG(const char* content){
         logContent(LEVEL, mode, (char*)content);
     }
-    template<int LEVEL = INFO, int mode = DF>
+    template<int LEVEL = INFO_LVL, int mode = DF>
     static void LOG(std::string content){
         logContent(LEVEL, mode, content.data());
+    }
+    template<int LEVEL = INFO_LVL, int mode = DF>
+    static void LOG(std::stringstream content){
+        logContent(LEVEL, mode, content.str().data());
     }
     static std::string getPrefix(int level);
     static void setLevel(int level);

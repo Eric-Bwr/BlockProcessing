@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Math/Matrix.h>
+#include "../Cube/CubeManager.h"
 #include "Chunk.h"
 #include "../Cube/CubeManager.h"
 

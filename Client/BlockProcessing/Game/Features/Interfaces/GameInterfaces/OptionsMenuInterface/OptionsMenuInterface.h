@@ -20,6 +20,7 @@ public:
     void unload();
     ~OptionsMenuInterface();
     OptionsFileManager optionsFileManager;
+    bool shouldVsync;
 private:
     UIButton* addOptionButton(std::string text, int line, float xOffset, float yOffset);
     OptionsSlider addOptionSlider(int line, float xOffset, float yOffset, float value, float min, float max);

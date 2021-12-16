@@ -33,16 +33,16 @@ void Logger::trace(bool trace) {
 
 void Logger::write() {
     if (strcmp(LOGGER_PATH, "") == 0)
-        LOG<ERROR>("Invalid Logger Path");
+        LOG<ERROR_LVL>("Invalid Logger Path");
     else if (!LOGGER_TRACE)
-        LOG<ERROR>("Writing requested => Tracing");
+        LOG<ERROR_LVL>("Writing not requested => Tracing");
     else {
         auto time = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now());
         std::stringstream result;
         result << LOGGER_PATH << std::put_time(std::localtime(&time), "%Y-%m-%d %H-%M-%S") << ".log";
         file = fopen(result.str().data(), "w");
         if (!file)
-            LOG<ERROR>("Failed to dump log => Path");
+            LOG<ERROR_LVL>("Failed to dump log => Path");
         else {
             for (auto content: contents)
                 fprintf(file, "%s%s", content.data(), "\n");

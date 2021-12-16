@@ -11,6 +11,7 @@ void MainMenuScene::init() {
 }
 
 void MainMenuScene::load() {
+    glfwSwapInterval(1);
     mainMenuInterface.load();
     blockProcessing->postProcessManager.gaussianBlur(2.25);
     rotation = 0.0f;
@@ -21,6 +22,8 @@ void MainMenuScene::load() {
 }
 
 void MainMenuScene::unload() {
+    if(!((GameScene*)sceneManager->getScene(ID_GAME))->optionsMenuInterface.shouldVsync)
+        glfwSwapInterval(0);
     mainMenuInterface.unload();
     blockProcessing->postProcessManager.gaussianBlur(0.0f);
     blockProcessing->skyBoxManager.set(nullptr);

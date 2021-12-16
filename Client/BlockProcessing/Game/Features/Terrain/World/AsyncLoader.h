@@ -1,16 +1,8 @@
-/*
- * AsyncLoader.h
- *
- *  Created on: 7 oct. 2021
- *      Author: Briac
- */
-
+//Author: Briac
 #pragma once
 
-#include <iostream>
 #include <chrono>
 #include <sstream>
-
 #include <mutex>
 #include <condition_variable>
 #include <queue>
@@ -18,14 +10,13 @@
 #include <atomic>
 #include <thread>
 #include <memory>
+#include "BlockProcessing/Framework/Engine/Logger/Logger.h"
 
 template<typename T>
 class ThreadSafeQueue{
 public:
-	ThreadSafeQueue(){
-	}
-	virtual ~ThreadSafeQueue(){
-	}
+	ThreadSafeQueue() = default;
+	virtual ~ThreadSafeQueue() = default;
 
 	ThreadSafeQueue(const ThreadSafeQueue&) = delete;
 	ThreadSafeQueue(ThreadSafeQueue&&) = delete;
@@ -46,7 +37,7 @@ private:
 template<typename T>
 class AsyncLoader {
 public:
-	AsyncLoader(int threads=std::thread::hardware_concurrency());
+	explicit AsyncLoader(int threads = std::thread::hardware_concurrency());
 	virtual ~AsyncLoader();
 
 	AsyncLoader(const AsyncLoader&) = delete;
@@ -75,18 +66,14 @@ private:
 	void thread_loop(int ID);
 
 	std::atomic_bool should_exit = false;
-	std::atomic_int items_stored = 0;// tasks + results
+	std::atomic_int items_stored = 0;
 	std::vector<std::thread> threads;
 	ThreadSafeQueue<std::function<void()>> tasks;
 	ThreadSafeQueue<T> results;
 };
 
-////// Implementation ////////////////////
-
-
 template<typename T>
 AsyncLoader<T>::AsyncLoader(int threads) {
-
 	for (int ID = 0; ID < threads; ID++) {
 		std::function < void() > f = [this, ID]() {
 			this->thread_loop(ID);
@@ -97,11 +84,11 @@ AsyncLoader<T>::AsyncLoader(int threads) {
 
 template<typename T>
 AsyncLoader<T>::~AsyncLoader() {
+    LOG<INFO_LVL>("Deleting Async loader...");
 	should_exit = true;
-	for (std::thread &thread : threads) {
+	for (std::thread &thread : threads)
 		thread.join();
-	}
-	std::cout << "Async loader deleted." << std::endl;
+    LOG<INFO_LVL>("Async loader deleted.");
 }
 
 template<typename T>
@@ -189,19 +176,9 @@ inline void AsyncLoader<T>::exec(std::function<void()> &&f) {
 
 template<typename T>
 void AsyncLoader<T>::thread_loop(int ID) {
-//	std::stringstream ss;
-//	ss << "Thread " << ID << " started." << std::endl;
-//	std::cout << ss.str();
-//	ss.str("");
-
 	std::chrono::milliseconds timeout(1000);
 	while (!should_exit) {
-//		ss << "Thread " << ID << ": waiting for job...";
-//		std::cout << ss.str() << std::endl;
-//		ss.str("");
-
 		std::function<void()> task;
-		//size_t remaining =
 		bool success = false;
 		tasks.get(task, timeout, success);
 
@@ -213,25 +190,17 @@ void AsyncLoader<T>::thread_loop(int ID) {
 			try{
 				task();
 			} catch(std::string& s){
-				std::stringstream ss;
-				ss <<"An exception occurred in thread " <<ID <<": " <<std::endl;
-				ss <<s <<std::endl;
-				std::cout <<ss.str() <<std::endl;
+                LOG<ERROR_LVL, PA>("An exception occurred in thread: ");
+                LOG<ERROR_LVL, LA>(ID);
+                LOG<ERROR_LVL>(s);
 			}
-//			ss << "Thread " << ID << ": finished job.";
-//			std::cout << ss.str() << std::endl;
-//			ss.str("");
 		}
-
 	}
-//	ss << "Thread " << ID << " terminated.";
-//	std::cout << ss.str() << std::endl;
-//	ss.str("");
 }
 
 template<typename T>
 size_t ThreadSafeQueue<T>::push(T &&task) {
-	size_t s = 0;
+	size_t s;
 	{
 		std::unique_lock < std::mutex > lock(queue_mutex);
 		queue.push(std::move(task));

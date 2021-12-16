@@ -64,5 +64,6 @@ void NetworkClient::OnPacketSend(Network::TCPConnection *connection, Network::Pa
 
 NetworkClient::~NetworkClient() {
     alive = false;
-    CloseConnection();
+    if(networkManagerPtr->connected)
+        CloseConnection();
 }
