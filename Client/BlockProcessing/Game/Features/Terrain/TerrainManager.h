@@ -22,8 +22,6 @@ public:
     FastNoise* fastNoise;
 private:
     Shader* shader;
-    CubeManager cubeManager;
     BlockManager blockManager;
-    ChunkManager chunkManager;
     WorldManager worldManager;
 };

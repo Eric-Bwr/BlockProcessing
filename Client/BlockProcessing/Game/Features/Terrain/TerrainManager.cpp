@@ -9,12 +9,10 @@ void TerrainManager::init(int seed, FastNoise::NoiseType noiseType, float freque
     fastNoise->SetFractalOctaves(octaves);
     shader = new Shader(SHADER_TERRAIN);
     shader->addUniforms({"projection", "viewModel", "intensity", "gradient", "image", "lightPos", "viewPos", "blinn", "skyColor"});
-    cubeManager.init();
     blockManager.init();
-    chunkManager.init(&cubeManager, &blockManager, &worldManager);
-    chunkManager.setShader(shader);
     worldManager.fastNoise = fastNoise;
-    worldManager.init(&blockManager, &chunkManager);
+    worldManager.init(&blockManager);
+    worldManager.getChunkManager()->setShader(shader);
     LOG(shader->getErrorMessage());
 }
 
