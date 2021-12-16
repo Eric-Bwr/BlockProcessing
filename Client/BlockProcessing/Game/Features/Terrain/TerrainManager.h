@@ -4,7 +4,6 @@
 #include "BlockProcessing/Framework/Engine/Logger/Logger.h"
 #include <Shader.h>
 #include <Texture.h>
-#include <FastNoise.h>
 #include "BlockProcessing/Game/Features/Terrain/Chunk/Chunk.h"
 #include "BlockProcessing/Game/Features/Terrain/Cube/CubeManager.h"
 #include "BlockProcessing/Game/Features/Terrain/Chunk/ChunkManager.h"
@@ -18,13 +17,12 @@ public:
     void render(Mat4d& projectionView, Mat4d& view);
     void setProjection(Mat4f& projection);
     void setLightPosition(double x, double y, double z);
-    inline WorldManager* getWorldManager() { return &worldManager; }
+    inline WorldManager* getWorldManager() { return worldManager.get(); }
     inline BlockManager* getBlockManager() { return &blockManager; }
     ~TerrainManager();
 private:
     Shader* shader;
-    FastNoise* fastNoise;
     BlockManager blockManager;
-    WorldManager worldManager;
     AsyncLoader<OctreeNode*> asyncLoader;
+    std::shared_ptr<WorldManager> worldManager;
 };

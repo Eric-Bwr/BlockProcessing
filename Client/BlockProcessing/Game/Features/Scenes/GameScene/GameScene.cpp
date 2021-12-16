@@ -7,6 +7,9 @@ void GameScene::init() {
     this->height = blockProcessing->height;
     projectionView.identity();
 
+    terrainManager.init(rand(), FastNoise::PerlinFractal, 0.009, 6);
+    terrainManager.setProjection(blockProcessing->projection);
+
     blockProcessing->interfaceManager.add(&chatInterface);
     blockProcessing->interfaceManager.add(&debugInterface);
     blockProcessing->interfaceManager.add(&crosshairInterface);
@@ -26,8 +29,6 @@ void GameScene::init() {
     linePointVisualizer.init();
     linePointVisualizer.setProjection(blockProcessing->projection);
 
-    terrainManager.init(rand(), FastNoise::PerlinFractal, 0.009, 6);
-    terrainManager.setProjection(blockProcessing->projection);
     player.init(terrainManager.getWorldManager(), 0, 0, 0, 90, 0);
     player.setProjection(blockProcessing->projection);
 

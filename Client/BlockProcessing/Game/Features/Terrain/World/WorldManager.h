@@ -15,7 +15,8 @@
 
 class WorldManager {
 public:
-    void init(AsyncLoader<OctreeNode*>* asyncLoader, std::shared_ptr<WorldManager> worldManager, BlockManager* blockManager);
+    WorldManager() = default;
+    void init(AsyncLoader<OctreeNode*>* asyncLoader, std::shared_ptr<WorldManager>* worldManager, BlockManager* blockManager);
     void generate(const Coord& playerChunkCoord);
     Chunk* getChunkFromBlockCoords(int64_t x, int64_t y, int64_t z);
     Chunk* getChunkFromChunkCoords(int64_t x, int64_t y, int64_t z);
@@ -45,7 +46,7 @@ public:
 private:
     ChunkManager chunkManager;
     AsyncLoader<OctreeNode*>* asyncLoader;
-    std::shared_ptr<WorldManager> worldManager;
+    std::shared_ptr<WorldManager>* worldManager;
     int maxPendingJobs;
     int chunkingRadiusSquared;
     int chunkingDeletionRadiusSquared;
