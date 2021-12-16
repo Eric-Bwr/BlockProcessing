@@ -5,7 +5,6 @@
 
 void WorldManager::init(BlockManager *blockManager) {
     chunkManager.init(blockManager, this);
-    this->blockManager = blockManager;
     loader = std::make_unique<AsyncLoader<OctreeNode*>>();
 }
 
@@ -39,7 +38,6 @@ void WorldManager::generate(const Coord &playerChunkCoord) {
 
     finishedUpdatingOctree = false;
     loader->exec([this, idlingGenerators, playerChunkCoord](){
-
 		chunkCandidatesForGenerating.clear();
 		for (auto coord : modifiedChunks) {
 			Coord coords[7] = {coord,
@@ -87,10 +85,8 @@ void WorldManager::generate(const Coord &playerChunkCoord) {
 				return candidate;
 			});
 		}
-
 		finishedUpdatingOctree = true;
     });
-
 }
 
 Chunk *WorldManager::getChunkFromBlockCoords(int64_t x, int64_t y, int64_t z) {
@@ -114,7 +110,7 @@ Chunk *WorldManager::getChunkFromChunkCoords(int64_t x, int64_t y, int64_t z) {
 }
 
 int8_t WorldManager::getBlockDefault(int64_t x, int64_t y, int64_t z) {
-    float threshold = 0.4;
+    float threshold = 0.55;
     auto noise = (fastNoise->GetNoise(x, y, z) + 1.0f) / 2.0f;
     if(noise < threshold)
         return BLOCK_AIR;

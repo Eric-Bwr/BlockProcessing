@@ -29,18 +29,22 @@ void OptionsMenuInterface::init(GameMenuInterface *gameMenuInterface, GameScene 
             gameScenePtr->gameMenu = true;
         }
     });
+    static auto shouldVsyncPtr = &shouldVsync;
     static auto vsync = addOptionButton("V-Sync", 1, -optionWidth - 50, -250);
-    if (vsync->text.text == "V-Sync: ON")
+    shouldVsync = vsync->text.text == "V-Sync: ON";
+    if (shouldVsync)
         glfwSwapInterval(1);
     else
         glfwSwapInterval(0);
     vsync->setCallback([](bool hovered, bool pressed) {
         if (hovered && pressed) {
             if (vsync->text.text == "V-Sync: ON") {
+                *shouldVsyncPtr = false;
                 vsync->setText("V-Sync: OFF");
                 glfwSwapInterval(0);
                 optionsFileManagerPtr->setOption("0", 1);
             } else {
+                *shouldVsyncPtr = true;
                 vsync->setText("V-Sync: ON");
                 glfwSwapInterval(1);
                 optionsFileManagerPtr->setOption("1", 1);

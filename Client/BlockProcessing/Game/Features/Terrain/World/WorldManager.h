@@ -45,7 +45,6 @@ public:
     std::mutex octreeAccess;
 private:
     ChunkManager chunkManager;
-    BlockManager* blockManager;
     int maxPendingJobs;
     int chunkingRadiusSquared;
     int chunkingDeletionRadiusSquared;
