@@ -3,16 +3,17 @@
 #include <condition_variable>
 #include <algorithm>
 
-void WorldManager::init(BlockManager *blockManager) {
+void WorldManager::init(AsyncLoader<OctreeNode*>* asyncLoader, std::shared_ptr<WorldManager> worldManager, BlockManager *blockManager) {
     chunkManager.init(blockManager, this);
-    loader = std::make_unique<AsyncLoader<OctreeNode*>>();
+    this->asyncLoader = asyncLoader;
+    this->worldManager = std::move(worldManager);
 }
 
 void WorldManager::generate(const Coord &playerChunkCoord) {
 	bool success = true;
 	while(success){
 		OctreeNode* result = nullptr;
-		loader->getResult(result, std::chrono::milliseconds(0), success);
+        asyncLoader->getResult(result, std::chrono::milliseconds(0), success);
 		if(success){
 			if (result->chunk->init)
 				chunkManager.initChunk(result->chunk);
@@ -29,7 +30,7 @@ void WorldManager::generate(const Coord &playerChunkCoord) {
             octrees.erase(it);
     }
 
-    int idlingGenerators = maxPendingJobs - loader->getItemsCount();
+    int idlingGenerators = maxPendingJobs - asyncLoader->getItemsCount();
     if (idlingGenerators <= 0)
         return;
 
@@ -37,7 +38,8 @@ void WorldManager::generate(const Coord &playerChunkCoord) {
     	return;
 
     finishedUpdatingOctree = false;
-    loader->exec([this, idlingGenerators, playerChunkCoord](){
+
+    asyncLoader->exec([std::shared_ptr<WorldManager> worldManager = worldManager, idlingGenerators, playerChunkCoord](){
 		chunkCandidatesForGenerating.clear();
 		for (auto coord : modifiedChunks) {
 			Coord coords[7] = {coord,
@@ -80,7 +82,7 @@ void WorldManager::generate(const Coord &playerChunkCoord) {
 
 		for (auto candidate : chunkCandidatesForGenerating) {
 			candidate->chunk->generating = true;
-			loader->scheduleTask([this, candidate](){
+            asyncLoader->scheduleTask([this, candidate](){
 				chunkManager.generateChunkData(candidate->chunk);
 				return candidate;
 			});

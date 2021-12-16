@@ -12,7 +12,7 @@ void TerrainManager::init(int seed, FastNoise::NoiseType noiseType, float freque
     blockManager.init();
     worldManager.getChunkManager()->setShader(shader);
     worldManager.fastNoise = fastNoise;
-    worldManager.init(&blockManager);
+    worldManager.init(&asyncLoader, std::make_shared<WorldManager>(worldManager), &blockManager);
     LOG(shader->getErrorMessage());
 }
 
