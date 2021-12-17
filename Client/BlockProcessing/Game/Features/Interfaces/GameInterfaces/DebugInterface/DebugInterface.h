@@ -1,7 +1,6 @@
 #pragma once
 
 #include "BlockProcessing/Game/Engine/Interface/Interface.h"
-#include <sstream>
 
 class Player;
 
@@ -16,7 +15,10 @@ public:
 private:
     UIText* textLeft;
     UIText* textRight;
-    std::ostringstream stringLeft;
+    std::vector<UIImage*> backgroundsLeft;
+    std::vector<UIImage*> backgroundsRight;
+    std::string stringLeft;
+    std::string stringRight;
     std::string gl;
     float fps;
 };
