@@ -1,11 +1,7 @@
 #include "BlockManager.h"
 
 void BlockManager::init() {
-    add(new BlockAir());
-    add(new BlockStone());
-    add(new BlockDirt());
-    add(new BlockGrass());
-    add(new BlockPlanks());
+    addBlocks();
     texture = new Texture(GL_TEXTURE_2D_ARRAY);
     texture->bind();
     texture->setWidth(TEXTURE_TILE_SIZE);
@@ -31,12 +27,26 @@ void BlockManager::init() {
     texture->generateMipMap();
 }
 
-void BlockManager::add(Block *block) {
-    block->index = (int)blocks.size() - 1;
-    blocks.insert(std::pair<unsigned int, Block *>(block->id, block));
+void BlockManager::addBlocks(){
+    add(new Block("Air", BLOCK_AIR));
+    add(new Block("Stone", BLOCK_STONE, "Stone.png"));
+    add(new Block("Dirt", BLOCK_DIRT, "Dirt.png"));
+    auto blockGrass = new Block("Grass", BLOCK_GRASS, "Grass.png");
+    blockGrass->paths[0] = "GrassSide.png";
+    blockGrass->paths[1] = "Dirt.png";
+    blockGrass->paths[2] = "Grass.png";
+    blockGrass->textureBottom = 1;
+    blockGrass->textureTop = 2;
+    add(blockGrass);
+    add(new Block("Wooden Planks", BLOCK_PLANKS, "Oak.png"));
 }
 
-Block *BlockManager::getBlockByID(unsigned int id) {
+void BlockManager::add(Block *block) {
+    block->index = (int)blocks.size() - 1;
+    blocks.insert(std::pair<int, Block *>(block->id, block));
+}
+
+Block *BlockManager::getBlockByID(int id) {
     if (blocks.count(id))
         return blocks.at(id);
     return nullptr;

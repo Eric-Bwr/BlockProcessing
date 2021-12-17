@@ -118,9 +118,9 @@ void Player::calculateMove(double deltaTime) {
 void Player::traverseRay() {
     auto direction = Vec3d(front);
     direction.norm();
-
     auto currentPos = Vec3d(position);
     Vec3d currentPosMinusPosition;
+    //worldManager->lockOctree();
     while ((currentPosMinusPosition).dot(currentPosMinusPosition) <= PLAYER_BLOCK_DISTANCE_SQUARED) {
         prevLookedBlockX = lookedBlockX;
         prevLookedBlockY = lookedBlockY;
@@ -164,7 +164,6 @@ void Player::traverseRay() {
             lookedBlockY--;
         else if (t == tz && direction.z < 0)
             lookedBlockZ--;
-
         lookedBlockID = worldManager->getBlock(lookedBlockX, lookedBlockY, lookedBlockZ);
         if (lookedBlockID != BLOCK_AIR) {
             lookedBlock.x = lookedBlockX;
@@ -176,6 +175,7 @@ void Player::traverseRay() {
         currentPosMinusPosition = currentPos - position;
     }
     playerBlockOutline.update(0, -99999999, 0);
+    //worldManager->unlockOctree();
 }
 
 void Player::calculateCamera() {
