@@ -16,7 +16,6 @@ public:
     void update(double deltaTime = 0.0);
     void dig();
     void place();
-    bool colliding();
     bool isOnGround();
     int64_t blockX, chunkX, octreeX, lookedBlockX, prevLookedBlockX;
     int64_t blockY, chunkY, octreeY, lookedBlockY, prevLookedBlockY;
@@ -31,6 +30,7 @@ public:
     float speed = 100.0f;
     ~Player();
 private:
+    bool onGround = false;
     WorldManager* worldManager;
     PlayerBlockOutline playerBlockOutline;
     void calculateMove(double deltaTime);

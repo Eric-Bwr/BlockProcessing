@@ -42,29 +42,8 @@ void Player::place() {
         worldManager->setBlock(BLOCK_PLANKS, prevLookedBlockX, prevLookedBlockY, prevLookedBlockZ);
 }
 
-bool Player::colliding() {
-    int minX = position.x - PLAYER_WIDTH_HALF;
-    int minY = position.y - PLAYER_HEIGHT;
-    int minZ = position.z - PLAYER_WIDTH_HALF;
-
-    int maxX = position.x + PLAYER_WIDTH_HALF;
-    int maxY = position.y + PLAYER_HEIGHT + 1;
-    int maxZ = position.z + PLAYER_WIDTH_HALF;
-
-    for (int x = minX; x <= maxX; x++) {
-        for (int y = minY; y <= maxY; y++) {
-            for (int z = minZ; z <= maxZ; z++) {
-                collisionBlockID = worldManager->getBlock(x, y, z);
-                if (collisionBlockID != 0)
-                    return true;
-            }
-        }
-    }
-    return false;
-}
-
 bool Player::isOnGround() {
-    return true;
+    return onGround;
 }
 //https://github.com/ddevault/TrueCraft/wiki/Entity-Movement-And-Physics
 
@@ -72,6 +51,7 @@ bool Player::isOnGround() {
 //https://gist.github.com/aadnk/7123926
 //https://gamedev.stackexchange.com/questions/88298/aabb-swept-collision-response-with-voxel-world#88315
 //https://stackoverflow.com/questions/8978491/player-to-voxel-collision-detection-response
+
 void Player::calculateMove(double deltaTime) {
     if (!(shouldMoveForward && shouldMoveBackward)) {
         if (!shouldMoveForward && !shouldMoveBackward)
@@ -94,25 +74,63 @@ void Player::calculateMove(double deltaTime) {
 
     calculateMovement(moveStrafe, moveForward, 0.06);
 
-    //velocityY -= 0.08;
-    //velocityY *= 0.98;
+   //velocityY *= 0.98;
+
     // if(onGround){
-    velocityX *= 0.7;
-    velocityZ *= 0.7;
     // }else{
     //     velocityX *= 0.91;
     //     velocityZ *= 0.91;
     // }
 
 
-    velocityY *= 0.7;
     if (shouldMoveDown)
         velocityY -= 0.06;
     if (shouldMoveUp)
         velocityY += 0.06;
+
+   // velocityY -= 0.02;
+
+    velocityX *= 0.7;
+    velocityY *= 0.7;
+    velocityZ *= 0.7;
+
+    auto posBackup = position;
     position.x += velocityX * speed * deltaTime;
     position.y += velocityY * speed * deltaTime;
     position.z += velocityZ * speed * deltaTime;
+
+    position = posBackup;
+
+    int64_t minX = getBlockFromCamera(position.x - PLAYER_WIDTH_HALF);
+    int64_t maxX = getBlockFromCamera(position.x + PLAYER_WIDTH_HALF);
+    int64_t minY = getBlockFromCamera(position.y - PLAYER_Y_OFFSET);
+    int64_t maxY = getBlockFromCamera(position.y + PLAYER_HEIGHT_MINUS_Y_OFFSET);
+    int64_t minZ = getBlockFromCamera(position.z - PLAYER_WIDTH_HALF);
+    int64_t maxZ = getBlockFromCamera(position.z + PLAYER_WIDTH_HALF);
+
+    bool collisionX = false;
+    for (int64_t x = minX; x <= maxX; x++)
+        for (int64_t y = minY; y <= maxY; y++)
+            if(worldManager->getBlock(x, y, blockZ) != BLOCK_AIR)
+                collisionX = true;
+    bool collisionY = false;
+    for (int64_t x = minX; x <= maxX; x++)
+        for (int64_t y = minY; y <= maxY; y++)
+            for (int64_t z = minZ; z <= maxZ; z++)
+                if(worldManager->getBlock(x, y, z) != BLOCK_AIR)
+                    collisionY = true;
+    bool collisionZ = false;
+    for (int64_t z = minZ; z <= maxZ; z++)
+        for (int64_t y = minY; y <= maxY; y++)
+            if(worldManager->getBlock(blockX, y, z) != BLOCK_AIR)
+                collisionZ = true;
+
+   // if(!collisionX)
+        position.x += velocityX * speed * deltaTime;
+   // if(!collisionY)
+       position.y += velocityY * speed * deltaTime;
+   // if(!collisionZ)
+        position.z += velocityZ * speed * deltaTime;
 }
 
 void Player::traverseRay() {
@@ -164,6 +182,7 @@ void Player::traverseRay() {
             lookedBlockY--;
         else if (t == tz && direction.z < 0)
             lookedBlockZ--;
+
         lookedBlockID = worldManager->getBlock(lookedBlockX, lookedBlockY, lookedBlockZ);
         if (lookedBlockID != BLOCK_AIR) {
             lookedBlock.x = lookedBlockX;
