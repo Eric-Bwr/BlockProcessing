@@ -15,7 +15,7 @@
 
 class WorldManager {
 public:
-    void init(BlockManager* blockManager);
+    void init(BlockManager* blockManager, std::shared_ptr<WorldManager>* ptrToThis);
     void generate(const Coord& playerChunkCoord);
     Chunk* getChunkFromBlockCoords(int64_t x, int64_t y, int64_t z);
     Chunk* getChunkFromChunkCoords(int64_t x, int64_t y, int64_t z);
@@ -36,14 +36,12 @@ public:
 //    }
     inline ChunkManager* getChunkManager() { return &chunkManager; }
     ~WorldManager();
+    std::shared_ptr<WorldManager>* ptrToThis = nullptr;
     FastNoise* fastNoise;
     std::unordered_map<Coord, std::shared_ptr<Octree>, CoordHash, CoordCompare> octrees;
     std::vector<Coord> modifiedChunks;
     std::vector<OctreeNode*> chunkCandidatesForGenerating;
     Frustum frustum;
-    std::shared_ptr<AsyncLoader<OctreeNode*>> loader;
-    std::mutex octreeAccess;
-private:
     ChunkManager chunkManager;
     std::shared_ptr<WorldManager>* worldManager;
     int maxPendingJobs;

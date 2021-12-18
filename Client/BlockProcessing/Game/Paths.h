@@ -2,7 +2,15 @@
 
 #include "iostream"
 
-#define print(x) std::cout << x << "\n"
+#include <mutex>
+
+void print(std::string s){
+	static std::mutex m;
+	std::lock_guard<std::mutex> lock(m);
+
+	std::cout << s;
+	std::cout << std::endl;
+}
 
 #define FILE_OPTIONS "Client.properties"
 

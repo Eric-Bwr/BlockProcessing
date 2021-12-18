@@ -84,7 +84,7 @@ AsyncLoader<T>::AsyncLoader(int threads) {
 
 template<typename T>
 AsyncLoader<T>::~AsyncLoader() {
-    LOG<INFO_LVL>("Deleting Async loader...");
+    LOG<INFO_LVL>("Deleting Async loader....");
 	should_exit = true;
 	for (std::thread &thread : threads)
 		thread.join();
@@ -203,7 +203,7 @@ size_t ThreadSafeQueue<T>::push(T &&task) {
 	size_t s;
 	{
 		std::unique_lock < std::mutex > lock(queue_mutex);
-		queue.push(std::move(task));
+		queue.emplace(std::move(task));
 		s = queue.size();
 	}
 	queue_condition.notify_one();

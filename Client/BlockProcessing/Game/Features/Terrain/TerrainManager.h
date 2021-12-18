@@ -9,6 +9,7 @@
 #include "BlockProcessing/Game/Features/Terrain/Chunk/ChunkManager.h"
 #include "BlockProcessing/Game/Features/Terrain/World/WorldManager.h"
 #include "BlockProcessing/Game/Features/Terrain/World/AsyncLoader.h"
+#include <memory>
 
 class TerrainManager {
 public:
@@ -17,11 +18,11 @@ public:
     void render(Mat4d& projectionView, Mat4d& view);
     void setProjection(Mat4f& projection);
     void setLightPosition(double x, double y, double z);
-    inline WorldManager* getWorldManager() { return &worldManager; }
+    inline WorldManager* getWorldManager() { return worldManager.get(); }
     inline BlockManager* getBlockManager() { return &blockManager; }
     ~TerrainManager();
 private:
     Shader* shader;
     BlockManager blockManager;
-    WorldManager worldManager;
+    std::shared_ptr<WorldManager> worldManager = std::make_unique<WorldManager>();
 };

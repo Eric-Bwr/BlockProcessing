@@ -17,6 +17,8 @@ extern "C" void handleAborts(int signalNumber) {
 int main(){
     std::set_terminate(terminateHandler);
     signal(SIGSEGV, &handleAborts);
+
+
     signal(SIGTERM, &handleAborts);
     signal(SIGBREAK, &handleAborts);
     signal(SIGABRT, &handleAborts);

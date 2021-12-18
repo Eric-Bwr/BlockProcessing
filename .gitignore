@@ -3,7 +3,7 @@
 CMakeFiles/*
 Makefile
 cmake_install.cmake
-Client/Build/Client.exe
+Client/Build/*
 CMakeCache.txt
 Debug/*
 Release/*
