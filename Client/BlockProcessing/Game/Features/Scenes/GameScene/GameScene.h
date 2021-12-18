@@ -33,7 +33,7 @@ public:
     void onMouseButton(int button, int action, int mods) override;
     void onResize(bool show, int width, int height) override;
     int getID() override;
-    ~GameScene() override;
+    virtual ~GameScene() override;
 
     Player player;
     ChatInterface chatInterface;

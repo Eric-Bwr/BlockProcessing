@@ -3,8 +3,9 @@
 #include "iostream"
 
 #include <mutex>
+#include <string>
 
-void print(std::string s){
+inline void print(std::string s){
 	static std::mutex m;
 	std::lock_guard<std::mutex> lock(m);
 

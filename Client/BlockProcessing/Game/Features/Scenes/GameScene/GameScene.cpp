@@ -35,8 +35,8 @@ void GameScene::init() {
     commandManager.add(new CommandTP(player));
     commandManager.add(new CommandSpeed(player));
     commandManager.add(new CommandHelp());
-    player.position.y = ((terrainManager.getWorldManager()->fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * 200;
-    player.update();
+    //player.position.y = ((terrainManager.getWorldManager()->fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * 200;
+    //player.update();
 }
 
 void GameScene::load() {
@@ -279,4 +279,6 @@ int GameScene::getID() {
     return ID_GAME;
 }
 
-GameScene::~GameScene() = default;
+GameScene::~GameScene() {
+
+}

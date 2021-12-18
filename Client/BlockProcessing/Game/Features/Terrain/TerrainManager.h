@@ -24,5 +24,5 @@ public:
 private:
     Shader* shader;
     BlockManager blockManager;
-    std::shared_ptr<WorldManager> worldManager = std::make_unique<WorldManager>();
+    std::shared_ptr<WorldManager> worldManager = nullptr;//std::make_unique<WorldManager>();
 };

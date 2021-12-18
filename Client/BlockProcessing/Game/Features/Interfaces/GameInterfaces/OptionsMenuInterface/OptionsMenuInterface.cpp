@@ -74,7 +74,7 @@ void OptionsMenuInterface::init(GameMenuInterface *gameMenuInterface, GameScene 
             gameScenePtr->terrainManager.getWorldManager()->setChunkingRadius(int(value));
         }
     });
-    gameScenePtr->terrainManager.getWorldManager()->setChunkingRadius(optionsFileManager.getOptionInt(4));
+    //gameScenePtr->terrainManager.getWorldManager()->setChunkingRadius(optionsFileManager.getOptionInt(4));
     static auto chunksPerThread = addOptionSlider(5, -optionWidth - 50, -100, int(std::atoi(optionsFileManager.getOption(5).c_str())), 1, 50);
     chunksPerThread.slider->setCallback([](bool dragging, bool hovered, float value) {
         if (dragging) {
@@ -84,7 +84,7 @@ void OptionsMenuInterface::init(GameMenuInterface *gameMenuInterface, GameScene 
             gameScenePtr->terrainManager.getWorldManager()->setChunksPerThread(int(value));
         }
     });
-    gameScenePtr->terrainManager.getWorldManager()->setChunksPerThread(optionsFileManager.getOptionInt(5));
+    //gameScenePtr->terrainManager.getWorldManager()->setChunksPerThread(optionsFileManager.getOptionInt(5));
 }
 
 void OptionsMenuInterface::load() {

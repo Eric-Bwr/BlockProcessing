@@ -53,11 +53,11 @@ Block *BlockManager::getBlockByID(int id) {
 }
 
 BlockManager::~BlockManager() {
-    for (auto block : blocks)
-        delete block.second;
-    blocks.clear();
-    delete texture;
-    for(auto texture : textures)
-        delete texture;
-    textures.clear();
+//    for (auto block : blocks)
+//        delete block.second;
+//    blocks.clear();
+//    delete texture;
+//    for(auto texture : textures)
+//        delete texture;
+//    textures.clear();
 }

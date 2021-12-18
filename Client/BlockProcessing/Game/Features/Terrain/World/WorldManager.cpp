@@ -3,7 +3,7 @@
 #include <condition_variable>
 #include <algorithm>
 
-static AsyncLoader<OctreeNode*> loader = AsyncLoader<OctreeNode*>(1);
+static AsyncLoader<OctreeNode*>* loader = nullptr;// = new AsyncLoader<OctreeNode*>(1);
 static std::mutex octreeAccess;
 
 
@@ -17,25 +17,6 @@ struct ChunkGen{
 	}
 	~ChunkGen(){
 		print("ChunkGen destructor called " + std::to_string(index));
-	}
-	ChunkGen(const ChunkGen&) = delete;
-	ChunkGen& operator=(const ChunkGen&) = delete;
-
-	ChunkGen(ChunkGen&& other) noexcept{
-		ptr = std::move(other.ptr);
-		candidate = other.candidate;
-		index = other.index;
-		other.index = -other.index;
-		print("ChunkGen move constructor called " + std::to_string(index));
-	}
-
-	ChunkGen& operator=(ChunkGen&& other) noexcept{
-		ptr = std::move(other.ptr);
-		candidate = other.candidate;
-		index = other.index;
-		other.index = -other.index;
-		print("ChunkGen move assign called " + std::to_string(index));
-		return *this;
 	}
 
 	OctreeNode* operator()() const{
@@ -52,32 +33,11 @@ struct OctreeGen{
 	Coord playerChunkCoord;
 	int idlingGenerators;
 	int index;
-	OctreeGen(const std::shared_ptr<WorldManager>& ptr, Coord playerChunkCoord, int idlingGenerators) : ptr(ptr), playerChunkCoord(playerChunkCoord), idlingGenerators(idlingGenerators), index(totalCount++){
+	OctreeGen(const std::shared_ptr<WorldManager>& ptr, Coord playerChunkCoord, int idlingGenerators) : ptr(ptr), playerChunkCoord(playerChunkCoord), idlingGenerators(idlingGenerators), index(totalCount++) {
 		print("OctreeGen constructor called " + std::to_string(index));
 	}
 	~OctreeGen(){
 		print("OctreeGen destructor called " + std::to_string(index));
-	}
-	OctreeGen(const OctreeGen&) = delete;
-	OctreeGen& operator=(const OctreeGen&) = delete;
-
-	OctreeGen(OctreeGen&& other) noexcept {
-		ptr = std::move(other.ptr);
-		playerChunkCoord = other.playerChunkCoord;
-		idlingGenerators = other.idlingGenerators;
-		index = other.index;
-		other.index = -other.index;
-		print("OctreeGen move constructor called " + std::to_string(index));
-	}
-
-	OctreeGen& operator=(OctreeGen&& other) noexcept{
-		ptr = std::move(other.ptr);
-		playerChunkCoord = other.playerChunkCoord;
-		idlingGenerators = other.idlingGenerators;
-		index = other.index;
-		other.index = -other.index;
-		print("OctreeGen move assign called " + std::to_string(index));
-		return *this;
 	}
 
  void operator()() const{
@@ -136,10 +96,7 @@ struct OctreeGen{
 		for (auto candidate : ptr->chunkCandidatesForGenerating) {
 			candidate->chunk->generating = true;
 
-			ChunkGen gen(ptr, candidate);
-			loader.scheduleTask([gen=std::move(gen)]() mutable {
-				return gen();
-			});
+			loader->scheduleTask(std::move(ChunkGen(ptr, candidate)));
 		}
 		ptr->finishedUpdatingOctree = true;
 	}
@@ -150,13 +107,18 @@ std::atomic_int OctreeGen::totalCount = 0;
 void WorldManager::init(BlockManager *blockManager, std::shared_ptr<WorldManager>* ptrToThis) {
 	chunkManager.init(blockManager, this);
 	this->ptrToThis = ptrToThis;
+
+	print("WorldManager::init");
 }
 
 void WorldManager::generate(const Coord &playerChunkCoord) {
+
+	print("WorldManager::generate");
+
 	bool success = true;
 	while (success) {
 		OctreeNode *result = nullptr;
-		loader.getResult(result, std::chrono::milliseconds(0), success);
+		loader->getResult(result, std::chrono::milliseconds(0), success);
 		if (success) {
 			if (result->chunk->init)
 				chunkManager.initChunk(result->chunk);
@@ -176,7 +138,7 @@ void WorldManager::generate(const Coord &playerChunkCoord) {
 			octrees.erase(it);
 	}
 
-	int idlingGenerators = maxPendingJobs - loader.getItemsCount();
+	int idlingGenerators = maxPendingJobs - loader->getItemsCount();
 	if (idlingGenerators <= 0)
 		return;
 
@@ -185,11 +147,7 @@ void WorldManager::generate(const Coord &playerChunkCoord) {
 
 	finishedUpdatingOctree = false;
 
-	OctreeGen gen(*ptrToThis, playerChunkCoord, idlingGenerators);
-
-	loader.exec([gen=std::move(gen)]() mutable {
-		return gen();
-	});
+	loader->exec(std::move(OctreeGen(*ptrToThis, playerChunkCoord, idlingGenerators)));
 }
 
 Chunk* WorldManager::getChunkFromBlockCoords(int64_t x, int64_t y, int64_t z) {
@@ -317,6 +275,7 @@ void WorldManager::render(Mat4d &projectionView, Mat4d &view) {
 }
 
 WorldManager::~WorldManager() {
+	print("WorldManager::~WorldManager");
 	std::lock_guard<std::mutex> lock(octreeAccess);
 	octrees.clear();
 	delete fastNoise;

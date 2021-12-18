@@ -5,13 +5,13 @@ void TerrainManager::init(int seed, FastNoise::NoiseType noiseType, float freque
     shader = new Shader(SHADER_TERRAIN);
     shader->addUniforms({"projection", "viewModel", "intensity", "gradient", "image", "lightPos", "viewPos", "blinn", "skyColor"});
     blockManager.init();
-    worldManager->fastNoise = new FastNoise;
-    worldManager->fastNoise->SetNoiseType(noiseType);
-    worldManager->fastNoise->SetSeed(seed);
-    worldManager->fastNoise->SetFrequency(frequency);
-    worldManager->fastNoise->SetFractalOctaves(octaves);
-    worldManager->getChunkManager()->setShader(shader);
-    worldManager->init(&blockManager, &worldManager);
+//    worldManager->fastNoise = new FastNoise;
+//    worldManager->fastNoise->SetNoiseType(noiseType);
+//    worldManager->fastNoise->SetSeed(seed);
+//    worldManager->fastNoise->SetFrequency(frequency);
+//    worldManager->fastNoise->SetFractalOctaves(octaves);
+//    worldManager->getChunkManager()->setShader(shader);
+//    worldManager->init(&blockManager, &worldManager);
     LOG(shader->getErrorMessage());
 }
 
@@ -37,5 +37,8 @@ void TerrainManager::setLightPosition(double x, double y, double z) {
 }
 
 TerrainManager::~TerrainManager() {
-    delete shader;
+	worldManager.reset();
+
+	//shader->unbind();
+    //delete shader;
 }

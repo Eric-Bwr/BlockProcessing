@@ -108,22 +108,22 @@ void Player::calculateMove(double deltaTime) {
     int64_t minZ = getBlockFromCamera(position.z - PLAYER_WIDTH_HALF);
     int64_t maxZ = getBlockFromCamera(position.z + PLAYER_WIDTH_HALF);
 
-    bool collisionX = false;
-    for (int64_t x = minX; x <= maxX; x++)
-        for (int64_t y = minY; y <= maxY; y++)
-            if(worldManager->getBlock(x, y, blockZ) != BLOCK_AIR)
-                collisionX = true;
-    bool collisionY = false;
-    for (int64_t x = minX; x <= maxX; x++)
-        for (int64_t y = minY; y <= maxY; y++)
-            for (int64_t z = minZ; z <= maxZ; z++)
-                if(worldManager->getBlock(x, y, z) != BLOCK_AIR)
-                    collisionY = true;
-    bool collisionZ = false;
-    for (int64_t z = minZ; z <= maxZ; z++)
-        for (int64_t y = minY; y <= maxY; y++)
-            if(worldManager->getBlock(blockX, y, z) != BLOCK_AIR)
-                collisionZ = true;
+//    bool collisionX = false;
+//    for (int64_t x = minX; x <= maxX; x++)
+//        for (int64_t y = minY; y <= maxY; y++)
+//            if(worldManager->getBlock(x, y, blockZ) != BLOCK_AIR)
+//                collisionX = true;
+//    bool collisionY = false;
+//    for (int64_t x = minX; x <= maxX; x++)
+//        for (int64_t y = minY; y <= maxY; y++)
+//            for (int64_t z = minZ; z <= maxZ; z++)
+//                if(worldManager->getBlock(x, y, z) != BLOCK_AIR)
+//                    collisionY = true;
+//    bool collisionZ = false;
+//    for (int64_t z = minZ; z <= maxZ; z++)
+//        for (int64_t y = minY; y <= maxY; y++)
+//            if(worldManager->getBlock(blockX, y, z) != BLOCK_AIR)
+//                collisionZ = true;
 
    // if(!collisionX)
         position.x += velocityX * speed * deltaTime;
