@@ -2,20 +2,21 @@
 #include "BlockProcessing/Game/BlockProcessing.h"
 
 void ServerMenuScene::init() {
-    blockProcessing->interfaceManager.add(&serverMenuInterface);
-    serverMenuInterface.init(sceneManager);
+    serverMenuInterface = new ServerMenuInterface();
+    blockProcessing->interfaceManager->add(serverMenuInterface);
+    serverMenuInterface->init(sceneManager);
 }
 
 void ServerMenuScene::load() {
-    serverMenuInterface.load();
+    serverMenuInterface->load();
 }
 
 void ServerMenuScene::unload() {
-    serverMenuInterface.unload();
+    serverMenuInterface->unload();
 }
 
 void ServerMenuScene::update(double frameDeltaTime) {
-    serverMenuInterface.update(frameDeltaTime);
+    serverMenuInterface->update(frameDeltaTime);
 }
 
 void ServerMenuScene::render(double frameDeltaTime) {
@@ -25,9 +26,9 @@ void ServerMenuScene::render(double frameDeltaTime) {
 void ServerMenuScene::onResize(bool show, int width, int height) {
     if(sceneManager->currentScene != this) {
         if (show)
-            serverMenuInterface.load();
+            serverMenuInterface->load();
         else
-            serverMenuInterface.unload();
+            serverMenuInterface->unload();
     }
 }
 

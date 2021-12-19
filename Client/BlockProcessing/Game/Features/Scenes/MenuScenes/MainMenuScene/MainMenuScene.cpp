@@ -2,8 +2,9 @@
 #include "BlockProcessing/Game/BlockProcessing.h"
 
 void MainMenuScene::init() {
-    blockProcessing->interfaceManager.add(&mainMenuInterface);
-    mainMenuInterface.init(sceneManager);
+    mainMenuInterface = new MainMenuInterface();
+    blockProcessing->interfaceManager->add(mainMenuInterface);
+    mainMenuInterface->init(sceneManager);
     view = identityMatrix();
     front.z = -1;
     worldUp.y = 1;
@@ -12,21 +13,21 @@ void MainMenuScene::init() {
 
 void MainMenuScene::load() {
     glfwSwapInterval(1);
-    mainMenuInterface.load();
-    blockProcessing->postProcessManager.gaussianBlur(2.25);
+    mainMenuInterface->load();
+    blockProcessing->postProcessManager->gaussianBlur(2.25);
     rotation = 0.0f;
     bobbing = 0.0f;
     front.z = -1;
     view.identity();
-    blockProcessing->skyBoxManager.set(&skyBox);
+    blockProcessing->skyBoxManager->set(&skyBox);
 }
 
 void MainMenuScene::unload() {
-    if(!((GameScene*)sceneManager->getScene(ID_GAME))->optionsMenuInterface.shouldVsync)
+    if(!blockProcessing->gameScene->optionsMenuInterface->shouldVsync)
         glfwSwapInterval(0);
-    mainMenuInterface.unload();
-    blockProcessing->postProcessManager.gaussianBlur(0.0f);
-    blockProcessing->skyBoxManager.set(nullptr);
+    mainMenuInterface->unload();
+    blockProcessing->postProcessManager->gaussianBlur(0.0f);
+    blockProcessing->skyBoxManager->set(nullptr);
 }
 
 void MainMenuScene::update(double frameDeltaTime) {
@@ -42,18 +43,18 @@ void MainMenuScene::update(double frameDeltaTime) {
 }
 
 void MainMenuScene::render(double frameDeltaTime) {
-    blockProcessing->postProcessManager.bind();
+    blockProcessing->postProcessManager->bind();
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    blockProcessing->skyBoxManager.render(view);
-    blockProcessing->postProcessManager.process();
+    blockProcessing->skyBoxManager->render(view);
+    blockProcessing->postProcessManager->process();
 }
 
 void MainMenuScene::onResize(bool show, int width, int height) {
     if(sceneManager->currentScene != this) {
         if (show)
-            mainMenuInterface.load();
+            mainMenuInterface->load();
         else
-            mainMenuInterface.unload();
+            mainMenuInterface->unload();
     }
 }
 

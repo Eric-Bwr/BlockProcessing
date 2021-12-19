@@ -304,7 +304,7 @@ FT_BEGIN_HEADER
    *     open_args.flags      = FT_OPEN_PATHNAME | FT_OPEN_PARAMS;
    *     open_args.pathname   = my_font_pathname;
    *     open_args.num_params = 1;
-   *     open_args.params     = &parameter; // we use one optional argument
+   *     open_args.parameters     = &parameter; // we use one optional argument
    *
    *     // open the font
    *     error = FT_Open_Face( library, &open_args, index, &face );

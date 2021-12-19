@@ -13,5 +13,5 @@ public:
     virtual void execute(const std::string& typed, int length, const std::vector<std::string>& arguments) {}
     CommandManager* commandManager;
     ChatInterface* chatInterface;
-    char* prefix = "";
+    const char* prefix = "";
 };

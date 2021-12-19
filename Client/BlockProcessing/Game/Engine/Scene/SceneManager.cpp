@@ -7,25 +7,25 @@ void SceneManager::init(BlockProcessing *blockProcessing) {
 }
 
 void SceneManager::setCurrent(int id) {
-    blockProcessing->interfaceManager.UI.mousePositionInput(blockProcessing->interfaceManager.UI.mouseX, blockProcessing->interfaceManager.UI.mouseY);
-    blockProcessing->interfaceManager.UI.mouseButtonInput(0, RELEASE);
+    blockProcessing->interfaceManager->UI.mousePositionInput(blockProcessing->interfaceManager->UI.mouseX, blockProcessing->interfaceManager->UI.mouseY);
+    blockProcessing->interfaceManager->UI.mouseButtonInput(0, RELEASE);
     if (currentScene != nullptr)
         currentScene->unload();
     currentScene = getScene(id);
     currentScene->load();
-    blockProcessing->interfaceManager.UI.mousePositionInput(blockProcessing->interfaceManager.UI.mouseX, blockProcessing->interfaceManager.UI.mouseY);
-    blockProcessing->interfaceManager.UI.mouseButtonInput(0, RELEASE);
+    blockProcessing->interfaceManager->UI.mousePositionInput(blockProcessing->interfaceManager->UI.mouseX, blockProcessing->interfaceManager->UI.mouseY);
+    blockProcessing->interfaceManager->UI.mouseButtonInput(0, RELEASE);
 }
 
 void SceneManager::setCurrent(Scene *scene) {
-    blockProcessing->interfaceManager.UI.mousePositionInput(blockProcessing->interfaceManager.UI.mouseX, blockProcessing->interfaceManager.UI.mouseY);
-    blockProcessing->interfaceManager.UI.mouseButtonInput(0, RELEASE);
+    blockProcessing->interfaceManager->UI.mousePositionInput(blockProcessing->interfaceManager->UI.mouseX, blockProcessing->interfaceManager->UI.mouseY);
+    blockProcessing->interfaceManager->UI.mouseButtonInput(0, RELEASE);
     if (currentScene != nullptr)
         currentScene->unload();
     currentScene = scene;
     currentScene->load();
-    blockProcessing->interfaceManager.UI.mousePositionInput(blockProcessing->interfaceManager.UI.mouseX, blockProcessing->interfaceManager.UI.mouseY);
-    blockProcessing->interfaceManager.UI.mouseButtonInput(0, RELEASE);
+    blockProcessing->interfaceManager->UI.mousePositionInput(blockProcessing->interfaceManager->UI.mouseX, blockProcessing->interfaceManager->UI.mouseY);
+    blockProcessing->interfaceManager->UI.mouseButtonInput(0, RELEASE);
 }
 
 void SceneManager::add(Scene *scene) {

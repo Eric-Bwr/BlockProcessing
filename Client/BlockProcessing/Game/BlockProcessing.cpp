@@ -13,32 +13,44 @@ void BlockProcessing::init(GLFWwindow* window, int width, int height) {
 
     projection.perspective(110, width, height, 0.1f, 20000.0f);
 
-    skyBoxManager.init();
-    skyBoxManager.setProjection(projection);
+    skyBoxManager = new SkyBoxManager();
+    interfaceManager = new InterfaceManager();
+    postProcessManager = new PostProcessManager();
+    networkManager = new NetworkManager();
+    sceneManager = new SceneManager();
+    mainMenuScene = new MainMenuScene();
+    gameScene = new GameScene();
+    serverMenuScene = new ServerMenuScene();
 
-    interfaceManager.init(width, height);
-
-    postProcessManager.init(width, height);
-
-    networkManager.init();
-
-    sceneManager.init(this);
-    sceneManager.add(&mainMenuScene);
-    sceneManager.add(&gameScene);
-    sceneManager.add(&serverMenuScene);
-    sceneManager.setCurrent(&mainMenuScene);
+    skyBoxManager->init();
+    skyBoxManager->setProjection(projection);
+    interfaceManager->init(width, height);
+    postProcessManager->init(width, height);
+    networkManager->init();
+    sceneManager->init(this);
+    sceneManager->add(mainMenuScene);
+    sceneManager->add(gameScene);
+    sceneManager->add(serverMenuScene);
+    sceneManager->setCurrent(mainMenuScene);
 }
 
 void BlockProcessing::update(double frameDeltaTime) {
-    postProcessManager.setTime(glfwGetTime());
-    sceneManager.update(frameDeltaTime);
+    postProcessManager->setTime(glfwGetTime());
+    sceneManager->update(frameDeltaTime);
 }
 
 void BlockProcessing::render(double frameDeltaTime) {
     glEnable(GL_CULL_FACE);
     glEnable(GL_DEPTH_TEST);
-    sceneManager.render(frameDeltaTime);
+    sceneManager->render(frameDeltaTime);
     glDisable(GL_CULL_FACE);
     glDisable(GL_DEPTH_TEST);
-    interfaceManager.render();
+    interfaceManager->render();
+}
+
+BlockProcessing::~BlockProcessing() {
+    delete skyBoxManager;
+    delete interfaceManager;
+    delete postProcessManager;
+    delete sceneManager;
 }

@@ -1994,7 +1994,7 @@ FT_BEGIN_HEADER
    *     Use the `driver` field.
    *
    *   FT_OPEN_PARAMS ::
-   *     Use the `num_params` and `params` fields.
+   *     Use the `num_params` and `parameters` fields.
    *
    * @note:
    *   The `FT_OPEN_MEMORY`, `FT_OPEN_STREAM`, and `FT_OPEN_PATHNAME` flags
@@ -2080,7 +2080,7 @@ FT_BEGIN_HEADER
    *   num_params ::
    *     The number of extra parameters.
    *
-   *   params ::
+   *   parameters ::
    *     Extra parameters passed to the font driver when opening a new face.
    *
    * @note:
@@ -2102,9 +2102,9 @@ FT_BEGIN_HEADER
    *   the file with the driver whose handler is in `driver`.
    *
    *   If the @FT_OPEN_PARAMS bit is set, the parameters given by
-   *   `num_params` and `params` is used.  They are ignored otherwise.
+   *   `num_params` and `parameters` is used.  They are ignored otherwise.
    *
-   *   Ideally, both the `pathname` and `params` fields should be tagged as
+   *   Ideally, both the `pathname` and `parameters` fields should be tagged as
    *   'const'; this is missing for API backward compatibility.  In other
    *   words, applications should treat them as read-only.
    */

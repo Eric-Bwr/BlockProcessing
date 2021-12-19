@@ -5,7 +5,7 @@
 static CommandManager* command;
 static std::string input;
 
-CommandTP::CommandTP(Player& player) : player(player){
+CommandTP::CommandTP(Player* player) : player(player){
     prefix = "tp";
 }
 
@@ -19,10 +19,10 @@ void CommandTP::execute(const std::string& typed, int length, const std::vector<
         auto y = arguments.at(1);
         auto z = arguments.at(2);
         if(isNumber(x) && isNumber(y) && isNumber(z)) {
-            player.position.x = std::stof(x);
-            player.position.y = std::stof(y);
-            player.position.z = std::stof(z);
-            player.update();
+            player->position.x = std::stof(x);
+            player->position.y = std::stof(y);
+            player->position.z = std::stof(z);
+            player->update();
             std::string print = MESSAGES_SUCCESS_TP;
             print += " to " + arguments.at(0) + " " + arguments.at(1) + " " + arguments.at(2);
             auto chatComponent = new ChatComponent(print, MESSAGES_SUCCESS_COLOR);

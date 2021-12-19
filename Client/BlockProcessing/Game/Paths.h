@@ -5,7 +5,7 @@
 #include <mutex>
 #include <string>
 
-inline void print(std::string s){
+inline void print(auto s){
 	static std::mutex m;
 	std::lock_guard<std::mutex> lock(m);
 

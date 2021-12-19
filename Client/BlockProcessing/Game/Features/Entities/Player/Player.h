@@ -13,6 +13,7 @@ public:
     void init(WorldManager* worldManager, double x, double y, double z, float yaw, float pitch);
     void render(Mat4d& view);
     void setProjection(Mat4f& projection);
+    void updatePlayerPosition(double deltaTime = 0.0f);
     void update(double deltaTime = 0.0);
     void dig();
     void place();

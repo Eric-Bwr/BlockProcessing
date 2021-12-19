@@ -18,17 +18,21 @@ void Player::setProjection(Mat4f &projection) {
     playerBlockOutline.setProjection(projection);
 }
 
-void Player::update(double deltaTime) {
+void Player::updatePlayerPosition(double deltaTime) {
     calculateMove(deltaTime);
-    block.x = blockX = getBlockFromCamera(position.x);
-    block.y = blockY = getBlockFromCamera(position.y);
-    block.z = blockZ = getBlockFromCamera(position.z);
-    chunk.x = chunkX = getChunkFromBlock(blockX);
-    chunk.y = chunkY = getChunkFromBlock(blockY);
-    chunk.z = chunkZ = getChunkFromBlock(blockZ);
-    octree.x = octreeX = getOctreeFromChunk(chunkX);
-    octree.y = octreeY = getOctreeFromChunk(chunkY);
-    octree.z = octreeZ = getOctreeFromChunk(chunkZ);
+    block.x = blockX = Coord::getBlockFromCamera(position.x);
+    block.y = blockY = Coord::getBlockFromCamera(position.y);
+    block.z = blockZ = Coord::getBlockFromCamera(position.z);
+    chunk.x = chunkX = Coord::getChunkFromBlock(blockX);
+    chunk.y = chunkY = Coord::getChunkFromBlock(blockY);
+    chunk.z = chunkZ = Coord::getChunkFromBlock(blockZ);
+    octree.x = octreeX = Coord::getOctreeFromChunk(chunkX);
+    octree.y = octreeY = Coord::getOctreeFromChunk(chunkY);
+    octree.z = octreeZ = Coord::getOctreeFromChunk(chunkZ);
+}
+
+void Player::update(double deltaTime) {
+    updatePlayerPosition(deltaTime);
     traverseRay();
 }
 
@@ -101,29 +105,29 @@ void Player::calculateMove(double deltaTime) {
 
     position = posBackup;
 
-    int64_t minX = getBlockFromCamera(position.x - PLAYER_WIDTH_HALF);
-    int64_t maxX = getBlockFromCamera(position.x + PLAYER_WIDTH_HALF);
-    int64_t minY = getBlockFromCamera(position.y - PLAYER_Y_OFFSET);
-    int64_t maxY = getBlockFromCamera(position.y + PLAYER_HEIGHT_MINUS_Y_OFFSET);
-    int64_t minZ = getBlockFromCamera(position.z - PLAYER_WIDTH_HALF);
-    int64_t maxZ = getBlockFromCamera(position.z + PLAYER_WIDTH_HALF);
+    int64_t minX = Coord::getBlockFromCamera(position.x - PLAYER_WIDTH_HALF);
+    int64_t maxX = Coord::getBlockFromCamera(position.x + PLAYER_WIDTH_HALF);
+    int64_t minY = Coord::getBlockFromCamera(position.y - PLAYER_Y_OFFSET);
+    int64_t maxY = Coord::getBlockFromCamera(position.y + PLAYER_HEIGHT_MINUS_Y_OFFSET);
+    int64_t minZ = Coord::getBlockFromCamera(position.z - PLAYER_WIDTH_HALF);
+    int64_t maxZ = Coord::getBlockFromCamera(position.z + PLAYER_WIDTH_HALF);
 
-//    bool collisionX = false;
-//    for (int64_t x = minX; x <= maxX; x++)
-//        for (int64_t y = minY; y <= maxY; y++)
-//            if(worldManager->getBlock(x, y, blockZ) != BLOCK_AIR)
-//                collisionX = true;
-//    bool collisionY = false;
-//    for (int64_t x = minX; x <= maxX; x++)
-//        for (int64_t y = minY; y <= maxY; y++)
-//            for (int64_t z = minZ; z <= maxZ; z++)
-//                if(worldManager->getBlock(x, y, z) != BLOCK_AIR)
-//                    collisionY = true;
-//    bool collisionZ = false;
-//    for (int64_t z = minZ; z <= maxZ; z++)
-//        for (int64_t y = minY; y <= maxY; y++)
-//            if(worldManager->getBlock(blockX, y, z) != BLOCK_AIR)
-//                collisionZ = true;
+    bool collisionX = false;
+    for (int64_t x = minX; x <= maxX; x++)
+        for (int64_t y = minY; y <= maxY; y++)
+            if(worldManager->getBlock(x, y, blockZ) != BLOCK_AIR)
+                collisionX = true;
+    bool collisionY = false;
+    for (int64_t x = minX; x <= maxX; x++)
+        for (int64_t y = minY; y <= maxY; y++)
+            for (int64_t z = minZ; z <= maxZ; z++)
+                if(worldManager->getBlock(x, y, z) != BLOCK_AIR)
+                    collisionY = true;
+    bool collisionZ = false;
+    for (int64_t z = minZ; z <= maxZ; z++)
+        for (int64_t y = minY; y <= maxY; y++)
+            if(worldManager->getBlock(blockX, y, z) != BLOCK_AIR)
+                collisionZ = true;
 
    // if(!collisionX)
         position.x += velocityX * speed * deltaTime;

@@ -16,8 +16,6 @@
 #include "BlockProcessing/Game/Features/Commands/CommandSpeed/CommandSpeed.h"
 #include "BlockProcessing/Game/Features/Commands/CommandHelp/CommandHelp.h"
 
-class OptionsMenuInterface;
-
 struct GLFWwindow;
 
 class GameScene : public Scene {
@@ -33,22 +31,21 @@ public:
     void onMouseButton(int button, int action, int mods) override;
     void onResize(bool show, int width, int height) override;
     int getID() override;
-    virtual ~GameScene() override;
+    ~GameScene() override;
 
-    Player player;
-    ChatInterface chatInterface;
-    CommandManager commandManager;
-    DebugInterface debugInterface;
-    CrosshairInterface crosshairInterface;
-    GameMenuInterface gameMenuInterface;
+    Player* player;
+    ChatInterface* chatInterface;
+    CommandManager* commandManager;
+    DebugInterface* debugInterface;
+    CrosshairInterface* crosshairInterface;
+    GameMenuInterface* gameMenuInterface;
+    OptionsMenuInterface* optionsMenuInterface;
 
-    ChunkBorderVisualizer chunkBorderVisualizer;
-    LinePointVisualizer linePointVisualizer;
-    OctreeVisualizer octreeVisualizer;
+    ChunkBorderVisualizer* chunkBorderVisualizer;
+    LinePointVisualizer* linePointVisualizer;
+    OctreeVisualizer* octreeVisualizer;
 
-    TerrainManager terrainManager;
-
-    OptionsMenuInterface optionsMenuInterface;
+    TerrainManager* terrainManager;
 
     GLFWwindow* window;
     Mat4d view;

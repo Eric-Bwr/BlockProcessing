@@ -9,7 +9,7 @@ public:
     void init(SceneManager* sceneManager);
     void load();
     void unload();
-    ~MainMenuInterface();
+    ~MainMenuInterface() override;
     bool alive = true;
 private:
     UIButton* playButton;

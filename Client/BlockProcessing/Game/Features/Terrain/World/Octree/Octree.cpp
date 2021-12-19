@@ -1,13 +1,11 @@
 #include "Octree.h"
 #include "BlockProcessing/Game/BlockProcessing.h"
 
-OctreeNode::OctreeNode(Frustum *frustum, ChunkManager *chunkManager, int level, int scaling, const Coord &coord, std::vector<OctreeNode> &nodes, std::vector<Chunk> &chunks, int current_nodes_index, int &chunk_index) {
-    this->chunkManager = chunkManager;
+OctreeNode::OctreeNode(int level, int scaling, const Coord &coord, std::vector<OctreeNode> &nodes, std::vector<Chunk> &chunks, int current_nodes_index, int &chunk_index) {
     this->alreadyConstructed = true;
     this->coord = coord;
     this->level = level;
     this->scaling = scaling;
-    this->frustum = frustum;
     int64_t offsetX, offsetY, offsetZ;
     center = Coord{coord.x + scaling / 2, coord.y + scaling / 2, coord.z + scaling / 2};
     if (level == 0) {
@@ -26,7 +24,7 @@ OctreeNode::OctreeNode(Frustum *frustum, ChunkManager *chunkManager, int level, 
 
             int child_nodes_index = 8 * current_nodes_index + i + 1;
 
-            OctreeNode node = OctreeNode(frustum, chunkManager, level - 1, scaling / 2, childCoord, nodes, chunks, child_nodes_index, chunk_index);
+            OctreeNode node = OctreeNode(level - 1, scaling / 2, childCoord, nodes, chunks, child_nodes_index, chunk_index);
             nodes[child_nodes_index] = std::move(node);
             children[i] = &nodes[child_nodes_index];
         }
@@ -34,7 +32,6 @@ OctreeNode::OctreeNode(Frustum *frustum, ChunkManager *chunkManager, int level, 
 }
 
 OctreeNode &OctreeNode::operator=(OctreeNode &&other) {
-    this->chunkManager = other.chunkManager;
     this->alreadyConstructed = other.alreadyConstructed;
     this->coord = other.coord;
     this->level = other.level;
@@ -42,25 +39,22 @@ OctreeNode &OctreeNode::operator=(OctreeNode &&other) {
     this->center = other.center;
     this->chunk = other.chunk;
     this->children = other.children;
-    this->frustum = other.frustum;
     if (level != 0) {
         for (auto child : children)
             child->parent = this;
     }
-    other.frustum = nullptr;
-    other.chunkManager = nullptr;
     other.chunk = nullptr;
     return *this;
 }
 
-void OctreeNode::render() {
+void OctreeNode::render(Frustum* frustum, ChunkManager* chunkManager) {
     if (emptyChildren != ALL_ONES_FLAG) {
         if (frustum->isInside(center, scaling * OCTREE_FRUSTUM_CULLING)) {
             if (level == 0)
                 chunkManager->renderChunk(chunk);
             else {
                 for (auto child : children)
-                    child->render();
+                    child->render(frustum, chunkManager);
             }
         }
     }
@@ -135,7 +129,7 @@ void OctreeNode::getClosestUnloadedChunks(std::vector<OctreeNode*> &candidates, 
     }
 }
 
-void OctreeNode::deleteFurthestLoadedChunks(const Coord &playerChunkCoord) {
+void OctreeNode::deleteFurthestLoadedChunks(const Coord &playerChunkCoord, ChunkManager* chunkManager) {
     if (emptyChildren == ALL_ONES_FLAG)
         return;
     if (level == 0) {
@@ -153,7 +147,7 @@ void OctreeNode::deleteFurthestLoadedChunks(const Coord &playerChunkCoord) {
                 auto furthestChunk = child->furthestContainedChunk(playerChunkCoord);
                 auto d2 = Coord::distanceSquared(furthestChunk, playerChunkCoord);
                 if (d2 >= chunkingDeletionRadiusSquared) {
-                    child->deleteFurthestLoadedChunks(playerChunkCoord);
+                    child->deleteFurthestLoadedChunks(playerChunkCoord, chunkManager);
                 }
             }
         }

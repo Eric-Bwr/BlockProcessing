@@ -54,6 +54,7 @@ void PostProcessManager::init(int width, int height) {
     layout.pushFloat(2),
     vbo.init(vertices, layout.getStride() * 4, GL_STATIC_DRAW);
     vao.addBuffer(vbo, layout);
+    frameBuffer->finish();
     frameBuffer->unbind();
 }
 
@@ -189,11 +190,7 @@ std::string PostProcessManager::getErrorMessage() {
 
 PostProcessManager::~PostProcessManager() {
     delete frameBuffer;
-    delete renderBuffer;
     delete shader;
     delete blurVerticalShader;
     delete blurHorizontalShader;
-    delete colorBuffer;
-    delete blurVColorBuffer;
-    delete blurHColorBuffer;
 }

@@ -1,17 +1,16 @@
 #include "OptionsMenuInterface.h"
 #include "BlockProcessing/Game/BlockProcessing.h"
 
+static Parameters *parametersPtr;
 static OptionsMenuInterface *optionsMenuInterfacePtr;
 static GameMenuInterface *gameMenuInterfacePtr;
 static GameScene *gameScenePtr;
-static OptionsFileManager *optionsFileManagerPtr;
 
 void OptionsMenuInterface::init(GameMenuInterface *gameMenuInterface, GameScene *gameScene) {
-    optionsFileManager.init();
     optionsMenuInterfacePtr = this;
+    parametersPtr = &parameters;
     gameMenuInterfacePtr = gameMenuInterface;
     gameScenePtr = gameScene;
-    optionsFileManagerPtr = &optionsFileManager;
     titleText = new UIText("Options", font, 60, 0, 120, width, 100, UITextMode::CENTERED);
     background = new UIImage(0, 0, width, height);
     background->setTexture(nullptr);
@@ -30,7 +29,8 @@ void OptionsMenuInterface::init(GameMenuInterface *gameMenuInterface, GameScene 
         }
     });
     static auto shouldVsyncPtr = &shouldVsync;
-    static auto vsync = addOptionButton("V-Sync", 1, -optionWidth - 50, -250);
+    parameters.getBool("Rendering#V-Sync", false);
+    static auto vsync = addOptionButton("V-Sync", "Rendering#V-Sync", false, -optionWidth - 50, -250);
     shouldVsync = vsync->text.text == "V-Sync: ON";
     if (shouldVsync)
         glfwSwapInterval(1);
@@ -42,16 +42,16 @@ void OptionsMenuInterface::init(GameMenuInterface *gameMenuInterface, GameScene 
                 *shouldVsyncPtr = false;
                 vsync->setText("V-Sync: OFF");
                 glfwSwapInterval(0);
-                optionsFileManagerPtr->setOption("0", 1);
+                parametersPtr->getBool("Rendering#V-Sync", false) = false;
             } else {
                 *shouldVsyncPtr = true;
                 vsync->setText("V-Sync: ON");
                 glfwSwapInterval(1);
-                optionsFileManagerPtr->setOption("1", 1);
+                parametersPtr->getBool("Rendering#V-Sync", false) = true;
             }
         }
     });
-    static auto fov = addOptionSlider(2, 50, -250, int(std::atoi(optionsFileManager.getOption(2).c_str())), 45, 110);
+    static auto fov = addOptionSlider("FOV: ", "Rendering#FOV", 50, -250, 90, 45, 110);
     if(fov.text->text == "FOV: 110")
         fov.text->setText("FOV: Quake Pro");
     fov.slider->setCallback([](bool dragging, bool hovered, float value) {
@@ -61,30 +61,28 @@ void OptionsMenuInterface::init(GameMenuInterface *gameMenuInterface, GameScene 
                 fov.text->setText("FOV: Quake Pro");
             else
                 fov.text->setText(("FOV: " + data).data());
-            optionsFileManagerPtr->setOption(data, 2);
-            gameScenePtr->updateProjection(int(value));
+            parametersPtr->getInt("Rendering#FOV", 90) = int(value);
+            gameScenePtr->updateProjection(value);
         }
     });
-    static auto chunkingRadius = addOptionSlider(4, 50, -100, int(std::atoi(optionsFileManager.getOption(4).c_str())), 1, 200);
+    static auto chunkingRadius = addOptionSlider("Chunking-Distance: ", "World#ChunkingRadius", 50, -100, 10, 1, 200);
     chunkingRadius.slider->setCallback([](bool dragging, bool hovered, float value) {
         if (dragging) {
             auto data = std::to_string(int(value));
             chunkingRadius.text->setText(("Chunking-Distance: " + data).data());
-            optionsFileManagerPtr->setOption(data, 4);
-            gameScenePtr->terrainManager.getWorldManager()->setChunkingRadius(int(value));
+            parametersPtr->getInt("World#ChunkingRadius", 10) = int(value);
+            gameScenePtr->terrainManager->getWorldManager()->setChunkingRadius(int(value));
         }
     });
-    //gameScenePtr->terrainManager.getWorldManager()->setChunkingRadius(optionsFileManager.getOptionInt(4));
-    static auto chunksPerThread = addOptionSlider(5, -optionWidth - 50, -100, int(std::atoi(optionsFileManager.getOption(5).c_str())), 1, 50);
+    static auto chunksPerThread = addOptionSlider("Chunks-Per-Thread: ", "World#ChunksPerThread", -optionWidth - 50, -100, 1, 1, 50);
     chunksPerThread.slider->setCallback([](bool dragging, bool hovered, float value) {
         if (dragging) {
             auto data = std::to_string(int(value));
             chunksPerThread.text->setText(("Chunks-Per-Thread: " + data).data());
-            optionsFileManagerPtr->setOption(data, 5);
-            gameScenePtr->terrainManager.getWorldManager()->setChunksPerThread(int(value));
+            parametersPtr->getInt("World#ChunksPerThread", 1) = int(value);
+            gameScenePtr->terrainManager->getWorldManager()->setChunksPerThread(int(value));
         }
     });
-    //gameScenePtr->terrainManager.getWorldManager()->setChunksPerThread(optionsFileManager.getOptionInt(5));
 }
 
 void OptionsMenuInterface::load() {
@@ -92,7 +90,7 @@ void OptionsMenuInterface::load() {
     UI->add(backButton, 1);
     UI->add(background);
     for (auto option : options)
-        UI->add(option, 1);
+        UI->add(option, 2);
 }
 
 void OptionsMenuInterface::unload() {
@@ -103,31 +101,29 @@ void OptionsMenuInterface::unload() {
         UI->remove(option);
 }
 
-UIButton *OptionsMenuInterface::addOptionButton(std::string text, int line, float xOffset, float yOffset) {
+UIButton *OptionsMenuInterface::addOptionButton(std::string text, const char* parameterName, bool defaultValue, float xOffset, float yOffset) {
     auto option = new UIButton(width / 2 + xOffset, height / 2 + yOffset, optionWidth, optionHeight);
     option->text.setMode(UITextMode::CENTERED_VERTICAL_LEFT);
     option->setBackgroundTexture(guiTexture, 0, 20, 200, 20, 0, 40, 200, 20, 0, 40, 200, 20);
-    if (optionsFileManager.getOption(line) == "1") {
+    if (parameters.getBool(parameterName, defaultValue))
         option->setText((text + ": ON").data(), font, optionFontSize);
-    }
-    else {
+    else
         option->setText((text + ": OFF").data(), font, optionFontSize);
-    }
     option->text.setPosition(option->text.getX() + textPadding, option->text.getY());
     option->text.setSize(option->text.getWidth() - textPadding * 2, option->text.getHeight());
-    options.emplace_back(option);
+    options.push_back(option);
     return option;
 }
 
-OptionsSlider OptionsMenuInterface::addOptionSlider(int line, float xOffset, float yOffset, float value, float min, float max) {
-    auto option = new UISlider(width / 2 + xOffset, height / 2 + yOffset, optionWidth, optionHeight, value, min, max);
+OptionsSlider OptionsMenuInterface::addOptionSlider(char* text, char* parameterName, float xOffset, float yOffset, float defaultValue, float min, float max) {
+    auto option = new UISlider(width / 2 + xOffset, height / 2 + yOffset, optionWidth, optionHeight, parameters.getInt(parameterName, defaultValue), min, max);
     option->setTexture(guiTexture);
     option->setBackgroundCoords(0, 0, 201, 20, 0, 0, 201, 20, 0, 0, 201, 20);
     option->setDragCoords(30, optionHeight, 201, 20, 8, 20, 201, 20, 8, 20, 201, 40, 8, 20);
     option->setSlideCoords(0, 0, 201, 20, 0, 0, 201, 20, 0, 0, 201, 20);
-    options.emplace_back(option);
-    auto optionText = new UIText(optionsFileManager.getLine(line).data(), font, optionFontSize, width / 2 + xOffset + textPadding, height / 2 + yOffset, optionWidth - textPadding * 2, optionHeight, UITextMode::CENTERED_VERTICAL_LEFT);
-    options.emplace_back(optionText);
+    options.push_back(option);
+    auto optionText = new UIText((std::string(text) + std::to_string(parameters.getInt(parameterName, defaultValue))).data(), font, optionFontSize, width / 2 + xOffset + textPadding, height / 2 + yOffset, optionWidth - textPadding * 2, optionHeight, UITextMode::CENTERED_VERTICAL_LEFT);
+    options.push_back(optionText);
     return {option, optionText};
 }
 

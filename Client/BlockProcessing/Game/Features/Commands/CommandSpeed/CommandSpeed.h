@@ -5,9 +5,9 @@
 
 struct CommandSpeed : Command {
 public:
-    explicit CommandSpeed(Player& player);
+    explicit CommandSpeed(Player* player);
     void init() override;
     void execute(const std::string& typed, int length, const std::vector<std::string>& arguments) override;
 private:
-    Player& player;
+    Player* player;
 };

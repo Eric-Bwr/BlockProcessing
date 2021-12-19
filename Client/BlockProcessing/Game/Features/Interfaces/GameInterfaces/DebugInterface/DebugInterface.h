@@ -11,7 +11,7 @@ public:
     void setFPS(float fps);
     void load();
     void unload();
-    ~DebugInterface();
+    ~DebugInterface() override;
 private:
     UIText* textLeft;
     UIText* textRight;

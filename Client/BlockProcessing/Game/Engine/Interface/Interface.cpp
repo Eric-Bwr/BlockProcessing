@@ -9,3 +9,5 @@ void Interface::updateInput(double mouseX, double mouseY) {
     UI->mousePositionInput(mouseX, mouseY);
     UI->mouseButtonInput(0, RELEASE);
 }
+
+Interface::~Interface() = default;

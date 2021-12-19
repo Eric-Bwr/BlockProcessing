@@ -29,7 +29,7 @@ public:
     void onMousePosition(double x, double y);
     void onMouseButton(int button, int action);
     void onResize(int width, int height, float factorX, float factorY) override;
-    ~ChatInterface();
+    ~ChatInterface() override;
     CommandManager* commandManager;
     UITextField* textField;
 private:

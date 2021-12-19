@@ -11,7 +11,7 @@ public:
     void init(SceneManager *sceneManager, OptionsMenuInterface* optionsMenuInterface, GameScene* gameScene);
     void load();
     void unload();
-    ~GameMenuInterface();
+    ~GameMenuInterface() override;
 private:
     UIImage* background;
     UIButton* gameButton;

@@ -2,7 +2,7 @@
 #include "BlockProcessing/Game/Engine/Interface/Messages.h"
 #include "BlockProcessing/Game/Engine/Command/CommandManager.h"
 
-CommandSpeed::CommandSpeed(Player& player) : player(player){
+CommandSpeed::CommandSpeed(Player* player) : player(player){
     prefix = "speed";
 }
 
@@ -12,7 +12,7 @@ void CommandSpeed::execute(const std::string& typed, int length, const std::vect
     if(length == 1){
         auto x = arguments.at(0);
         if(isNumber(x)){
-            player.speed = std::stof(x);
+            player->speed = std::stof(x);
             std::string print = MESSAGES_SUCCESS_SPEED;
             print += x;
             auto chatComponent = new ChatComponent(print, MESSAGES_SUCCESS_COLOR);

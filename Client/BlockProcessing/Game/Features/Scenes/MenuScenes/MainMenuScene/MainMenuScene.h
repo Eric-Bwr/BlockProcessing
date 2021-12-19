@@ -17,7 +17,7 @@ public:
     Vec3f front, up, right, worldUp, position;
     Mat4f view;
     SkyBox skyBox;
-    MainMenuInterface mainMenuInterface;
+    MainMenuInterface* mainMenuInterface;
     double rotationSpeed = 8.0f, rotation = 0.0f;
     double bobbingSpeed = 0.2f, bobbing = 0.0f;
 };

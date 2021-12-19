@@ -38,4 +38,6 @@ void InterfaceManager::setSize(int width, int height) {
 InterfaceManager::~InterfaceManager() {
     delete font;
     delete guiTexture;
+    for(auto interface : interfaces)
+        delete interface;
 }

@@ -2,8 +2,8 @@
 #include "BlockProcessing/Game/BlockProcessing.h"
 
 static SceneManager *sceneManagerPtr;
-static OptionsFileManager *optionsFileManagerPtr;
 static NetworkManager *networkManagerPtr;
+static Parameters *parametersPtr;
 
 const float connectionIcons[6][2] = {
         {263, 197},
@@ -17,9 +17,8 @@ const float connectionIcons[6][2] = {
 
 void ServerMenuInterface::init(SceneManager *sceneManager) {
     sceneManagerPtr = sceneManager;
-    optionsFileManager = &((GameScene *) sceneManager->getScene(ID_GAME))->optionsMenuInterface.optionsFileManager;
-    optionsFileManagerPtr = optionsFileManager;
-    networkManagerPtr = &sceneManager->blockProcessing->networkManager;
+    parametersPtr = &parameters;
+    networkManagerPtr = sceneManager->blockProcessing->networkManager;
     networkManagerPtr->setServerMenuInterface(this);
     serverTexture = new UITexture(TEXTURE_SERVER);
     serverTexture->minNear();
@@ -30,10 +29,10 @@ void ServerMenuInterface::init(SceneManager *sceneManager) {
     nameField = new UITextField("", font, 40, nameText->getX(), nameText->getY() + nameText->getHeight(), fieldWidth, fieldHeight, 10);
     nameField->setBackgroundTexture(guiTexture, 0, 131, 202, 22);
     nameField->setFontSize(50);
-    nameField->setText(optionsFileManager->getOption(0).data());
+    nameField->setText(parameters.getString("Server#PlayerName", "Elly").data());
     nameField->setMaxCharacter(20);
     nameField->setContentCallback([](std::string content, std::string passwordContent) {
-        optionsFileManagerPtr->setOption(content, 0);
+        parametersPtr->getString("Server#PlayerName") = content;
     });
     serverText = new UIText("Server address:", font, 40, width / 2 - fieldWidth / 2, 320, fieldWidth, 40, UITextMode::LEFT);
     serverText->setRGBA(0.7, 0.7, 0.7, 1.0);
@@ -41,7 +40,7 @@ void ServerMenuInterface::init(SceneManager *sceneManager) {
     serverField->setBackgroundTexture(guiTexture, 0, 131, 202, 22);
     serverField->setFontSize(50);
     serverField->setMaxCharacter(20);
-    serverField->setText(optionsFileManager->getOption(3).data());
+    serverField->setText(parameters.getString("Server#Address", "127.0.0.1:25566").data());
     serverField->setContentCallback([](std::string content, std::string passwordContent) {
         std::string strippedContent;
         for (auto c : content) {
@@ -49,7 +48,7 @@ void ServerMenuInterface::init(SceneManager *sceneManager) {
                 strippedContent += c;
         }
         if(!strippedContent.empty())
-            optionsFileManagerPtr->setOption(strippedContent, 3);
+            parametersPtr->getString("Server#Address") = strippedContent;
     });
     backButton = new UIButton(width / 2 - 200 * 4 / 2, height - 140, 200 * 4, 20 * 4);
     backButton->setBackgroundTexture(guiTexture, 0, 20, 200, 20, 0, 40, 200, 20, 0, 40, 200, 20);
@@ -59,13 +58,12 @@ void ServerMenuInterface::init(SceneManager *sceneManager) {
             sceneManagerPtr->setCurrent(ID_MAIN_MENU);
     });
     serverInfo = new UIText("", font, 50, width / 2 - 250 * 3.5 / 2 + 30, height - 300, 250 * 3.5, 50, UITextMode::LEFT);
-    networkManagerPtr->connect(optionsFileManagerPtr->getOption(3));
     refreshButton = new UIButton(width / 2 - 200 * 3.25 / 2, height - 510, 200 * 3.25, 20 * 3.25);
     refreshButton->setBackgroundTexture(guiTexture, 0, 20, 200, 20, 0, 40, 200, 20, 0, 40, 200, 20);
     refreshButton->setText("Refresh", font, 40);
     refreshButton->setCallback([](bool hovered, bool pressed) {
         if (hovered && pressed) {
-            auto option = optionsFileManagerPtr->getOption(3);
+            auto option = parametersPtr->getString("Server#Address");
             if(!option.empty())
                 networkManagerPtr->connect(option);
         }
@@ -80,6 +78,7 @@ void ServerMenuInterface::init(SceneManager *sceneManager) {
 }
 
 void ServerMenuInterface::load() {
+    networkManagerPtr->connect(parameters.getString("Server#Address"));
     UI->add(titleText, 1);
     UI->add(nameText, 1);
     UI->add(nameField, 1);

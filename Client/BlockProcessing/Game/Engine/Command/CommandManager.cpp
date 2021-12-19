@@ -9,7 +9,7 @@ void CommandManager::add(Command* command) {
     command->commandManager = this;
     command->chatInterface = chatInterface;
     command->init();
-    commands.insert(std::pair<char*, Command*>(command->prefix, command));
+    commands.insert(std::pair<const char*, Command*>(command->prefix, command));
 }
 
 void CommandManager::execute(const std::string &input) {

@@ -2,8 +2,7 @@
 
 #include "BlockProcessing/Game/Engine/Interface/Interface.h"
 #include "BlockProcessing/Game/Engine/Scene/SceneManager.h"
-#include "OptionsFileManager.h"
-#include "Parameters.h"
+#include "BlockProcessing/Game/Engine/Parameters.h"
 
 class GameMenuInterface;
 class GameScene;
@@ -18,12 +17,12 @@ public:
     void init(GameMenuInterface* gameMenuInterface, GameScene* gameScene);
     void load();
     void unload();
-    ~OptionsMenuInterface();
-    OptionsFileManager optionsFileManager;
+    ~OptionsMenuInterface() override;
     bool shouldVsync;
 private:
-    UIButton* addOptionButton(std::string text, int line, float xOffset, float yOffset);
-    OptionsSlider addOptionSlider(int line, float xOffset, float yOffset, float value, float min, float max);
+    Parameters parameters = Parameters("OptionsMenuInterface");
+    UIButton* addOptionButton(std::string text, const char* parameterName, bool defaultValue, float xOffset, float yOffset);
+    OptionsSlider addOptionSlider(char* text, char* parameterName, float xOffset, float yOffset, float defaultValue, float min, float max);
     const float optionWidth = 400, optionHeight = 60, textPadding = 5;
     const int optionFontSize = 32;
     UIText* titleText;

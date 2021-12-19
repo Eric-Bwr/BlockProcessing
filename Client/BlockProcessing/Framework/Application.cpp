@@ -18,7 +18,6 @@ int main(){
     std::set_terminate(terminateHandler);
     signal(SIGSEGV, &handleAborts);
 
-
     signal(SIGTERM, &handleAborts);
     signal(SIGBREAK, &handleAborts);
     signal(SIGABRT, &handleAborts);
@@ -93,7 +92,7 @@ void Application::run() {
         frameDeltaTime = currentTime - lastFrameTime;
         frames++;
         if(currentTime - lastTime >= 1.0){
-            blockProcessing->gameScene.debugInterface.setFPS(float(frames));
+            blockProcessing->gameScene->debugInterface->setFPS(float(frames));
             frames = 0;
             lastTime++;
         }

@@ -1,8 +1,6 @@
 //Author: Briac
 #include "Parameters.h"
-
 #include <iostream>
-#include <mutex>
 #include <fstream>
 #include <vector>
 #include <algorithm>
@@ -34,19 +32,16 @@ struct DefaultRegistrable : Parameters::Registrable{
 	}
 };
 
-Parameters::Parameters(std::string className) :
-		className(std::move(className)) {
+Parameters::Parameters(std::string className) : className(std::move(className)) {
 	std::lock_guard<std::mutex> lock(mutex);
 	if (instances == 0) {
 		readParams();
 	}
-
 	instances++;
 }
 
 Parameters::~Parameters() {
 	instances--;
-
 	if (instances == 0) {
 		writeParams();
 	}
@@ -54,77 +49,77 @@ Parameters::~Parameters() {
 
 //For single-line strings only!
 std::string& Parameters::getString(const std::string &name, const std::string& defaultValue) const{
-	auto p = stringParams.find(name.find('#') == std::string::npos ? className + "#" + name : name);
+	auto p = stringParams.find(name);
 	if (p == stringParams.end()) {
-		stringParams[className + "#" + name] = defaultValue;
-		return stringParams[className + "#" + name];
+		stringParams[name] = defaultValue;
+		return stringParams[name];
 	} else {
 		return p->second;
 	}
 }
 
 int& Parameters::getInt(const std::string &name, int defaultValue) const{
-	auto p = intParams.find(name.find('#') == std::string::npos ? className + "#" + name : name);
+	auto p = intParams.find(name);
 	if (p == intParams.end()) {
-		intParams[className + "#" + name] = defaultValue;
-		return intParams[className + "#" + name];
+		intParams[name] = defaultValue;
+		return intParams[name];
 	} else {
 		return p->second;
 	}
 }
 
 float& Parameters::getFloat(const std::string &name, float defaultValue) const{
-	auto p = floatParams.find(name.find('#') == std::string::npos ? className + "#" + name : name);
+	auto p = floatParams.find(name);
 	if (p == floatParams.end()) {
-		floatParams[className + "#" + name] = defaultValue;
-		return floatParams[className + "#" + name];
+		floatParams[name] = defaultValue;
+		return floatParams[name];
 	} else {
 		return p->second;
 	}
 }
 
 bool& Parameters::getBool(const std::string &name, bool defaultValue) const{
-	auto p = boolParams.find(name.find('#') == std::string::npos ? className + "#" + name : name);
+	auto p = boolParams.find(name);
 	if (p == boolParams.end()) {
-		boolParams[className + "#" + name] = defaultValue;
-		return boolParams[className + "#" + name];
+		boolParams[name] = defaultValue;
+		return boolParams[name];
 	} else {
 		return p->second;
 	}
 }
 
 Vec2f& Parameters::getVec2(const std::string &name, const Vec2f& defaultValue) const{
-	auto p = vec2Params.find(name.find('#') == std::string::npos ? className + "#" + name : name);
+	auto p = vec2Params.find(name);
 	if (p == vec2Params.end()) {
-		vec2Params[className + "#" + name] = defaultValue;
-		return vec2Params[className + "#" + name];
+		vec2Params[name] = defaultValue;
+		return vec2Params[name];
 	} else {
 		return p->second;
 	}
 }
 
 Vec3f& Parameters::getVec3(const std::string &name, const Vec3f& defaultValue) const{
-	auto p = vec3Params.find(name.find('#') == std::string::npos ? className + "#" + name : name);
+	auto p = vec3Params.find(name);
 	if (p == vec3Params.end()) {
-		vec3Params[className + "#" + name] = defaultValue;
-		return vec3Params[className + "#" + name];
+		vec3Params[name] = defaultValue;
+		return vec3Params[name];
 	} else {
 		return p->second;
 	}
 }
 
 Vec4f& Parameters::getVec4(const std::string &name, const Vec4f& defaultValue) const{
-	auto p = vec4Params.find(name.find('#') == std::string::npos ? className + "#" + name : name);
+	auto p = vec4Params.find(name);
 	if (p == vec4Params.end()) {
-		vec4Params[className + "#" + name] = defaultValue;
-		return vec4Params[className + "#" + name];
+		vec4Params[name] = defaultValue;
+		return vec4Params[name];
 	} else {
 		return p->second;
 	}
 }
 
 void Parameters::putRegistrable(const std::string &name, const std::shared_ptr<Parameters::Registrable>& defaultValue){
-	auto p = customParams.find(className + "#" + name);
+	auto p = customParams.find(name);
 	if (p != customParams.end()) {
 		auto* value = dynamic_cast<DefaultRegistrable*>(p->second.get());
 		if(value == nullptr){
@@ -136,14 +131,14 @@ void Parameters::putRegistrable(const std::string &name, const std::shared_ptr<P
 		}
 		defaultValue->init(value->s);
 	}
-	customParams[className + "#" + name] = defaultValue;
+	customParams[name] = defaultValue;
 }
 
 Parameters::Registrable& Parameters::get(const std::string &name) const{
-	auto p = customParams.find(name.find('#') == std::string::npos ? className + "#" + name : name);
+	auto p = customParams.find(name);
 	if (p == customParams.end()) {
-		customParams[className + "#" + name] = std::make_unique<DefaultRegistrable>("");
-		return *customParams[className + "#" + name].get();
+		customParams[name] = std::make_unique<DefaultRegistrable>("");
+		return *customParams[name].get();
 	} else {
 		return *p->second.get();
 	}
@@ -151,10 +146,10 @@ Parameters::Registrable& Parameters::get(const std::string &name) const{
 
 void Parameters::readParams() {
 	std::ifstream f;
-	f.open("params.txt");
+	f.open("Parameters.txt");
 
 	if (!f.is_open()) {
-		LOG<ERROR_LVL>("Couldn't open params.txt");
+		LOG<ERROR_LVL>("Couldn't open Parameters.txt");
 		return;
 	}
     LOG<INFO_LVL>("Reading Parameters");
@@ -215,17 +210,15 @@ void Parameters::readParams() {
 			s = s.substr(2, s.size()-4);
 			customParams[name] = std::make_unique<DefaultRegistrable>(s);
 		}
-
 	}
-
 }
 
 void Parameters::writeParams() {
 	std::ofstream f;
-	f.open("params.txt");
+	f.open("Parameters.txt");
 
 	if (!f.is_open()) {
-        LOG<ERROR_LVL>("Couldn't open params.txt");
+        LOG<ERROR_LVL>("Couldn't open Parameters.txt");
 		return;
 	}
     LOG<INFO_LVL>("Writing Parameters");

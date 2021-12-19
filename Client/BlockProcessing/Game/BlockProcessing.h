@@ -16,24 +16,25 @@ public:
     void init(GLFWwindow* window, int width, int height);
     void update(double frameDeltaTime);
     void render(double frameDeltaTime);
+    ~BlockProcessing();
 
     GLFWwindow* window;
     int width, height;
     int minWidth = 1600, minHeight = 800;
     Mat4f projection;
 
-    SkyBoxManager skyBoxManager;
+    SkyBoxManager* skyBoxManager;
 
-    InterfaceManager interfaceManager;
+    InterfaceManager* interfaceManager;
 
-    PostProcessManager postProcessManager;
+    PostProcessManager* postProcessManager;
 
-    SceneManager sceneManager;
-    MainMenuScene mainMenuScene;
-    ServerMenuScene serverMenuScene;
-    GameScene gameScene;
+    SceneManager* sceneManager;
+    MainMenuScene* mainMenuScene;
+    GameScene* gameScene;
+    ServerMenuScene* serverMenuScene;
 
-    NetworkManager networkManager;
+    NetworkManager* networkManager;
 
     void onKey(int key, int scancode, int action, int mods);
     void onChar(unsigned int key);

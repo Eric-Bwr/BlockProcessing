@@ -1175,7 +1175,7 @@ FT_BEGIN_HEADER
    *   raster ::
    *     A handle to the raster object.
    *
-   *   params ::
+   *   parameters ::
    *     A pointer to an @FT_Raster_Params structure used to store the
    *     rendering parameters.
    *

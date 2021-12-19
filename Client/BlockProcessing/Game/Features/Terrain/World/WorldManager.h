@@ -11,11 +11,12 @@
 #include "BlockProcessing/Game/Features/Terrain/Util/Coordinate.h"
 #include "BlockProcessing/Game/Features/Terrain/World/Octree/Octree.h"
 #include "BlockProcessing/Game/Features/Terrain/World/Octree/Frustum/Frustum.h"
+#include "BlockProcessing/Game/Engine/Parameters.h"
 #include "AsyncLoader.h"
 
 class WorldManager {
 public:
-    void init(BlockManager* blockManager, std::shared_ptr<WorldManager>* ptrToThis);
+    void init(BlockManager* blockManager);
     void generate(const Coord& playerChunkCoord);
     Chunk* getChunkFromBlockCoords(int64_t x, int64_t y, int64_t z);
     Chunk* getChunkFromChunkCoords(int64_t x, int64_t y, int64_t z);
@@ -36,19 +37,22 @@ public:
 //    }
     inline ChunkManager* getChunkManager() { return &chunkManager; }
     ~WorldManager();
-    std::shared_ptr<WorldManager>* ptrToThis = nullptr;
     FastNoise* fastNoise;
     std::unordered_map<Coord, std::shared_ptr<Octree>, CoordHash, CoordCompare> octrees;
     std::vector<Coord> modifiedChunks;
     std::vector<OctreeNode*> chunkCandidatesForGenerating;
     Frustum frustum;
+
+    std::atomic_bool finishedUpdatingOctree = true;
+    std::unique_ptr<AsyncLoader<OctreeNode*>> loader;
+    std::mutex octreeAccess;
+	//std::unique_lock<std::mutex> lock = std::unique_lock<std::mutex>(octreeAccess);
+private:
+    Parameters parameters = Parameters("WorldManager");
     ChunkManager chunkManager;
-    std::shared_ptr<WorldManager>* worldManager;
     int maxPendingJobs;
     int chunkingRadiusSquared;
     int chunkingDeletionRadiusSquared;
     int octreeRadius;
     int octreeDeletionRadiusSquared;
-    //std::unique_lock<std::mutex> lock = std::unique_lock<std::mutex>(octreeAccess);
-    std::atomic_bool finishedUpdatingOctree = true;
 };

@@ -2,11 +2,11 @@
 
 static FILE *file;
 static bool LOGGER_TRACE = false;
-static char *LOGGER_PATH = "";
+static const char *LOGGER_PATH = "";
 static int LOGGER_LEVEL = 0;
 std::vector<std::string> Logger::contents;
 
-static char *levels[3] = {
+static const char *levels[3] = {
         "  INFO> ",
         "  WARN> ",
         " ERROR> "
@@ -42,7 +42,7 @@ void Logger::write() {
         result << LOGGER_PATH << std::put_time(std::localtime(&time), "%Y-%m-%d %H-%M-%S") << ".log";
         file = fopen(result.str().data(), "w");
         if (!file)
-            LOG<ERROR_LVL>("Failed to dump log => Path");
+            LOG<WARN_LVL>("Failed to dump log => Path");
         else {
             for (auto content: contents)
                 fprintf(file, "%s%s", content.data(), "\n");

@@ -53,7 +53,7 @@ FT_BEGIN_HEADER
    *   num_params ::
    *     The number of additional parameters.
    *
-   *   params ::
+   *   parameters ::
    *     Optional additional parameters.
    *
    * @return:
@@ -101,7 +101,7 @@ FT_BEGIN_HEADER
    *   num_params ::
    *     The number of additional parameters.
    *
-   *   params ::
+   *   parameters ::
    *     Optional additional parameters.
    *
    * @return:

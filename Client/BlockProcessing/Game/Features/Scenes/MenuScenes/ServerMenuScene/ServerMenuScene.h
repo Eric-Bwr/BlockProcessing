@@ -14,5 +14,5 @@ public:
     int getID() override;
     ~ServerMenuScene() override;
 private:
-    ServerMenuInterface serverMenuInterface;
+    ServerMenuInterface* serverMenuInterface;
 };

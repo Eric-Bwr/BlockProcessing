@@ -10,5 +10,5 @@ public:
     ~CommandManager();
 private:
     ChatInterface* chatInterface;
-    std::map<char*, Command*> commands;
+    std::map<const char*, Command*> commands;
 };

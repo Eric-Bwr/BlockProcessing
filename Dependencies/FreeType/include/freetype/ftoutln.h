@@ -474,7 +474,7 @@ FT_BEGIN_HEADER
    *     A pointer to the source outline descriptor.
    *
    * @inout:
-   *   params ::
+   *   parameters ::
    *     A pointer to an @FT_Raster_Params structure used to describe the
    *     rendering operation.
    *
@@ -483,10 +483,10 @@ FT_BEGIN_HEADER
    *
    * @note:
    *   This advanced function uses @FT_Raster_Params as an argument.
-   *   The field `params.source` will be set to `outline` before the scan
+   *   The field `parameters.source` will be set to `outline` before the scan
    *   converter is called, which means that the value you give to it is
-   *   actually ignored.  Either `params.target` must point to preallocated
-   *   bitmap, or @FT_RASTER_FLAG_DIRECT must be set in `params.flags`
+   *   actually ignored.  Either `parameters.target` must point to preallocated
+   *   bitmap, or @FT_RASTER_FLAG_DIRECT must be set in `parameters.flags`
    *   allowing FreeType rasterizer to be used for direct composition,
    *   translucency, etc.  See @FT_Raster_Params for more details.
    */

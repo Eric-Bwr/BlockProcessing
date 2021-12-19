@@ -18,11 +18,11 @@ public:
     void render(Mat4d& projectionView, Mat4d& view);
     void setProjection(Mat4f& projection);
     void setLightPosition(double x, double y, double z);
-    inline WorldManager* getWorldManager() { return worldManager.get(); }
+    inline WorldManager* getWorldManager() { return &worldManager; }
     inline BlockManager* getBlockManager() { return &blockManager; }
     ~TerrainManager();
 private:
     Shader* shader;
     BlockManager blockManager;
-    std::shared_ptr<WorldManager> worldManager = nullptr;//std::make_unique<WorldManager>();
+    WorldManager worldManager;
 };

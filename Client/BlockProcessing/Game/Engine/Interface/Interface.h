@@ -6,6 +6,7 @@
 
 struct Interface {
     Interface() = default;
+    virtual ~Interface();
     UIManager* UI;
     Font* font;
     Texture* guiTexture;

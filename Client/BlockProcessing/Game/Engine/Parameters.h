@@ -5,13 +5,12 @@
 #include <sstream>
 #include <unordered_map>
 #include <memory>
-
 #include "Math/Vector.h"
 
 class Parameters {
 public:
-	Parameters(std::string className);
-	virtual ~Parameters();
+	explicit Parameters(std::string className);
+	~Parameters();
 
 	Parameters extend(const std::string& className){
 		return Parameters(this->className + "#" + className);
@@ -67,18 +66,18 @@ public:
 	void putRegistrable(const std::string &name, const std::shared_ptr<Parameters::Registrable>& defaultValue);
 	Registrable& get(const std::string & name) const;
 private:
-	static std::unordered_map<std::string, std::string> stringParams;
-	static std::unordered_map<std::string, int> intParams;
-	static std::unordered_map<std::string, float> floatParams;
-	static std::unordered_map<std::string, bool> boolParams;
-	static std::unordered_map<std::string, Vec2f> vec2Params;
-	static std::unordered_map<std::string, Vec3f> vec3Params;
-	static std::unordered_map<std::string, Vec4f> vec4Params;
-	static std::unordered_map<std::string, std::shared_ptr<Parameters::Registrable>> customParams;
+    static std::unordered_map<std::string, std::string> stringParams;
+    static std::unordered_map<std::string, int> intParams;
+    static std::unordered_map<std::string, float> floatParams;
+    static std::unordered_map<std::string, bool> boolParams;
+    static std::unordered_map<std::string, Vec2f> vec2Params;
+    static std::unordered_map<std::string, Vec3f> vec3Params;
+    static std::unordered_map<std::string, Vec4f> vec4Params;
+    static std::unordered_map<std::string, std::shared_ptr<Parameters::Registrable>> customParams;
+
 	static int instances;
 
 	std::string className;
-
-	static void readParams();
-	static void writeParams();
+    static void readParams();
+    static void writeParams();
 };

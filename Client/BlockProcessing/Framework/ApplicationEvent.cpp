@@ -16,7 +16,7 @@ void Application::onMousePosition(double x, double y) {
 
 void Application::onMouseButton(int button, int action, int mods) {
     blockProcessing->onMouseButton(button, action, mods);
-    alive = blockProcessing->mainMenuScene.mainMenuInterface.alive;
+    alive = blockProcessing->mainMenuScene->mainMenuInterface->alive;
 }
 
 void Application::onMouseScroll(double x, double y) {
