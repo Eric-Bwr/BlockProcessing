@@ -134,21 +134,16 @@ void ChunkManager::generateChunkDefaultVertices(Chunk *chunk) {
     }
 }
 
-#include "BlockProcessing/Framework/Engine/Performance/SpeedTester.h"
-
 void ChunkManager::generateChunkVertices(Chunk *chunk) {
     Block *block;
     int8_t neighbor;
     int8_t chunkBlock;
-    beginSpeedTest();
     auto neighborChunkTop = worldManager->getChunkFromChunkCoords(chunk->tileX, chunk->tileY + 1, chunk->tileZ);
     auto neighborChunkBottom = worldManager->getChunkFromChunkCoords(chunk->tileX, chunk->tileY - 1, chunk->tileZ);
     auto neighborChunkRight = worldManager->getChunkFromChunkCoords(chunk->tileX + 1, chunk->tileY, chunk->tileZ);
     auto neighborChunkLeft = worldManager->getChunkFromChunkCoords(chunk->tileX - 1, chunk->tileY, chunk->tileZ);
     auto neighborChunkFront = worldManager->getChunkFromChunkCoords(chunk->tileX, chunk->tileY, chunk->tileZ - 1);
     auto neighborChunkBack = worldManager->getChunkFromChunkCoords(chunk->tileX, chunk->tileY, chunk->tileZ + 1);
-    endSpeedTest();
-    printNanoSeconds();
     for (int x = 0; x < CHUNK_SIZE; x++) {
         int64_t posX = chunk->tileX * CHUNK_SIZE + x;
         for (int y = 0; y < CHUNK_SIZE; y++) {
