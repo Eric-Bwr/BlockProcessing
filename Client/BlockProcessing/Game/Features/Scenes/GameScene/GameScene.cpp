@@ -49,7 +49,7 @@ void GameScene::init() {
     commandManager->add(new CommandTP(player));
     commandManager->add(new CommandSpeed(player));
     commandManager->add(new CommandHelp());
-    player->position.y = ((terrainManager->getWorldManager()->fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * 200;
+    player->position.y = ((terrainManager->getWorldManager()->fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * 200 + 5;
     player->updatePlayerPosition();
 }
 
@@ -81,7 +81,7 @@ void GameScene::update(double deltaFrameTime) {
     player->update(deltaFrameTime);
     terrainManager->setLightPosition(player->position.x, player->position.y + 1000, player->position.z);
     if(!leftControl)
-        terrainManager->generate(player->chunk);
+        terrainManager->generate(player->chunk, player->octree);
     if (wireFrame)
         chunkBorderVisualizer->generate(player->chunk);
     if (debug)

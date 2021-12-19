@@ -17,7 +17,7 @@
 class WorldManager {
 public:
     void init(BlockManager* blockManager);
-    void generate(const Coord& playerChunkCoord);
+    void generate(const Coord &playerChunkCoord, const Coord &playerOctreeCoord);
     Chunk* getChunkFromBlockCoords(int64_t x, int64_t y, int64_t z);
     Chunk* getChunkFromChunkCoords(int64_t x, int64_t y, int64_t z);
     int8_t getBlockDefault(int64_t x, int64_t y, int64_t z);
@@ -39,7 +39,7 @@ public:
     ~WorldManager();
     FastNoise* fastNoise;
     std::unordered_map<Coord, std::shared_ptr<Octree>, CoordHash, CoordCompare> octrees;
-    std::vector<Coord> modifiedChunks;
+    std::vector<OctreeNode*> modifiedChunks;
     std::vector<OctreeNode*> chunkCandidatesForGenerating;
     Frustum frustum;
 

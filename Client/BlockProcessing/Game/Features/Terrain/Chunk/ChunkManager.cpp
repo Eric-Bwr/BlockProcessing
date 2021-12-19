@@ -69,7 +69,7 @@ void ChunkManager::generateChunkDefaultVertices(Chunk *chunk) {
                         neighbor = getChunkBlock(chunk, posX, posY + 1, posZ);
                         if (neighbor == BLOCK_AIR)
                             cubeManager.addFace(chunk->vertices, block, x, y, z, FACE_TOP);
-                    } else if (y == CHUNK_SIZE - 1) {
+                    } else if (y == CHUNK_SIZE_MINUS_ONE) {
                         neighbor = worldManager->getBlockDefault(posX, posY + 1, posZ);
                         if (neighbor == BLOCK_AIR)
                             cubeManager.addFace(chunk->vertices, block, x, y, z, FACE_TOP);
@@ -84,7 +84,7 @@ void ChunkManager::generateChunkDefaultVertices(Chunk *chunk) {
                         if (neighbor == BLOCK_AIR)
                             cubeManager.addFace(chunk->vertices, block, x, y, z, FACE_BOTTOM);
                     }
-                    if (x == CHUNK_SIZE - 1) {
+                    if (x == CHUNK_SIZE_MINUS_ONE) {
                         neighbor = worldManager->getBlockDefault(posX + 1, posY, posZ);
                         if (neighbor == BLOCK_AIR)
                             cubeManager.addFace(chunk->vertices, block, x, y, z, FACE_RIGHT);
@@ -106,7 +106,7 @@ void ChunkManager::generateChunkDefaultVertices(Chunk *chunk) {
                         if (neighbor == BLOCK_AIR)
                             cubeManager.addFace(chunk->vertices, block, x, y, z, FACE_LEFT);
                     }
-                    if (z == CHUNK_SIZE - 1) {
+                    if (z == CHUNK_SIZE_MINUS_ONE) {
                         neighbor = worldManager->getBlockDefault(posX, posY, posZ + 1);
                         if (neighbor == BLOCK_AIR)
                             cubeManager.addFace(chunk->vertices, block, x, y, z, FACE_FRONT);
@@ -134,16 +134,21 @@ void ChunkManager::generateChunkDefaultVertices(Chunk *chunk) {
     }
 }
 
+#include "BlockProcessing/Framework/Engine/Performance/SpeedTester.h"
+
 void ChunkManager::generateChunkVertices(Chunk *chunk) {
     Block *block;
     int8_t neighbor;
     int8_t chunkBlock;
+    beginSpeedTest();
     auto neighborChunkTop = worldManager->getChunkFromChunkCoords(chunk->tileX, chunk->tileY + 1, chunk->tileZ);
     auto neighborChunkBottom = worldManager->getChunkFromChunkCoords(chunk->tileX, chunk->tileY - 1, chunk->tileZ);
     auto neighborChunkRight = worldManager->getChunkFromChunkCoords(chunk->tileX + 1, chunk->tileY, chunk->tileZ);
     auto neighborChunkLeft = worldManager->getChunkFromChunkCoords(chunk->tileX - 1, chunk->tileY, chunk->tileZ);
     auto neighborChunkFront = worldManager->getChunkFromChunkCoords(chunk->tileX, chunk->tileY, chunk->tileZ - 1);
     auto neighborChunkBack = worldManager->getChunkFromChunkCoords(chunk->tileX, chunk->tileY, chunk->tileZ + 1);
+    endSpeedTest();
+    printNanoSeconds();
     for (int x = 0; x < CHUNK_SIZE; x++) {
         int64_t posX = chunk->tileX * CHUNK_SIZE + x;
         for (int y = 0; y < CHUNK_SIZE; y++) {
@@ -160,7 +165,7 @@ void ChunkManager::generateChunkVertices(Chunk *chunk) {
                         neighbor = getChunkBlock(chunk, posX, posY + 1, posZ);
                         if (neighbor == BLOCK_AIR)
                             cubeManager.addFace(chunk->vertices, block, x, y, z, FACE_TOP);
-                    } else if (y == CHUNK_SIZE - 1) {
+                    } else if (y == CHUNK_SIZE_MINUS_ONE) {
                         neighbor = getChunkBlock(neighborChunkTop, posX, posY + 1, posZ);
                         if (neighbor == BLOCK_AIR)
                             cubeManager.addFace(chunk->vertices, block, x, y, z, FACE_TOP);
@@ -182,7 +187,7 @@ void ChunkManager::generateChunkVertices(Chunk *chunk) {
                         neighbor = getChunkBlock(chunk, posX + 1, posY, posZ);
                         if (neighbor == BLOCK_AIR)
                             cubeManager.addFace(chunk->vertices, block, x, y, z, FACE_RIGHT);
-                    } else if (x == CHUNK_SIZE - 1) {
+                    } else if (x == CHUNK_SIZE_MINUS_ONE) {
                         neighbor = getChunkBlock(neighborChunkRight, posX + 1, posY, posZ);
                         if (neighbor == BLOCK_AIR)
                             cubeManager.addFace(chunk->vertices, block, x, y, z, FACE_RIGHT);
@@ -204,7 +209,7 @@ void ChunkManager::generateChunkVertices(Chunk *chunk) {
                         neighbor = getChunkBlock(chunk, posX, posY, posZ + 1);
                         if (neighbor == BLOCK_AIR)
                             cubeManager.addFace(chunk->vertices, block, x, y, z, FACE_FRONT);
-                    } else if (z == CHUNK_SIZE - 1) {
+                    } else if (z == CHUNK_SIZE_MINUS_ONE) {
                         neighbor = getChunkBlock(neighborChunkBack, posX, posY, posZ + 1);
                         if (neighbor == BLOCK_AIR)
                             cubeManager.addFace(chunk->vertices, block, x, y, z, FACE_FRONT);

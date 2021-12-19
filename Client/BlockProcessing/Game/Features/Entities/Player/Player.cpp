@@ -78,7 +78,7 @@ void Player::calculateMove(double deltaTime) {
 
     calculateMovement(moveStrafe, moveForward, 0.06);
 
-   //velocityY *= 0.98;
+    //velocityY *= 0.98;
 
     // if(onGround){
     // }else{
@@ -87,23 +87,22 @@ void Player::calculateMove(double deltaTime) {
     // }
 
 
-    if (shouldMoveDown)
+    if (shouldMoveDown && !onGround)
         velocityY -= 0.06;
     if (shouldMoveUp)
         velocityY += 0.06;
 
-   // velocityY -= 0.02;
+    // velocityY -= 0.02;
 
     velocityX *= 0.7;
     velocityY *= 0.7;
     velocityZ *= 0.7;
 
     auto posBackup = position;
+
     position.x += velocityX * speed * deltaTime;
     position.y += velocityY * speed * deltaTime;
     position.z += velocityZ * speed * deltaTime;
-
-    position = posBackup;
 
     int64_t minX = Coord::getBlockFromCamera(position.x - PLAYER_WIDTH_HALF);
     int64_t maxX = Coord::getBlockFromCamera(position.x + PLAYER_WIDTH_HALF);
@@ -113,28 +112,39 @@ void Player::calculateMove(double deltaTime) {
     int64_t maxZ = Coord::getBlockFromCamera(position.z + PLAYER_WIDTH_HALF);
 
     bool collisionX = false;
-    for (int64_t x = minX; x <= maxX; x++)
-        for (int64_t y = minY; y <= maxY; y++)
-            if(worldManager->getBlock(x, y, blockZ) != BLOCK_AIR)
-                collisionX = true;
-    bool collisionY = false;
-    for (int64_t x = minX; x <= maxX; x++)
-        for (int64_t y = minY; y <= maxY; y++)
-            for (int64_t z = minZ; z <= maxZ; z++)
-                if(worldManager->getBlock(x, y, z) != BLOCK_AIR)
-                    collisionY = true;
     bool collisionZ = false;
-    for (int64_t z = minZ; z <= maxZ; z++)
-        for (int64_t y = minY; y <= maxY; y++)
-            if(worldManager->getBlock(blockX, y, z) != BLOCK_AIR)
-                collisionZ = true;
+    bool collisionY = false;
+    onGround = false;
+    for (int64_t x = minX; x <= maxX; x++) {
+        for (int64_t y = minY; y <= maxY; y++) {
+            for (int64_t z = minZ; z <= maxZ; z++) {
+                if (worldManager->getBlock(x, y, blockZ) != BLOCK_AIR)
+                    collisionX = true;
+                if (worldManager->getBlock(blockX, y, z) != BLOCK_AIR)
+                    collisionZ = true;
+                if (worldManager->getBlock(x, minY, z) != BLOCK_AIR)
+                    onGround = true;
+                if (worldManager->getBlock(x, maxY, z) != BLOCK_AIR)
+                    collisionY = true;
+            }
+        }
+    }
+    collisionY = onGround || collisionY;
 
-   // if(!collisionX)
+    position = posBackup;
+
+    if (!collisionX)
         position.x += velocityX * speed * deltaTime;
-   // if(!collisionY)
-       position.y += velocityY * speed * deltaTime;
-   // if(!collisionZ)
+    else
+        velocityX = 0.0f;
+    if (!collisionY)
+        position.y += velocityY * speed * deltaTime;
+    else
+        velocityY = 0.0f;
+    if (!collisionZ)
         position.z += velocityZ * speed * deltaTime;
+    else
+        velocityZ = 0.0f;
 }
 
 void Player::traverseRay() {

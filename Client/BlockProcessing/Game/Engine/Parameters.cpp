@@ -221,7 +221,7 @@ void Parameters::writeParams() {
         LOG<ERROR_LVL>("Couldn't open Parameters.txt");
 		return;
 	}
-    LOG<INFO_LVL>("Writing Parameters");
+    LOG<INFO_LVL>("Writing Parameters...");
 
 	std::vector<std::string> v;
 
@@ -254,4 +254,5 @@ void Parameters::writeParams() {
 	for (const std::string &s : v) {
 		f << s << std::endl;
 	}
+    LOG<INFO_LVL>("Parameters written.");
 }

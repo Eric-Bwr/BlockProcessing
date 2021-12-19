@@ -55,3 +55,11 @@ int64_t Coord::getOctreeFromChunk(int64_t chunk) {
         chunk = (chunk / OCTREE_LENGTH) * OCTREE_LENGTH;
     return chunk;
 }
+
+bool Coord::chunkCoordsInEqualOctree(const Coord &coord1, const Coord &coord2) {
+    return isEqual(getOctreeFromChunk(coord1), getOctreeFromChunk(coord2));
+}
+
+bool Coord::chunkCoordInEqualOctreeCoord(const Coord &octreeCoord, const Coord &chunkCoord) {
+    return isEqual(octreeCoord, getOctreeFromChunk(chunkCoord));
+}

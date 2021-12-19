@@ -5,24 +5,24 @@
 
 void WorldManager::init(BlockManager *blockManager) {
     chunkManager.init(blockManager, this);
-    loader = std::make_unique<AsyncLoader<OctreeNode*>>();
+    loader = std::make_unique<AsyncLoader<OctreeNode *>>();
     setChunksPerThread(parameters.getInt("World#ChunksPerThread", 1));
     setChunkingRadius(parameters.getInt("World#ChunkingRadius", 10));
 }
 
-void WorldManager::generate(const Coord &playerChunkCoord) {
-	bool success = true;
-	while(success){
-		OctreeNode* result = nullptr;
-		loader->getResult(result, std::chrono::milliseconds(0), success);
-		if(success){
-			if (result->chunk->init)
-				chunkManager.initChunk(result->chunk);
-			chunkManager.loadChunkData(result->chunk);
-			result->updateHierarchyLoadedAndEmptyStatus(true, result->chunk->vertexCount == 0);
-			result->chunk->generating = false;
-		}
-	}
+void WorldManager::generate(const Coord &playerChunkCoord, const Coord &playerOctreeCoord) {
+    bool success = true;
+    while (success) {
+        OctreeNode *result = nullptr;
+        loader->getResult(result, std::chrono::milliseconds(0), success);
+        if (success) {
+            if (result->chunk->init)
+                chunkManager.initChunk(result->chunk);
+            chunkManager.loadChunkData(result->chunk);
+            result->updateHierarchyLoadedAndEmptyStatus(true, result->chunk->vertexCount == 0);
+            result->chunk->generating = false;
+        }
+    }
 
     for (auto it = octrees.begin(), next_it = it; it != octrees.end(); it = next_it) {
         ++next_it;
@@ -31,38 +31,27 @@ void WorldManager::generate(const Coord &playerChunkCoord) {
             octrees.erase(it);
     }
 
-    int idlingGenerators = maxPendingJobs - loader->getItemsCount();
-    if (idlingGenerators <= 0)
+    int maxCandidates = maxPendingJobs - loader->getItemsCount();
+    if (maxCandidates <= 0)
         return;
 
-    if(!finishedUpdatingOctree){
-    	return;
-    }
+    if (!finishedUpdatingOctree)
+        return;
 
     finishedUpdatingOctree = false;
-    loader->exec([this, idlingGenerators, playerChunkCoord](){
-
+    loader->exec([this, maxCandidates, playerChunkCoord, playerOctreeCoord]() {
         chunkCandidatesForGenerating.clear();
-        for (auto coord : modifiedChunks) {
-            Coord coords[7] = {coord,
-                               {coord.x, coord.y + 1, coord.z},
-                               {coord.x, coord.y - 1, coord.z},
-                               {coord.x + 1, coord.y, coord.z},
-                               {coord.x - 1, coord.y, coord.z},
-                               {coord.x, coord.y, coord.z + 1},
-                               {coord.x, coord.y, coord.z - 1}};
-            for (auto chunkCoord : coords) {
-                auto leaf = octrees.find(Coord::getOctreeFromChunk(chunkCoord))->second->getRoot().getLeaf(chunkCoord);
-                leaf->chunk->generating = true;
-                chunkCandidatesForGenerating.push_back(leaf);
-            }
+        for (auto leaf: modifiedChunks) {
+            leaf->chunk->generating = true;
+            chunkCandidatesForGenerating.push_back(leaf);
         }
         modifiedChunks.clear();
 
-        auto playerOctreeCoord = Coord::getOctreeFromChunk(playerChunkCoord);
         for (int64_t xx = playerOctreeCoord.x - octreeRadius; xx <= playerOctreeCoord.x + octreeRadius; xx += OCTREE_LENGTH) {
             for (int64_t yy = playerOctreeCoord.y - octreeRadius; yy <= playerOctreeCoord.y + octreeRadius; yy += OCTREE_LENGTH) {
                 for (int64_t zz = playerOctreeCoord.z - octreeRadius; zz <= playerOctreeCoord.z + octreeRadius; zz += OCTREE_LENGTH) {
+                    if(yy < 0)
+                        continue;
                     auto octreeCoord = Coord{xx, yy, zz};
                     Octree *octree = nullptr;
                     {
@@ -77,14 +66,14 @@ void WorldManager::generate(const Coord &playerChunkCoord) {
                         }
                     }
                     if (octree->getRoot().loadedChildren != 0b11111111)
-                        octree->getRoot().getClosestUnloadedChunks(chunkCandidatesForGenerating, idlingGenerators, playerChunkCoord);
+                        octree->getRoot().getClosestUnloadedChunks(chunkCandidatesForGenerating, maxCandidates, playerChunkCoord);
                 }
             }
         }
 
-        for (auto candidate : chunkCandidatesForGenerating) {
+        for (auto candidate: chunkCandidatesForGenerating) {
             candidate->chunk->generating = true;
-            loader->scheduleTask([this, candidate](){
+            loader->scheduleTask([this, candidate]() {
                 chunkManager.generateChunkData(candidate->chunk);
                 return candidate;
             });
@@ -126,7 +115,7 @@ int8_t WorldManager::getBlockDefault(int64_t x, int64_t y, int64_t z) {
     //        return BLOCK_STONE;
     //}
     auto second = (fastNoise->GetNoise(x, y, z) + 1.0f) / 2.0f;
-    if(second > 0.65)
+    if (second > 0.65)
         return BLOCK_PLANKS;
     int height = int(((fastNoise->GetNoise(x, z) + 1.0f) / 2.0f) * 200);
     if (y > height || y < 0) {
@@ -157,12 +146,56 @@ void WorldManager::setBlock(int8_t block, int64_t x, int64_t y, int64_t z) {
     std::lock_guard<std::mutex> lock(octreeAccess);
 
     auto chunkCoord = Coord::getChunkFromBlock({x, y, z});
-    auto it = octrees.find(Coord::getOctreeFromChunk(chunkCoord));
+    auto octreeCoord = Coord::getOctreeFromChunk(chunkCoord);
+    auto it = octrees.find(octreeCoord);
     if (it != octrees.end()) {
-        auto leaf = it->second->getRoot().getLeaf(chunkCoord);
+        OctreeNode &root = it->second->getRoot();
+        auto leaf = root.getLeaf(chunkCoord);
         if (leaf->chunk != nullptr) {
-            chunkManager.setChunkBlock(leaf->chunk, block, x, y, z);
-            modifiedChunks.push_back(leaf->coord);
+            int indexX = x - (leaf->coord.x * CHUNK_SIZE);
+            int indexY = y - (leaf->coord.y * CHUNK_SIZE);
+            int indexZ = z - (leaf->coord.z * CHUNK_SIZE);
+            chunkManager.setChunkBlockIndexed(leaf->chunk, block, indexX, indexY, indexZ);
+            modifiedChunks.push_back(leaf);
+            if (indexX == 0) {
+                Coord chunkNeighbor = {leaf->coord.x - 1, leaf->coord.y, leaf->coord.z};
+                if (Coord::chunkCoordInEqualOctreeCoord(octreeCoord, chunkNeighbor))
+                    modifiedChunks.push_back(root.getLeaf(chunkNeighbor));
+                else
+                    updateChunkFromChunkCoords(leaf->coord.x - 1, leaf->coord.y, leaf->coord.z);
+            } else if (indexX == CHUNK_SIZE_MINUS_ONE) {
+                Coord chunkNeighbor = {leaf->coord.x + 1, leaf->coord.y, leaf->coord.z};
+                if (Coord::chunkCoordInEqualOctreeCoord(octreeCoord, chunkNeighbor))
+                    modifiedChunks.push_back(root.getLeaf(chunkNeighbor));
+                else
+                    updateChunkFromChunkCoords(leaf->coord.x + 1, leaf->coord.y, leaf->coord.z);
+            }
+            if (indexY == 0) {
+                Coord chunkNeighbor = {leaf->coord.x, leaf->coord.y - 1, leaf->coord.z};
+                if (Coord::chunkCoordInEqualOctreeCoord(octreeCoord, chunkNeighbor))
+                    modifiedChunks.push_back(root.getLeaf(chunkNeighbor));
+                else
+                    updateChunkFromChunkCoords(leaf->coord.x, leaf->coord.y - 1, leaf->coord.z);
+            } else if (indexY == CHUNK_SIZE_MINUS_ONE) {
+                Coord chunkNeighbor = {leaf->coord.x, leaf->coord.y + 1, leaf->coord.z};
+                if (Coord::chunkCoordInEqualOctreeCoord(octreeCoord, chunkNeighbor))
+                    modifiedChunks.push_back(root.getLeaf(chunkNeighbor));
+                else
+                    updateChunkFromChunkCoords(leaf->coord.x, leaf->coord.y + 1, leaf->coord.z);
+            }
+            if (indexZ == 0) {
+                Coord chunkNeighbor = {leaf->coord.x, leaf->coord.y, leaf->coord.z - 1};
+                if (Coord::chunkCoordInEqualOctreeCoord(octreeCoord, chunkNeighbor))
+                    modifiedChunks.push_back(root.getLeaf(chunkNeighbor));
+                else
+                    updateChunkFromChunkCoords(leaf->coord.x, leaf->coord.y, leaf->coord.z - 1);
+            } else if (indexZ == CHUNK_SIZE_MINUS_ONE) {
+                Coord chunkNeighbor = {leaf->coord.x, leaf->coord.y, leaf->coord.z + 1};
+                if (Coord::chunkCoordInEqualOctreeCoord(octreeCoord, chunkNeighbor))
+                    modifiedChunks.push_back(root.getLeaf(chunkNeighbor));
+                else
+                    updateChunkFromChunkCoords(leaf->coord.x, leaf->coord.y, leaf->coord.z + 1);
+            }
         }
     }
 }
@@ -176,17 +209,29 @@ void WorldManager::setBlocks(const std::vector<int8_t> &blocks, int64_t x, int64
         auto leaf = it->second->getRoot().getLeaf(chunkCoord);
         if (leaf->chunk != nullptr) {
             leaf->chunk->blocks = blocks;
-            modifiedChunks.push_back(leaf->coord);
+            modifiedChunks.push_back(leaf);
         }
     }
 }
 
-void WorldManager::updateChunkFromBlockCoords(int64_t x, int64_t y, int64_t z){
-    modifiedChunks.push_back(Coord::getChunkFromBlock({x, y, z}));
+void WorldManager::updateChunkFromBlockCoords(int64_t x, int64_t y, int64_t z) {
+    Coord chunkCoord = Coord::getChunkFromBlock({x, y, z});
+    auto it = octrees.find(Coord::getOctreeFromChunk(chunkCoord));
+    if (it != octrees.end()) {
+        auto leaf = it->second->getRoot().getLeaf(chunkCoord);
+        if (leaf->chunk != nullptr)
+            modifiedChunks.push_back(leaf);
+    }
 }
 
-void WorldManager::updateChunkFromChunkCoords(int64_t x, int64_t y, int64_t z){
-    modifiedChunks.push_back({x, y, z});
+void WorldManager::updateChunkFromChunkCoords(int64_t x, int64_t y, int64_t z) {
+    Coord chunkCoord = {x, y, z};
+    auto it = octrees.find(Coord::getOctreeFromChunk(chunkCoord));
+    if (it != octrees.end()) {
+        auto leaf = it->second->getRoot().getLeaf(chunkCoord);
+        if (leaf->chunk != nullptr)
+            modifiedChunks.push_back(leaf);
+    }
 }
 
 void WorldManager::setChunkingRadius(int radius) {
@@ -196,7 +241,7 @@ void WorldManager::setChunkingRadius(int radius) {
     this->octreeDeletionRadiusSquared = (octreeRadius + 2.5 * OCTREE_LENGTH) * (octreeRadius + 2.5 * OCTREE_LENGTH);
     this->chunkingRadiusSquared = radius * radius;
     this->chunkingDeletionRadiusSquared = (radius + 2) * (radius + 2);
-    for (auto&[coord, octree] : octrees)
+    for (auto&[coord, octree]: octrees)
         octree->updateProperties(chunkingRadiusSquared, chunkingDeletionRadiusSquared);
 }
 
@@ -208,7 +253,7 @@ void WorldManager::render(Mat4d &projectionView, Mat4d &view) {
     std::lock_guard<std::mutex> lock(octreeAccess);
     frustum.update(projectionView);
     chunkManager.setView(view);
-    for (auto&[coord, octree] : octrees)
+    for (auto&[coord, octree]: octrees)
         octree->getRoot().render(&frustum, &chunkManager);
 }
 

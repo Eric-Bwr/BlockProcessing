@@ -23,6 +23,8 @@ struct Coord {
     static Coord getChunkFromBlock(Coord block);
     static Coord getOctreeFromChunk(Coord chunk);
     static int64_t getOctreeFromChunk(int64_t chunk);
+    static bool chunkCoordsInEqualOctree(const Coord &coord1, const Coord &coord2);
+    static bool chunkCoordInEqualOctreeCoord(const Coord &octreeCoord, const Coord &chunkCoord);
 };
 
 struct CoordHash {

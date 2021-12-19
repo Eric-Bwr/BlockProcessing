@@ -15,8 +15,8 @@ void TerrainManager::init(int seed, FastNoise::NoiseType noiseType, float freque
     LOG(shader->getErrorMessage());
 }
 
-void TerrainManager::generate(const Coord& coord) {
-    worldManager.generate(coord);
+void TerrainManager::generate(const Coord &playerChunkCoord, const Coord &playerOctreeCoord){
+    worldManager.generate(playerChunkCoord, playerOctreeCoord);
 }
 
 void TerrainManager::render(Mat4d &projectionView, Mat4d &view) {

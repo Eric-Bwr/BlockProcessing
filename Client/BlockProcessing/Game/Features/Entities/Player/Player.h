@@ -32,6 +32,7 @@ public:
     ~Player();
 private:
     bool onGround = false;
+    bool canGoUp = false;
     WorldManager* worldManager;
     PlayerBlockOutline playerBlockOutline;
     void calculateMove(double deltaTime);
