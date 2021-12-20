@@ -24,7 +24,6 @@ public:
 	ThreadSafeQueue& operator=(const ThreadSafeQueue&) = delete;
 	ThreadSafeQueue& operator=(ThreadSafeQueue&&) = delete;
 
-
 	size_t push(T&& task);
 	size_t get(T& task, const std::chrono::milliseconds& timeout, bool& success);
 	size_t size() const;
