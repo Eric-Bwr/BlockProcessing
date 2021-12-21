@@ -29,16 +29,14 @@ include_directories(Client)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Client/Build)
 
-add_executable(Client ${SOURCE_FILES_CLIENT} ${DEPENDENCIES_FILES_CLIENT} Dependencies/FastNoise/FastNoise.h Dependencies/FastNoise/FastNoise.cpp Client/BlockProcessing/Framework/Engine/Performance/GPUSpeedTester.h Client/BlockProcessing/Framework/Engine/Performance/SpeedTester.h)
+add_executable(Client ${SOURCE_FILES_CLIENT} ${DEPENDENCIES_FILES_CLIENT} Dependencies/FastNoise/FastNoise.h Dependencies/FastNoise/FastNoise.cpp)
 set_target_properties(Client PROPERTIES OUTPUT_NAME "Client")
 
 target_compile_options(Client PRIVATE -w)
 
 target_link_libraries(Client
-      #  ${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/UI/UI.a
         ${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/FreeType/freetype.a
         ${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/GLFW/libglfw3.a
-        #${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/OpenGL/OpenGL.a
         ${CMAKE_CURRENT_SOURCE_DIR}/Dependencies/Network/Network.a
         wsock32
         ws2_32
