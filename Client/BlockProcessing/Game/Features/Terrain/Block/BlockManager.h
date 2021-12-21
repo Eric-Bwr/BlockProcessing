@@ -1,7 +1,7 @@
 #pragma once
 
 #include <map>
-#include <UITexture.h>
+#include <Texture.h>
 #include "BlockProcessing/Game/Paths.h"
 #include "Block.h"
 
@@ -18,5 +18,4 @@ private:
     const float TEXTURE_LOD_BIAS = -2.5;
     std::string blockTexturesPath = TEXTURE_BLOCKS;
     std::map<int, Block*> blocks;
-    std::vector<Texture*> textures;
 };

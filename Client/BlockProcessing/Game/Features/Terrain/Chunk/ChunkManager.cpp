@@ -228,16 +228,21 @@ void ChunkManager::generateChunkVertices(Chunk *chunk) {
 void ChunkManager::loadChunkData(Chunk *chunk) {
     if (chunk->vertexCount != 0) {
         //beginGPUSpeedTest();
-        beginCPUSpeedTest();
+        //beginCPUSpeedTest();
 
         glBindBuffer(GL_ARRAY_BUFFER, chunk->vbo);
-        glBufferData(GL_ARRAY_BUFFER, stride * chunk->vertexCount, nullptr, GL_STATIC_DRAW);
-        glBufferSubData(GL_ARRAY_BUFFER, 0, stride * chunk->vertexCount, chunk->vertices.data());
+        //Only do if size is bigger than before
+        glBufferStorage(GL_ARRAY_BUFFER, stride * chunk->vertexCount, nullptr, flags);
+        chunk->bufferPtr = glMapBufferRange(GL_ARRAY_BUFFER, 0, stride * chunk->vertexCount, flags);
+        memcpy(chunk->bufferPtr, chunk->vertices.data(), stride * chunk->vertexCount);
+        glUnmapBuffer(GL_ARRAY_BUFFER);
 
-        endCPUSpeedTest();
+        //glBufferData(GL_ARRAY_BUFFER, stride * chunk->vertexCount, nullptr, GL_STATIC_DRAW);
+        //glBufferSubData(GL_ARRAY_BUFFER, 0, stride * chunk->vertexCount, chunk->vertices.data());
+        //endCPUSpeedTest();
         //endGPUSpeedTest();
-        printCPUNanoSeconds();
-        print("Bytes: " + std::to_string(chunk->vertices.size() * sizeof(float)));
+        //printCPUNanoSeconds();
+        //print("Bytes: " + std::to_string(chunk->vertices.size() * sizeof(float)));
         std::vector<float>().swap(chunk->vertices);
     }
     chunk->loaded = true;

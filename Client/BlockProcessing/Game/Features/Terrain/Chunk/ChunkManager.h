@@ -24,6 +24,7 @@ public:
     void setChunkBlock(Chunk *chunk, int8_t block, int64_t x, int64_t y, int64_t z);
     void setChunkBlockIndexed(Chunk *chunk, int8_t block, int x, int y, int z);
 private:
+    unsigned int flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT ;
     Mat4d model;
     Mat4d view;
     Shader* shader;
