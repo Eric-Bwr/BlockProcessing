@@ -1,6 +1,7 @@
 #pragma once
 
 #include "iostream"
+#include "BlockProcessing/Framework/Engine/Performance/SpeedTester.h"
 
 #include <mutex>
 #include <string>

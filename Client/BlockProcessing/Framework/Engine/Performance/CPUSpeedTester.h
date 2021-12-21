@@ -15,17 +15,17 @@ static void endCPUSpeedTest(){
 }
 
 static void printCPUNanoSeconds(){
-    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::nanoseconds>(speedCPUTesterEnd - speedCPUTesterBegin).count() << "[ns]" << std::endl;
+    std::cout << "CPU = " << std::chrono::duration_cast<std::chrono::nanoseconds>(speedCPUTesterEnd - speedCPUTesterBegin).count() << "[ns]" << std::endl;
 }
 
 static void printCPUMicroSeconds(){
-    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::microseconds>(speedCPUTesterEnd - speedCPUTesterBegin).count() << "[us]" << std::endl;
+    std::cout << "CPU = " << std::chrono::duration_cast<std::chrono::microseconds>(speedCPUTesterEnd - speedCPUTesterBegin).count() << "[us]" << std::endl;
 }
 
 static void printCPUMilliSeconds(){
-    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds>(speedCPUTesterEnd - speedCPUTesterBegin).count() << "[ms]" << std::endl;
+    std::cout << "CPU = " << std::chrono::duration_cast<std::chrono::milliseconds>(speedCPUTesterEnd - speedCPUTesterBegin).count() << "[ms]" << std::endl;
 }
 
 static void printCPUSeconds(){
-    std::cout << "Time difference = " << std::chrono::duration_cast<std::chrono::seconds>(speedCPUTesterEnd - speedCPUTesterBegin).count() << "[s]" << std::endl;
+    std::cout << "CPU = " << std::chrono::duration_cast<std::chrono::seconds>(speedCPUTesterEnd - speedCPUTesterBegin).count() << "[s]" << std::endl;
 }

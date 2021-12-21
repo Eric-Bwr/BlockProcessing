@@ -9,9 +9,9 @@ void WorldManager::init(BlockManager *blockManager) {
     setChunksPerThread(parameters.getInt("World#ChunksPerThread", 1));
     setChunkingRadius(parameters.getInt("World#ChunkingRadius", 10));
 }
-#include "BlockProcessing/Framework/Engine/Performance/SpeedTester.h"
 
 void WorldManager::generate(const Coord &playerChunkCoord, const Coord &playerOctreeCoord) {
+    beginCPUSpeedTest();
     bool success = true;
     while (success) {
         OctreeNode *result = nullptr;
@@ -24,6 +24,9 @@ void WorldManager::generate(const Coord &playerChunkCoord, const Coord &playerOc
             result->chunk->generating = false;
         }
     }
+    endCPUSpeedTest();
+    printCPUNanoSeconds();
+    print("-----------------------------");
 
     for (auto it = octrees.begin(), next_it = it; it != octrees.end(); it = next_it) {
         ++next_it;
@@ -33,7 +36,7 @@ void WorldManager::generate(const Coord &playerChunkCoord, const Coord &playerOc
     }
 
     int maxCandidates = maxPendingJobs - loader->getItemsCount();
-    if (maxCandidates <= 0)
+    if (maxCandidates <= 0 || !finishedUpdatingOctree)
         return;
 
     if (!finishedUpdatingOctree)

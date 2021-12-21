@@ -22,17 +22,17 @@ static void endGPUSpeedTest(){
 }
 
 static void printGPUNanoSeconds(){
-    std::cout << "Time difference = " << (speedGPUTesterEnd - speedGPUTesterBegin) << "[ns]" << std::endl;
+    std::cout << "GPU = " << (speedGPUTesterEnd - speedGPUTesterBegin) << "[ns]" << std::endl;
 }
 
 static void printGPUMicroSeconds(){
-    std::cout << "Time difference = " << (speedGPUTesterEnd - speedGPUTesterBegin) / 1000.0 << "[us]" << std::endl;
+    std::cout << "GPU = " << (speedGPUTesterEnd - speedGPUTesterBegin) / 1000.0 << "[us]" << std::endl;
 }
 
 static void printGPUMilliSeconds(){
-    std::cout << "Time difference = " << (speedGPUTesterEnd - speedGPUTesterBegin) / 1000000.0 << "[ms]" << std::endl;
+    std::cout << "GPU = " << (speedGPUTesterEnd - speedGPUTesterBegin) / 1000000.0 << "[ms]" << std::endl;
 }
 
 static void printGPUSeconds(){
-    std::cout << "Time difference = " << (speedGPUTesterEnd - speedGPUTesterBegin) / 1000000000.0 << "[s]" << std::endl;
+    std::cout << "GPU = " << (speedGPUTesterEnd - speedGPUTesterBegin) / 1000000000.0 << "[s]" << std::endl;
 }
