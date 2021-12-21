@@ -39,9 +39,6 @@ void WorldManager::generate(const Coord &playerChunkCoord, const Coord &playerOc
     if (maxCandidates <= 0 || !finishedUpdatingOctree)
         return;
 
-    if (!finishedUpdatingOctree)
-        return;
-
     finishedUpdatingOctree = false;
     loader->exec([this, maxCandidates, playerChunkCoord, playerOctreeCoord]() {
         chunkCandidatesForGenerating.clear();
