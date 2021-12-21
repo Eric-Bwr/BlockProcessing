@@ -9,6 +9,7 @@ void WorldManager::init(BlockManager *blockManager) {
     setChunksPerThread(parameters.getInt("World#ChunksPerThread", 1));
     setChunkingRadius(parameters.getInt("World#ChunkingRadius", 10));
 }
+#include "BlockProcessing/Framework/Engine/Performance/SpeedTester.h"
 
 void WorldManager::generate(const Coord &playerChunkCoord, const Coord &playerOctreeCoord) {
     bool success = true;

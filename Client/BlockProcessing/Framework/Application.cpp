@@ -17,7 +17,6 @@ extern "C" void handleAborts(int signalNumber) {
 int main(){
     std::set_terminate(terminateHandler);
     signal(SIGSEGV, &handleAborts);
-
     signal(SIGTERM, &handleAborts);
     signal(SIGBREAK, &handleAborts);
     signal(SIGABRT, &handleAborts);
@@ -69,7 +68,7 @@ void Application::preInit() {
     glfwSetCursorPos(window, width / 2, height / 2);
     glViewport(0, 0, width, height);
     glfwSwapInterval(1);
-    LOG<INFO_LVL>("Constructed Window");
+    LOG<INFO_LVL>("Initialized OpenGL");
 }
 
 void Application::init() {

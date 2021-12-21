@@ -224,12 +224,18 @@ void ChunkManager::generateChunkVertices(Chunk *chunk) {
         }
     }
 }
-
+#include "BlockProcessing/Framework/Engine/Performance/SpeedTester.h"
 void ChunkManager::loadChunkData(Chunk *chunk) {
     if (chunk->vertexCount != 0) {
+        beginGPUSpeedTest();
+
         glBindBuffer(GL_ARRAY_BUFFER, chunk->vbo);
-        glBufferData(GL_ARRAY_BUFFER, stride * chunk->vertexCount, chunk->vertices.data(), GL_STATIC_DRAW);
-        //glCopyBufferSubData();
+        glBufferData(GL_ARRAY_BUFFER, stride * chunk->vertexCount, nullptr, GL_STATIC_DRAW);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, stride * chunk->vertexCount, chunk->vertices.data());
+
+        endGPUSpeedTest();
+        printGPUMilliSeconds();
+        print((chunk->vertices.size()) * sizeof(float));
         std::vector<float>().swap(chunk->vertices);
     }
     chunk->loaded = true;
