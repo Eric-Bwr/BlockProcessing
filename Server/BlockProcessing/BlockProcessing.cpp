@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <iostream>
 #include "Server.h"
+#include <Network.h>
 
 static std::atomic_bool alive = true;
 
@@ -64,7 +65,7 @@ int main() {
     for (const auto &line : lines)
         std::cout << line << "\n";
     Server server;
-    server.Initialize(Network::IPEndpoint(lines.at(0).substr(4, lines.at(0).size()).data(), std::stoi(lines.at(1).substr(6, lines.at(1).size()))));
+    server.Initialize(Network::Endpoint(lines.at(0).substr(4, lines.at(0).size()).data(), std::stoi(lines.at(1).substr(6, lines.at(1).size()))));
     std::cout << "Initialized Server Successfully\n";
     std::thread thread(frame, &server);
     thread.detach();

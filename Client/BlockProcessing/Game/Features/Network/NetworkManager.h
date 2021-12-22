@@ -10,10 +10,9 @@ class ServerMenuInterface;
 struct NetworkAction {
     uint8_t type;
     Network::TCPConnection *connection;
-    Network::Packet *packet;
+    Network::Packet packet;
     ~NetworkAction() {
         delete connection;
-        delete packet;
     }
 };
 

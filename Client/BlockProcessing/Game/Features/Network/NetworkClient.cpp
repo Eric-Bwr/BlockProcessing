@@ -2,6 +2,7 @@
 #include "NetworkManager.h"
 #include <iostream>
 #include <atomic>
+#include <Network.h>
 
 static NetworkManager* networkManagerPtr;
 static std::string serverAddress;
@@ -13,14 +14,13 @@ static void frame(Network::Client* client){
     while(alive){
         if(attempt){
             if(networkManagerPtr->connected)
-                client->CloseConnection();
+                client->Close();
             auto ip = serverAddress.substr(0, serverAddress.find(':'));
             auto port = std::stoi(serverAddress.substr(serverAddress.find(':') + 1, serverAddress.size()));
-            networkManagerPtr->connected = client->Connect(Network::IPEndpoint(ip.c_str(), port));
+            networkManagerPtr->connected = client->Connect(Network::Endpoint(ip.c_str(), port));
             attempt = false;
             NetworkAction action{};
             action.type = ACTION_STATUS;
-            action.packet = nullptr;
             networkManagerPtr->actions.emplace_back(action);
         }
         std::this_thread::sleep_for(std::chrono::milliseconds((long) (1)));
@@ -40,9 +40,7 @@ void NetworkClient::connect(const std::string &server) {
     serverAddress = server;
 }
 
-void NetworkClient::OnConnect(Network::TCPConnection *connection) {
-
-}
+void NetworkClient::OnConnect() {}
 
 void NetworkClient::OnConnectFail() {}
 
@@ -50,20 +48,17 @@ void NetworkClient::OnDisconnect() {
     std::cout << "Disconnected\n";
 }
 
-void NetworkClient::OnError(Network::TCPConnection *connection, short error) {}
-
-void NetworkClient::OnPacketReceive(Network::TCPConnection *connection, Network::Packet *packet) {
+void NetworkClient::OnPacketReceive(Network::Packet &packet) {
     NetworkAction action{};
     action.type = ACTION_STATUS;
-    action.connection = connection;
     action.packet = packet;
     networkManagerPtr->actions.emplace_back(action);
 }
 
-void NetworkClient::OnPacketSend(Network::TCPConnection *connection, Network::Packet *packet) {}
+void NetworkClient::OnPacketSend(Network::Packet &packet) {}
 
 NetworkClient::~NetworkClient() {
     alive = false;
     if(networkManagerPtr->connected)
-        CloseConnection();
+        Close();
 }
