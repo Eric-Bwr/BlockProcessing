@@ -23,8 +23,6 @@ void MainMenuScene::load() {
 }
 
 void MainMenuScene::unload() {
-    if(!blockProcessing->gameScene->optionsMenuInterface->shouldVsync)
-        glfwSwapInterval(0);
     mainMenuInterface->unload();
     blockProcessing->postProcessManager->gaussianBlur(0.0f);
     blockProcessing->skyBoxManager->set(nullptr);

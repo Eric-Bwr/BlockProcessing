@@ -54,6 +54,8 @@ void GameScene::init() {
 }
 
 void GameScene::load() {
+    if(!optionsMenuInterface->shouldVsync)
+        glfwSwapInterval(0);
     crosshair = true;
     crosshairInterface->load();
     player->updatePlayerPosition();
