@@ -11,6 +11,7 @@ public:
     void setFPS(float fps);
     void load();
     void unload();
+    void onResize(int width, int height, float factorX, float factorY) override;
     ~DebugInterface() override;
 private:
     UIText* textLeft;

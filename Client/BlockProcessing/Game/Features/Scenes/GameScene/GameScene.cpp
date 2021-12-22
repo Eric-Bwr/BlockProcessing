@@ -269,9 +269,10 @@ void GameScene::onResize(bool show, int width, int height) {
     if (show) {
         if (crosshair)
             crosshairInterface->unload();
-        chatInterface->load();
-        if (!debug)
-            debugInterface->load();
+        if(!chat)
+            chatInterface->load();
+        if (debug)
+            debugInterface->unload();
         if (!gameMenu)
             gameMenuInterface->load();
         if (!optionsMenu)
@@ -279,9 +280,10 @@ void GameScene::onResize(bool show, int width, int height) {
     } else {
         if (crosshair)
             crosshairInterface->load();
-        chatInterface->unload(true);
-        if (!debug)
-            debugInterface->unload();
+        if(!chat)
+            chatInterface->unload(true);
+        if (debug)
+            debugInterface->load();
         if (!gameMenu)
             gameMenuInterface->unload();
         if (!optionsMenu)

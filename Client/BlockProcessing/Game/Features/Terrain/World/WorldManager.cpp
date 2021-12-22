@@ -11,7 +11,6 @@ void WorldManager::init(BlockManager *blockManager) {
 }
 
 void WorldManager::generate(const Coord &playerChunkCoord, const Coord &playerOctreeCoord) {
-   // beginCPUSpeedTest();
     bool success = true;
     while (success) {
         OctreeNode *result = nullptr;
@@ -24,9 +23,6 @@ void WorldManager::generate(const Coord &playerChunkCoord, const Coord &playerOc
             result->chunk->generating = false;
         }
     }
-  //  endCPUSpeedTest();
-  //  printCPUNanoSeconds();
-  //  print("-----------------------------");
 
     for (auto it = octrees.begin(), next_it = it; it != octrees.end(); it = next_it) {
         ++next_it;

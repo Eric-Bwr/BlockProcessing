@@ -61,7 +61,7 @@ void UIManager::setSize(int width, int height) {
         double factorY = (double) height / (double) this->height;
         for (auto const &componentList : components)
             for (auto component : *componentList.second)
-                component->setBounds(component->positionX * factorX, component->positionY * factorY,component->width * factorX, component->height * factorY);
+                component->setBounds(component->positionX * factorX, component->positionY * factorY, component->width * factorX, component->height * factorY);
     }
     this->width = width;
     this->height = height;

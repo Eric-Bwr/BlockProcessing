@@ -95,3 +95,9 @@ DebugInterface::~DebugInterface() {
     delete textLeft;
     delete textRight;
 }
+
+void DebugInterface::onResize(int width, int height, float factorX, float factorY) {
+    for(auto background : backgroundsRight)
+        background->setPosition(width - background->width, background->positionY);
+    textRight->setPosition(width - textRight->width, textRight->positionY);
+}
