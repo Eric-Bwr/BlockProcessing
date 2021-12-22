@@ -224,6 +224,9 @@ void ChunkManager::generateChunkVertices(Chunk *chunk) {
         }
     }
 }
+static std::chrono::steady_clock::time_point s1;
+static std::chrono::steady_clock::time_point s2;
+static std::chrono::steady_clock::time_point s3;
 
 void ChunkManager::loadChunkData(Chunk *chunk) {
     if (chunk->vertexCount != 0) {
@@ -232,13 +235,20 @@ void ChunkManager::loadChunkData(Chunk *chunk) {
 
         glBindBuffer(GL_ARRAY_BUFFER, chunk->vbo);
         //Only do if size is bigger than before
+        s1 = std::chrono::steady_clock::now();
         glBufferStorage(GL_ARRAY_BUFFER, stride * chunk->vertexCount, nullptr, flags);
         chunk->bufferPtr = glMapBufferRange(GL_ARRAY_BUFFER, 0, stride * chunk->vertexCount, flags);
-        memcpy(chunk->bufferPtr, chunk->vertices.data(), stride * chunk->vertexCount);
-        glUnmapBuffer(GL_ARRAY_BUFFER);
-
-        //glBufferData(GL_ARRAY_BUFFER, stride * chunk->vertexCount, nullptr, GL_STATIC_DRAW);
-        //glBufferSubData(GL_ARRAY_BUFFER, 0, stride * chunk->vertexCount, chunk->vertices.data());
+        //memcpy(chunk->bufferPtr, chunk->vertices.data(), stride * chunk->vertexCount);
+        s2 = std::chrono::steady_clock::now();
+        glBufferData(GL_ARRAY_BUFFER, stride * chunk->vertexCount, nullptr, GL_STATIC_DRAW);
+        glBufferSubData(GL_ARRAY_BUFFER, 0, stride * chunk->vertexCount, chunk->vertices.data());
+        s3 = std::chrono::steady_clock::now();
+        auto nano1 = std::chrono::duration_cast<std::chrono::nanoseconds>(s2 - s1).count();
+        auto nano2 = std::chrono::duration_cast<std::chrono::nanoseconds>(s3 - s2).count();
+        //if(nano1 < nano2)
+        //    print("Win: 1, DIFF: " + std::to_string(nano2 - nano1));
+        //else if(nano2 < nano1)
+        //    print("Win: 2, DIFF: " + std::to_string(nano1 - nano2));
         //endCPUSpeedTest();
         //endGPUSpeedTest();
         //printCPUNanoSeconds();
