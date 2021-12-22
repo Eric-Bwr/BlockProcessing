@@ -84,6 +84,17 @@ void UITextField::setSize(float width, float height) {
     this->height = height;
     text.setSize(width, height);
     mesh.loadPosition(positionX, positionY, width, height);
+    while(text.fontType->getTextWidth(content.c_str()) > width)
+        content.pop_back();
+    while(text.fontType->getTextWidth(passwordContent.c_str()) > width)
+        passwordContent.pop_back();
+    if(isPasswordField) {
+        text.setText(passwordContent.c_str());
+        cursorContent = passwordContent;
+    } else {
+        text.setText(content.c_str());
+        cursorContent = content;
+    }
     updateCursor();
 }
 
@@ -94,6 +105,17 @@ void UITextField::setBounds(float x, float y, float w, float h) {
     this->height = h;
     text.setBounds(x + offset, y, w, h);
     mesh.loadPosition(positionX, positionY, width, height);
+    while(text.fontType->getTextWidth(content.c_str()) > width)
+        content.pop_back();
+    while(text.fontType->getTextWidth(passwordContent.c_str()) > width)
+        passwordContent.pop_back();
+    if(isPasswordField) {
+        text.setText(passwordContent.c_str());
+        cursorContent = passwordContent;
+    } else {
+        text.setText(content.c_str());
+        cursorContent = content;
+    }
     updateCursor();
 }
 
