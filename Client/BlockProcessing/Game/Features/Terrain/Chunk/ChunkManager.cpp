@@ -44,6 +44,7 @@ void ChunkManager::generateChunkData(Chunk *chunk) {
         generateChunkDefaultVertices(chunk);
     } else
         generateChunkVertices(chunk);
+    chunk->modified = false;
     chunk->vertexCount = chunk->vertices.size() / 10;
     if(chunk->vertexCount == 0)
         std::vector<int8_t>().swap(chunk->blocks);

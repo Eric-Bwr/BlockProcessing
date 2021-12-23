@@ -13,5 +13,6 @@ struct Chunk {
     int64_t vertexCountBefore = 0;
     std::atomic_bool generating = false;
     std::atomic_bool init = true;
+    std::atomic_bool modified = false;
     bool loaded = false;
 };

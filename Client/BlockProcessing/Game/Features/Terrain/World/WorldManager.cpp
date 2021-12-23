@@ -5,7 +5,7 @@
 
 void WorldManager::init(BlockManager *blockManager) {
     chunkManager.init(blockManager, this);
-    loader = std::make_unique<AsyncLoader<OctreeNode *>>();
+    loader = std::make_unique<AsyncLoader<OctreeNode*>>();
     setChunksPerThread(parameters.getInt("World#ChunksPerThread", 1));
     setChunkingRadius(parameters.getInt("World#ChunkingRadius", 10));
 }
@@ -40,6 +40,7 @@ void WorldManager::generate(const Coord &playerChunkCoord, const Coord &playerOc
         chunkCandidatesForGenerating.clear();
         for (auto leaf: modifiedChunks) {
             leaf->chunk->generating = true;
+            leaf->chunk->modified = true;
             chunkCandidatesForGenerating.push_back(leaf);
         }
         modifiedChunks.clear();
@@ -73,10 +74,10 @@ void WorldManager::generate(const Coord &playerChunkCoord, const Coord &playerOc
             loader->scheduleTask([this, candidate]() {
                 chunkManager.generateChunkData(candidate->chunk);
                 return candidate;
-            });
+            }, candidate->chunk->modified);
         }
         finishedUpdatingOctree = true;
-    });
+    }, 0);
 }
 
 Chunk *WorldManager::getChunkFromBlockCoords(int64_t x, int64_t y, int64_t z) {
