@@ -2,6 +2,7 @@
 
 void BlockProcessing::onKey(int key, int scancode, int action, int mods) {
     sceneManager->onKey(key, scancode, action, mods);
+    interfaceManager->keyInput(key, action, mods);
     interfaceManager->UI.keyInput(key, action, mods);
 }
 

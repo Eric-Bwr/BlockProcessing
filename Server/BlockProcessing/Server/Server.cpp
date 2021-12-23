@@ -2,13 +2,19 @@
 #include "../Util/Logger/Logger.h"
 
 const int PACKET_INFO = 0;
+const int PACKET_DISCONNECT = 1;
+const int PACKET_PING = 2;
+
+static Network::Packet info = Network::Packet(PACKET_INFO);
+
+void Server::init(const char* name, const char* motd) {
+    info.AppendString(motd);
+    info.AppendString(name);
+}
 
 void Server::OnConnect(Network::TCPConnection &connection) {
     LOG<INFO_LVL>("New Connection: " + connection.Endpoint.GetIP());
-    auto motd = Network::Packet(PACKET_INFO);
-    motd.AppendString("A Test Server");
-    motd.AppendString("Test Motd");
-    connection.OutStream.push(motd);
+    connection.OutStream.push(info);
 }
 
 void Server::OnDisconnect(Network::TCPConnection &connection, Network::DisconnectReason reason) {
@@ -16,8 +22,17 @@ void Server::OnDisconnect(Network::TCPConnection &connection, Network::Disconnec
 }
 
 void Server::OnPacketReceive(Network::TCPConnection &connection, Network::Packet &packet) {
-    LOG<INFO_LVL>("Packet from: " + connection.Endpoint.GetIP());
-    LOG<INFO_LVL>("Content: " + packet.GetString());
+    switch(packet.GetPacketType()){
+        case PACKET_PING:
+            connection.OutStream.push(packet);
+            LOG<INFO_LVL>("Ping Packet from: " + connection.Endpoint.GetIP());
+            break;
+        default:
+            LOG<INFO_LVL>("Packet from: " + connection.Endpoint.GetIP());
+            LOG<INFO_LVL>("ID: " + packet.GetPacketType());
+            LOG<INFO_LVL>("Content: " + packet.GetString());
+            break;
+    }
 }
 
 void Server::OnPacketSend(Network::TCPConnection &connection, Network::Packet &packet) {}

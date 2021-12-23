@@ -22,6 +22,11 @@ void InterfaceManager::render() {
     UI.render();
 }
 
+void InterfaceManager::keyInput(int key, int action, int mods) {
+    for(auto interface : interfaces)
+        interface->keyInput(key, action, mods);
+}
+
 void InterfaceManager::setSize(int width, int height) {
     UI.setSize(width, height);
     float factorX = (float)width / (float)this->width;

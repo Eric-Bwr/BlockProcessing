@@ -1,5 +1,6 @@
 #pragma once
 
+#include <chrono>
 #include <Client/Client.h>
 #include "BlockProcessing/Game/Features/Terrain/World/AsyncLoader.h"
 
@@ -18,7 +19,7 @@ public:
     void OnPacketSend(Network::Packet& packet) override;
     ~NetworkManager();
     bool connected = false;
-    int status = 0, info = 0;
+    int status = 0;
 private:
     ServerMenuInterface* serverMenuInterface;
     ThreadSafeQueue<Network::Packet> packets;

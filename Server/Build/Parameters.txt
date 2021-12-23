@@ -1,2 +1,4 @@
 IP string 127.0.0.1
+MOTD string A BlockProcessing Server
+Name string InDev
 Port int 25566

@@ -90,7 +90,6 @@ void UIManager::mousePositionInput(double x, double y) {
 void UIManager::mouseButtonInput(int button, int action) {
     if (button == MOUSE_BUTTON_PRESSED) {
         for (auto const &componentList : components) {
-            auto i = componentList.first;
             for (auto component : *componentList.second) {
                 component->mouseButtonInput(action);
                 component->mousePositionInput(mouseX, mouseY);

@@ -27,6 +27,8 @@ void Network::Client::Close() {
     Connection.Socket.Close();
     OnDisconnect();
     m_ConnectionFailed = true;
+    std::queue<Network::Packet> empty;
+    std::swap( Connection.OutStream, empty );
 }
 
 void Network::Client::Frame() {

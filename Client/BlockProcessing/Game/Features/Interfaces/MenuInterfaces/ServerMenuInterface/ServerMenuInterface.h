@@ -15,12 +15,12 @@ public:
     void unload();
     void update(double frameDeltaTime);
     void setInfo(const char* name, const char* motd);
+    void keyInput(int key, int action, int mods) override;
     ~ServerMenuInterface() override;
-    UIText* serverInfo;
-    UIImage* connectionInfo;
 private:
     Parameters parameters = Parameters("ServerMenuInterface");
     const int fieldWidth = 700, fieldHeight = 70;
+    const int serverFieldWidth = 250 * 3.5, serverFieldHeight = 200;
     Texture* serverTexture;
     UIText* titleText;
     UIButton* backButton;
@@ -31,5 +31,9 @@ private:
     UIButton* refreshButton;
     UIImage* serverBackground;
     UIImage* background;
+    UIText* serverName;
+    UIText* serverMotd;
+    UIImage* connectionInfo;
     int oldStatus = -1;
+    float animation = 0, animationSpeed = 6.5;
 };

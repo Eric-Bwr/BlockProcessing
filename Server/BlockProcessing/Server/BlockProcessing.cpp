@@ -13,7 +13,6 @@ static std::condition_variable condition;
 
 static void frame(Server *server) {
     while (alive) {
-        std::this_thread::sleep_for(std::chrono::microseconds(1));
         server->Frame();
     }
     std::lock_guard<std::mutex> lock(mutex);
@@ -23,7 +22,7 @@ static void frame(Server *server) {
 
 static void input() {
     while (alive) {
-        std::this_thread::sleep_for(std::chrono::microseconds(1));
+        std::this_thread::sleep_for(std::chrono::milliseconds(1));
         std::string answer;
         std::cin >> answer;
         if(answer == "exit" || answer == "shutdown") {
@@ -46,6 +45,7 @@ void BlockProcessing::init(Application* application) {
         return;
     }
     LOG<INFO_LVL>("Initializing Server...");
+    server.init(parameters.getString("Name", "Server Name").c_str(), parameters.getString("MOTD", "Message of the day").c_str());
     if (server.Initialize(Network::Endpoint(parameters.getString("IP", "127.0.0.1").c_str(), parameters.getInt("Port", 25566))))
         LOG<INFO_LVL>("Initialized Server Successfully");
     else {
@@ -62,7 +62,7 @@ void BlockProcessing::init(Application* application) {
 }
 
 void BlockProcessing::update() {
-
+    std::this_thread::sleep_for(std::chrono::milliseconds(1));
 }
 
 BlockProcessing::~BlockProcessing() {
