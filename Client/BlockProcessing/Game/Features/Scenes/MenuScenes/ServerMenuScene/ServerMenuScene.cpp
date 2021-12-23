@@ -36,4 +36,8 @@ int ServerMenuScene::getID() {
     return ID_SERVER;
 }
 
+void ServerMenuScene::onKey(int key, int scancode, int action, int mods) {
+    serverMenuInterface->keyInput(key, action, mods);
+}
+
 ServerMenuScene::~ServerMenuScene() = default;

@@ -12,7 +12,6 @@ struct Interface {
     Texture* guiTexture;
     void updateInput();
     void updateInput(double mouseX, double mouseY);
-    virtual void keyInput(int key, int action, int mods) {}
     virtual void onResize(int width, int height, float factorX, float factorY) {}
     int width, height;
 };

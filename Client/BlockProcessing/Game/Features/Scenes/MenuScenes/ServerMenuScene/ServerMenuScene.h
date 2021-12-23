@@ -10,6 +10,7 @@ public:
     void unload() override;
     void update(double frameDeltaTime) override;
     void render(double frameDeltaTime) override;
+    void onKey(int key, int scancode, int action, int mods) override;
     void onResize(bool show, int width, int height) override;
     int getID() override;
     ~ServerMenuScene() override;

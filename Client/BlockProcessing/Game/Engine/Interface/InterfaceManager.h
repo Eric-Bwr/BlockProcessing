@@ -8,7 +8,6 @@ public:
     void init(int width, int height);
     void add(Interface* interface);
     void render();
-    void keyInput(int key, int action, int mods);
     void setSize(int width, int height);
     ~InterfaceManager();
     UIManager UI;

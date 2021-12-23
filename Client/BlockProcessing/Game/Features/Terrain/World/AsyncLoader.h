@@ -51,11 +51,11 @@ public:
     AsyncLoader &operator=(const AsyncLoader &) = delete;
     AsyncLoader &operator=(AsyncLoader &&) = delete;
 
-    size_t scheduleTask(std::function<T()> &&task, int priority);
+    size_t scheduleTask(std::function<T()> &&task, int priority = 0);
     size_t getResult(T &result, const std::chrono::milliseconds &timeout, bool &success);
     std::chrono::milliseconds runAll(std::vector<std::function<T()>> &tasks, std::vector<T> &results);
     std::chrono::milliseconds runAll(std::vector<std::function<T()>> &tasks, const std::function<void(T &&)> &onLoad);
-    void exec(std::function<void()> &&f, int priority);
+    void exec(std::function<void()> &&f, int priority = 0);
 
     int getItemsCount() const {
         return items_stored;

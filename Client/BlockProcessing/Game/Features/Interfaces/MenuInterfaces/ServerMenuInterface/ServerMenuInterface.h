@@ -15,7 +15,7 @@ public:
     void unload();
     void update(double frameDeltaTime);
     void setInfo(const char* name, const char* motd);
-    void keyInput(int key, int action, int mods) override;
+    void keyInput(int key, int action, int mods);
     ~ServerMenuInterface() override;
 private:
     Parameters parameters = Parameters("ServerMenuInterface");
