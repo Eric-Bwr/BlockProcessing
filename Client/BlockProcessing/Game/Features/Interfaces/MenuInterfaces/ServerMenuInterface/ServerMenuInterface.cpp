@@ -109,6 +109,28 @@ void ServerMenuInterface::unload() {
 
 void ServerMenuInterface::update(double frameDeltaTime) {
     networkManagerPtr->update();
+    auto status = networkManagerPtr->status;
+    auto info = networkManagerPtr->info;
+    if(oldStatus != status) {
+        oldStatus = status;
+        if (status == STATUS_UNKNOWN_HOST) {
+            connectionInfo->setTextureCoords(connectionIcons[0][0], connectionIcons[0][1], 10, 7);
+            serverInfo->setText("Unknown Host");
+            serverInfo->setHex(0xDDDDDD);
+        } else if (status == STATUS_CONNECTING) {
+            connectionInfo->setTextureCoords(connectionIcons[0][0], connectionIcons[0][1], 10, 7);
+            serverInfo->setText("Connecting...");
+            serverInfo->setHex(0xDDDDDD);
+        } else if (status == STATUS_CONNECTED) {
+            connectionInfo->setTextureCoords(connectionIcons[1][0], connectionIcons[1][1], 10, 7);
+            serverInfo->setText("Connected");
+            serverInfo->setHex(0xFFFFFF);
+        }
+    }
+}
+
+void ServerMenuInterface::setInfo(const char *name, const char *motd) {
+    serverInfo->setText(name);
 }
 
 ServerMenuInterface::~ServerMenuInterface() {

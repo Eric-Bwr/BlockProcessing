@@ -2,7 +2,11 @@
 
 #include "BlockProcessing/Game/Engine/Interface/Interface.h"
 #include "BlockProcessing/Game/Engine/Scene/SceneManager.h"
-#include "BlockProcessing/Game/Engine/Parameters.h"
+#include "BlockProcessing/Framework/Engine/Parameters/Parameters.h"
+
+const int STATUS_UNKNOWN_HOST = 0;
+const int STATUS_CONNECTING = 1;
+const int STATUS_CONNECTED = 2;
 
 class ServerMenuInterface : public Interface {
 public:
@@ -10,6 +14,7 @@ public:
     void load();
     void unload();
     void update(double frameDeltaTime);
+    void setInfo(const char* name, const char* motd);
     ~ServerMenuInterface() override;
     UIText* serverInfo;
     UIImage* connectionInfo;
@@ -26,4 +31,5 @@ private:
     UIButton* refreshButton;
     UIImage* serverBackground;
     UIImage* background;
+    int oldStatus = -1;
 };

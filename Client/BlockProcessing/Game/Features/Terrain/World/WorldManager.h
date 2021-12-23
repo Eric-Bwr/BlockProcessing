@@ -11,7 +11,7 @@
 #include "BlockProcessing/Game/Features/Terrain/Util/Coordinate.h"
 #include "BlockProcessing/Game/Features/Terrain/World/Octree/Octree.h"
 #include "BlockProcessing/Game/Features/Terrain/World/Octree/Frustum/Frustum.h"
-#include "BlockProcessing/Game/Engine/Parameters.h"
+#include "BlockProcessing/Framework/Engine/Parameters/Parameters.h"
 #include "AsyncLoader.h"
 
 class WorldManager {

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Client/Client.h>
-#include <string>
+#include "BlockProcessing/Game/Features/Terrain/World/AsyncLoader.h"
 
 class ServerMenuInterface;
 
@@ -18,6 +18,8 @@ public:
     void OnPacketSend(Network::Packet& packet) override;
     ~NetworkManager();
     bool connected = false;
+    int status = 0, info = 0;
 private:
     ServerMenuInterface* serverMenuInterface;
+    ThreadSafeQueue<Network::Packet> packets;
 };

@@ -2,7 +2,7 @@
 
 #include "BlockProcessing/Game/Engine/Interface/Interface.h"
 #include "BlockProcessing/Game/Engine/Scene/SceneManager.h"
-#include "BlockProcessing/Game/Engine/Parameters.h"
+#include "BlockProcessing/Framework/Engine/Parameters/Parameters.h"
 
 class GameMenuInterface;
 class GameScene;

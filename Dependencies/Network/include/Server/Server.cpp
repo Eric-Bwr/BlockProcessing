@@ -1,6 +1,4 @@
 #include "Server.h"
-#include <thread>
-#include <iostream>
 
 bool Network::Server::Initialize(const Network::Endpoint &endpoint) {
     m_MasterFD.clear();
@@ -31,30 +29,9 @@ void Network::Server::Terminate() {
 }
 
 void Network::Server::Frame() {
-    if(!m_Init){
+    if(!m_Init)
         return;
-    }
-    Poll(m_MasterFD.data(), m_MasterFD.size(), 0);
-    if (m_MasterFD[0].revents & POLLRDNORM) {
-        Socket clientSocket;
-        Endpoint clientEndpoint;
-        if (!m_Server.Accept(clientSocket, clientEndpoint)) {
-            return;
-        }
-        TCPConnection connection;
-        connection.Socket = clientSocket;
-        connection.Endpoint = clientEndpoint;
-        connection.Index = clientSocket.GetHandle();
-        OnConnect(connection);
-        m_Connections.emplace_back(connection);
-        PollFD clientFD = {};
-        clientFD.fd = clientSocket.GetHandle();
-        clientFD.events = POLLRDNORM | POLLWRNORM;
-        clientFD.revents = 0;
-        m_MasterFD.push_back(clientFD);
-    }
     for (int i = m_MasterFD.size() - 1; i >= 1; i--) {
-
         int index = i - 1;
         TCPConnection &connection = m_Connections[index];
         if (m_MasterFD[i].revents & POLLERR) {
@@ -100,8 +77,25 @@ void Network::Server::Frame() {
             continue;
         }
     }
-
-    std::this_thread::sleep_for(std::chrono::milliseconds((long) (1)));
+    Poll(m_MasterFD.data(), m_MasterFD.size(), 0);
+    if (m_MasterFD[0].revents & POLLRDNORM) {
+        Socket clientSocket;
+        Endpoint clientEndpoint;
+        if (!m_Server.Accept(clientSocket, clientEndpoint)) {
+            return;
+        }
+        TCPConnection connection;
+        connection.Socket = clientSocket;
+        connection.Endpoint = clientEndpoint;
+        connection.Index = clientSocket.GetHandle();
+        OnConnect(connection);
+        m_Connections.emplace_back(connection);
+        PollFD clientFD = {};
+        clientFD.fd = clientSocket.GetHandle();
+        clientFD.events = POLLRDNORM | POLLWRNORM;
+        clientFD.revents = 0;
+        m_MasterFD.push_back(clientFD);
+    }
 }
 
 void Network::Server::CloseConnection(int index) {
@@ -110,4 +104,3 @@ void Network::Server::CloseConnection(int index) {
     connection.Socket.Close();
     m_Connections.erase(m_Connections.begin() + index);
 }
-

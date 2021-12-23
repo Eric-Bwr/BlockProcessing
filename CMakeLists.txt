@@ -50,7 +50,7 @@ include_directories(Server)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Server/Build)
 
-add_executable(Server ${SOURCE_FILES_SERVER} ${DEPENDENCIES_FILES})
+add_executable(Server ${SOURCE_FILES_SERVER} ${DEPENDENCIES_FILES} Server/BlockProcessing/Application.cpp Server/BlockProcessing/Application.h Server/BlockProcessing/Server/BlockProcessing.h)
 set_target_properties(Server PROPERTIES OUTPUT_NAME "Server")
 
 target_compile_options(Server PRIVATE -w)
