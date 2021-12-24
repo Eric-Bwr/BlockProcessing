@@ -12,6 +12,7 @@ void GameScene::init() {
     commandManager = new CommandManager();
     debugInterface = new DebugInterface();
     crosshairInterface = new CrosshairInterface();
+    hotbarInterface = new HotbarInterface();
     gameMenuInterface = new GameMenuInterface();
     optionsMenuInterface = new OptionsMenuInterface();
 
@@ -27,12 +28,14 @@ void GameScene::init() {
     blockProcessing->interfaceManager->add(chatInterface);
     blockProcessing->interfaceManager->add(debugInterface);
     blockProcessing->interfaceManager->add(crosshairInterface);
+    blockProcessing->interfaceManager->add(hotbarInterface);
     blockProcessing->interfaceManager->add(gameMenuInterface);
     blockProcessing->interfaceManager->add(optionsMenuInterface);
     chatInterface->init(commandManager);
     commandManager->init(chatInterface);
     debugInterface->init();
     crosshairInterface->init();
+    hotbarInterface->init();
     gameMenuInterface->init(sceneManager, optionsMenuInterface, this);
     optionsMenuInterface->init(gameMenuInterface, this);
 
@@ -56,8 +59,12 @@ void GameScene::init() {
 void GameScene::load() {
     if(!optionsMenuInterface->shouldVsync)
         glfwSwapInterval(0);
+    if(!crosshair)
+        crosshairInterface->load();
+    if(!hotbar)
+        hotbarInterface->load();
     crosshair = true;
-    crosshairInterface->load();
+    hotbar = true;
     player->updatePlayerPosition();
     glfwSetCursorPos(window, width / 2, height / 2);
     glfwSetInputMode(window, CURSOR, CURSOR_DISABLED);
@@ -66,12 +73,15 @@ void GameScene::load() {
 void GameScene::unload() {
     if (crosshair)
         crosshairInterface->unload();
+    if (hotbar)
+        hotbarInterface->unload();
     chatInterface->unload(true);
     if (debug)
         debugInterface->unload();
     if (gameMenu)
         gameMenuInterface->unload();
     crosshair = false;
+    hotbar = false;
     chat = false;
     debug = false;
     gameMenu = false;
@@ -118,6 +128,8 @@ void GameScene::updateProjection(float fov) {
 }
 
 void GameScene::onKey(int key, int scancode, int action, int mods) {
+    if(hotbar)
+        hotbarInterface->onKey(key, scancode, action, mods);
     if (key == KEY_T && action == RELEASE) {
         if (!inInterface) {
             glfwSetInputMode(window, CURSOR, CURSOR_NORMAL);
@@ -267,10 +279,17 @@ void GameScene::onMouseButton(int button, int action, int mods) {
         chatInterface->onMouseButton(button, action);
 }
 
+void GameScene::onMouseScroll(double x, double y) {
+    if(hotbar)
+        hotbarInterface->onMouseScroll(x, y);
+}
+
 void GameScene::onResize(bool show, int width, int height) {
     if (show) {
         if (crosshair)
             crosshairInterface->unload();
+        if(!hotbar)
+            hotbarInterface->load();
         if(!chat)
             chatInterface->load();
         if (debug)
@@ -282,6 +301,8 @@ void GameScene::onResize(bool show, int width, int height) {
     } else {
         if (crosshair)
             crosshairInterface->load();
+        if(!hotbar)
+            hotbarInterface->unload();
         if(!chat)
             chatInterface->unload(true);
         if (debug)

@@ -6,6 +6,7 @@
 #include "BlockProcessing/Game/Features/Interfaces/GameInterfaces/DebugInterface/DebugInterface.h"
 #include "BlockProcessing/Game/Features/Interfaces/GameInterfaces/ChatInterface/ChatInterface.h"
 #include "BlockProcessing/Game/Features/Interfaces/GameInterfaces/CrosshairInterface/CrosshairInterface.h"
+#include "BlockProcessing/Game/Features/Interfaces/GameInterfaces/HotbarInterface/HotbarInterface.h"
 #include "BlockProcessing/Game/Features/Interfaces/GameInterfaces/GameMenuInterface/GameMenuInterface.h"
 #include "BlockProcessing/Game/Features/Interfaces/GameInterfaces/OptionsMenuInterface/OptionsMenuInterface.h"
 #include "BlockProcessing/Game/Features/Terrain/Debug/ChunkBorder/ChunkBorderVisualizer.h"
@@ -29,6 +30,7 @@ public:
     void onKey(int key, int scancode, int action, int mods) override;
     void onMousePosition(double x, double y) override;
     void onMouseButton(int button, int action, int mods) override;
+    void onMouseScroll(double x, double y) override;
     void onResize(bool show, int width, int height) override;
     int getID() override;
     ~GameScene() override;
@@ -38,6 +40,7 @@ public:
     CommandManager* commandManager;
     DebugInterface* debugInterface;
     CrosshairInterface* crosshairInterface;
+    HotbarInterface* hotbarInterface;
     GameMenuInterface* gameMenuInterface;
     OptionsMenuInterface* optionsMenuInterface;
 
@@ -62,6 +65,7 @@ public:
     bool gameMenu = false;
     bool optionsMenu = false;
     bool crosshair = false;
+    bool hotbar = false;
     bool inInterface = false;
     bool zoom = true;
     bool wireFrame = false;
