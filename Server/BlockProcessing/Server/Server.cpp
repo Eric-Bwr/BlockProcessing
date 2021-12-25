@@ -19,6 +19,9 @@ void Server::OnConnect(Network::TCPConnection &connection) {
 
 void Server::OnDisconnect(Network::TCPConnection &connection, Network::DisconnectReason reason) {
     LOG<INFO_LVL>("Disconnected: " + connection.Endpoint.GetIP());
+    if(reason == Network::DisconnectReason::InvalidPacketLength)
+        LOG<WARN_LVL>("Invalid Packet Length");
+    LOG<INFO_LVL>("Disconnect reason: " + std::to_string(static_cast<int>(reason)));
 }
 
 void Server::OnPacketReceive(Network::TCPConnection &connection, Network::Packet &packet) {

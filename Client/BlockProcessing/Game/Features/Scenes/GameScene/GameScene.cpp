@@ -52,11 +52,11 @@ void GameScene::init() {
     commandManager->add(new CommandTP(player));
     commandManager->add(new CommandSpeed(player));
     commandManager->add(new CommandHelp());
-    player->position.y = ((terrainManager->getWorldManager()->fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * 200 + 5;
-    player->updatePlayerPosition();
 }
 
 void GameScene::load() {
+    player->position.y = ((terrainManager->getWorldManager()->fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * 200 + 5;
+    player->updatePlayerPosition();
     if(!optionsMenuInterface->shouldVsync)
         glfwSwapInterval(0);
     if(!crosshair)

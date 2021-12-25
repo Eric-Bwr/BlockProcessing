@@ -81,7 +81,9 @@ void NetworkManager::update() {
 
 void NetworkManager::OnConnect() {}
 
-void NetworkManager::OnConnectFail() {}
+void NetworkManager::OnConnectFail() {
+    packets.push(Network::Packet(PACKET_DISCONNECT));
+}
 
 void NetworkManager::OnDisconnect() {
     packets.push(Network::Packet(PACKET_DISCONNECT));
@@ -90,6 +92,7 @@ void NetworkManager::OnDisconnect() {
 void NetworkManager::OnPacketReceive(Network::Packet &packet) {
     if(packet.GetPacketType() == PACKET_PING){
         auto delay = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - pingSend).count();
+        print(delay);
     }else
         packets.push(std::move(packet));
 }

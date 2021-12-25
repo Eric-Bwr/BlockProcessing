@@ -9,16 +9,13 @@ public:
         this->name = name;
         this->id = id;
         this->paths[0] = texture;
+        for(auto& texture : textures)
+            texture = 0;
     }
     char* name = "";
     int id = 0;
-    std::array<std::string, 6> paths;
-    int textureTop = 0;
-    int textureBottom = 0;
-    int textureLeft = 0;
-    int textureRight = 0;
-    int textureFront = 0;
-    int textureBack = 0;
+    std::string paths[6];
+    int textures[6];
     int desiredChannels = 0;
     int index = 0;
 };

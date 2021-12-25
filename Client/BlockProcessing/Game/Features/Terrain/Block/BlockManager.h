@@ -5,6 +5,13 @@
 #include "BlockProcessing/Game/Paths.h"
 #include "Block.h"
 
+const int FACE_FRONT = 0;
+const int FACE_BACK = 1;
+const int FACE_LEFT = 2;
+const int FACE_RIGHT = 3;
+const int FACE_TOP = 4;
+const int FACE_BOTTOM = 5;
+
 class BlockManager {
 public:
     void init();

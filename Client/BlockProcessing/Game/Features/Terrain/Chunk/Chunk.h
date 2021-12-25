@@ -8,6 +8,7 @@ struct Chunk {
     std::vector<int8_t> blocks;
     uint64_t vertexCount = 0;
     int64_t tileX, tileY, tileZ;
+    unsigned int ssbo = -1;
     unsigned int vao = -1;
     unsigned int vbo = -1;
     int64_t vertexCountBefore = 0;

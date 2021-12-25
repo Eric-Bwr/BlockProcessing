@@ -38,8 +38,8 @@ void BlockManager::addBlocks(){
     blockGrass->paths[0] = "GrassSide.png";
     blockGrass->paths[1] = "Dirt.png";
     blockGrass->paths[2] = "Grass.png";
-    blockGrass->textureBottom = 1;
-    blockGrass->textureTop = 2;
+    blockGrass->textures[FACE_BOTTOM] = 1;
+    blockGrass->textures[FACE_TOP] = 2;
     add(blockGrass);
     add(new Block("Wooden Planks", BLOCK_PLANKS, "Oak.png"));
 }

@@ -6,14 +6,13 @@ void ChunkManager::init(BlockManager* blockManager, WorldManager* worldManager) 
     this->blockManager = blockManager;
     this->worldManager = worldManager;
     this->model.identity();
-    stride = 10 * sizeof(float);
+    stride = 6 * sizeof(float);
     offset1 = (const void *)(3 * sizeof(float));
-    offset2 = (const void *)(6 * sizeof(float));
-    offset3 = (const void *)(9 * sizeof(float));
 }
 
 void ChunkManager::initChunk(Chunk *chunk) {
     chunk->init = false;
+    glGenBuffers(1, &chunk->ssbo);
     glGenVertexArrays(1, &chunk->vao);
     glBindVertexArray(chunk->vao);
     glGenBuffers(1, &chunk->vbo);
@@ -22,10 +21,6 @@ void ChunkManager::initChunk(Chunk *chunk) {
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, nullptr);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, offset1);
-    glEnableVertexAttribArray(2);
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, stride, offset2);
-    glEnableVertexAttribArray(3);
-    glVertexAttribPointer(3, 1, GL_FLOAT, GL_FALSE, stride, offset3);
 }
 
 void ChunkManager::generateChunkData(Chunk *chunk) {
@@ -45,7 +40,7 @@ void ChunkManager::generateChunkData(Chunk *chunk) {
     } else
         generateChunkVertices(chunk);
     chunk->modified = false;
-    chunk->vertexCount = chunk->vertices.size() / 10;
+    chunk->vertexCount = chunk->vertices.size() / 6;
     if(chunk->vertexCount == 0)
         std::vector<int8_t>().swap(chunk->blocks);
 }
@@ -228,12 +223,17 @@ void ChunkManager::generateChunkVertices(Chunk *chunk) {
 
 void ChunkManager::loadChunkData(Chunk *chunk) {
     if (chunk->vertexCount != 0) {
-        glBindBuffer(GL_ARRAY_BUFFER, chunk->vbo);
-        if(chunk->vertexCountBefore < chunk->vertexCount)
-            glBufferData(GL_ARRAY_BUFFER, stride * chunk->vertexCount, nullptr, GL_STATIC_DRAW);
-        chunk->vertexCountBefore = chunk->vertexCount;
-        glBufferSubData(GL_ARRAY_BUFFER, 0, stride * chunk->vertexCount, chunk->vertices.data());
-        std::vector<float>().swap(chunk->vertices);
+        if(false) {
+            glBindBuffer(GL_ARRAY_BUFFER, chunk->vbo);
+            if (chunk->vertexCountBefore < chunk->vertexCount)
+                glBufferData(GL_ARRAY_BUFFER, stride * chunk->vertexCount, nullptr, GL_STATIC_DRAW);
+            chunk->vertexCountBefore = chunk->vertexCount;
+            glBufferSubData(GL_ARRAY_BUFFER, 0, stride * chunk->vertexCount, chunk->vertices.data());
+        }else {
+            glBindBuffer(GL_SHADER_STORAGE_BUFFER, chunk->ssbo);
+            glBufferData(GL_SHADER_STORAGE_BUFFER, chunk->vertexCount * stride, chunk->vertices.data(), GL_DYNAMIC_COPY);
+        }
+       std::vector<float>().swap(chunk->vertices);
     }
     chunk->loaded = true;
 }
@@ -251,9 +251,12 @@ void ChunkManager::renderChunk(Chunk *chunk) {
         model.m30 = chunk->tileX * CHUNK_SIZE;
         model.m31 = chunk->tileY * CHUNK_SIZE;
         model.m32 = chunk->tileZ * CHUNK_SIZE;
+        //glBindVertexArray(chunk->vao);
         shader->setUniformMatrix4f("viewModel", multiplyMatrix(view, model).getBuffer());
-        glBindVertexArray(chunk->vao);
-        glDrawArrays(GL_TRIANGLES, 0, chunk->vertexCount);
+        glBindBuffer(GL_SHADER_STORAGE_BUFFER, chunk->ssbo);
+        glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, chunk->ssbo);
+        glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 5, chunk->vertexCount);
+        //glDrawArrays(GL_TRIANGLE_STRIP, 0, chunk->vertexCount);
     }
 }
 

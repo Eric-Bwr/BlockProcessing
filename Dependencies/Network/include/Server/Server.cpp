@@ -1,6 +1,5 @@
 #include "Server.h"
 #include <thread>
-#include <iostream>
 
 bool Network::Server::Initialize(const Network::Endpoint &endpoint) {
     m_MasterFD.clear();
@@ -66,7 +65,6 @@ void Network::Server::Frame() {
             packet.Buffer.resize(size);
             connection.Socket.ReceiveAll(&packet.Buffer[0], size);
             OnPacketReceive(connection, packet);
-            continue;
         }
         if (m_MasterFD[i].revents & POLLWRNORM) {
             while (!connection.OutStream.empty()) {
@@ -79,7 +77,7 @@ void Network::Server::Frame() {
                 }
                 connection.OutStream.pop();
             }
-            continue;
+
         }
     }
 
@@ -101,8 +99,7 @@ void Network::Server::Frame() {
         clientFD.revents = 0;
         m_MasterFD.push_back(clientFD);
     }
-
-    std::this_thread::sleep_for(std::chrono::milliseconds((long) (1)));
+    std::this_thread::sleep_for(std::chrono::milliseconds (1));
 }
 
 void Network::Server::CloseConnection(int index) {

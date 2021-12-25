@@ -251,6 +251,7 @@ void WorldManager::render(Mat4d &projectionView, Mat4d &view) {
     std::lock_guard<std::mutex> lock(octreeAccess);
     frustum.update(projectionView);
     chunkManager.setView(view);
+    chunkManager.getCubeManager()->vao.bind();
     for (auto&[coord, octree]: octrees)
         octree->getRoot().render(&frustum, &chunkManager);
 }

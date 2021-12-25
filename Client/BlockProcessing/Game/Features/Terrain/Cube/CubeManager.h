@@ -6,19 +6,16 @@
 #include <Buffer.h>
 #include <memory.h>
 
-#define FACE_TOP 0
-#define FACE_BOTTOM 1
-#define FACE_FRONT 2
-#define FACE_BACK 3
-#define FACE_LEFT 4
-#define FACE_RIGHT 5
-
 class CubeManager {
 public:
     void init();
     void addFace(std::vector<float>& data, Block* block, int x, int y, int z, int face);
     ~CubeManager();
+    VertexBufferObjectLayout layout;
+    VertexArrayObject vao;
 private:
+    VertexBufferObject vbo;
+    float *faces;
     float *frontFace;
     float *backFace;
     float *leftFace;
