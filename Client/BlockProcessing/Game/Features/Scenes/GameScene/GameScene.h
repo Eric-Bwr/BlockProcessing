@@ -45,11 +45,11 @@ public:
     GameMenuInterface* gameMenuInterface;
     OptionsMenuInterface* optionsMenuInterface;
 
-    ChunkBorderVisualizer* chunkBorderVisualizer;
-    LinePointVisualizer* linePointVisualizer;
-    OctreeVisualizer* octreeVisualizer;
+    ChunkBorderVisualizer chunkBorderVisualizer;
+    LinePointVisualizer linePointVisualizer;
+    OctreeVisualizer octreeVisualizer;
 
-    TerrainManager* terrainManager;
+    TerrainManager terrainManager;
     Clouds clouds;
 
     GLFWwindow* window;

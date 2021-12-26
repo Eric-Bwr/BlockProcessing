@@ -15,15 +15,8 @@ void GameScene::init() {
     hotbarInterface = new HotbarInterface();
     gameMenuInterface = new GameMenuInterface();
     optionsMenuInterface = new OptionsMenuInterface();
-
-    chunkBorderVisualizer = new ChunkBorderVisualizer();
-    linePointVisualizer = new LinePointVisualizer();
-    octreeVisualizer = new OctreeVisualizer();
-
-    terrainManager = new TerrainManager();
-
-    terrainManager->init(rand(), FastNoise::PerlinFractal, 0.009, 6);
-
+    
+    terrainManager.init(rand(), FastNoise::PerlinFractal, 0.009, 6);
     clouds.init();
 
     blockProcessing->interfaceManager->add(chatInterface);
@@ -40,11 +33,11 @@ void GameScene::init() {
     gameMenuInterface->init(sceneManager, optionsMenuInterface, this);
     optionsMenuInterface->init(gameMenuInterface, this);
 
-    chunkBorderVisualizer->init();
-    octreeVisualizer->init();
-    linePointVisualizer->init();
+    chunkBorderVisualizer.init();
+    octreeVisualizer.init();
+    linePointVisualizer.init();
 
-    player->init(terrainManager->getWorldManager(), 0, 0, 0, 90, 0);
+    player->init(terrainManager.getWorldManager(), 0, 0, 0, 90, 0);
 
     commandManager->add(new CommandTP(player));
     commandManager->add(new CommandSpeed(player));
@@ -54,7 +47,7 @@ void GameScene::init() {
 }
 
 void GameScene::load() {
-    player->position.y = ((terrainManager->getWorldManager()->fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * 200 + 5;
+    player->position.y = ((terrainManager.getWorldManager()->fastNoise->GetNoise(0, 0) + 1.0f) / 2.0f) * 200 + 5;
     player->updatePlayerPosition();
     if(!optionsMenuInterface->shouldVsync)
         glfwSwapInterval(0);
@@ -90,11 +83,11 @@ void GameScene::unload() {
 void GameScene::update(double deltaFrameTime) {
     chatInterface->update(deltaFrameTime);
     player->update(deltaFrameTime);
-    terrainManager->setLightPosition(player->position.x, player->position.y + 1000, player->position.z);
-    terrainManager->generate(player->chunk, player->octree);
+    terrainManager.setLightPosition(player->position.x, player->position.y + 1000, player->position.z);
+    terrainManager.generate(player->chunk, player->octree);
     clouds.update(deltaFrameTime);
     if (wireFrame)
-        chunkBorderVisualizer->generate(player->chunk);
+        chunkBorderVisualizer.generate(player->chunk);
     if (debug)
         debugInterface->update(player);
 }
@@ -105,25 +98,26 @@ void GameScene::render(double deltaFrameTime) {
     view = player->getViewMatrix();
     viewf = toFloat(view);
     projectionView = projectionView.multiply(toDouble(blockProcessing->projection), view);
-    terrainManager->render(projectionView, view);
-    clouds.render(viewf, player->position);
-    octreeVisualizer->setView(view);
+    terrainManager.render(projectionView, view);
+    if(optionsMenuInterface->shouldCloud)
+        clouds.render(viewf, player->position);
+    octreeVisualizer.setView(view);
     player->render(view);
     if (collision)
-        for (auto&[coord, octree] : terrainManager->getWorldManager()->octrees)
-            octreeVisualizer->visualize(terrainManager->getWorldManager()->chunkCandidatesForGenerating, OCTREE_MAX_LEVEL, player->chunk, &octree->getRoot());
+        for (auto&[coord, octree] : terrainManager.getWorldManager()->octrees)
+            octreeVisualizer.visualize(terrainManager.getWorldManager()->chunkCandidatesForGenerating, OCTREE_MAX_LEVEL, player->chunk, &octree->getRoot());
     if (wireFrame)
-        chunkBorderVisualizer->render(viewf);
-    linePointVisualizer->setView(viewf);
+        chunkBorderVisualizer.render(viewf);
+    linePointVisualizer.setView(viewf);
 }
 
 void GameScene::updateProjection(float fov) {
     blockProcessing->projection.perspective(fov, (float) blockProcessing->width, (float) blockProcessing->height, 0.1, 20000.0f);
-    terrainManager->setProjection(blockProcessing->projection);
+    terrainManager.setProjection(blockProcessing->projection);
     clouds.setProjection(blockProcessing->projection);
-    octreeVisualizer->setProjection(blockProcessing->projection);
-    linePointVisualizer->setProjection(blockProcessing->projection);
-    chunkBorderVisualizer->setProjection(blockProcessing->projection);
+    octreeVisualizer.setProjection(blockProcessing->projection);
+    linePointVisualizer.setProjection(blockProcessing->projection);
+    chunkBorderVisualizer.setProjection(blockProcessing->projection);
     player->setProjection(blockProcessing->projection);
     blockProcessing->skyBoxManager->setProjection(blockProcessing->projection);
 }
@@ -322,8 +316,4 @@ int GameScene::getID() {
 GameScene::~GameScene() {
     delete player;
     delete commandManager;
-    delete chunkBorderVisualizer;
-    delete linePointVisualizer;
-    delete octreeVisualizer;
-    delete terrainManager;
 }

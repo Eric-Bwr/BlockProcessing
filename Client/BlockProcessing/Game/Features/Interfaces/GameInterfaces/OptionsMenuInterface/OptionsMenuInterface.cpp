@@ -51,6 +51,23 @@ void OptionsMenuInterface::init(GameMenuInterface *gameMenuInterface, GameScene 
             }
         }
     });
+    static auto shouldCloudPtr = &shouldCloud;
+    parameters.getBool("Rendering#Clouds", true);
+    static auto clouds = addOptionButton("Clouds", "Rendering#Clouds", true, -optionWidth - 50, -175);
+    shouldCloud = clouds->text.text == "Clouds: ON";
+    clouds->setCallback([](bool hovered, bool pressed) {
+        if (hovered && pressed) {
+            if (clouds->text.text == "Clouds: ON") {
+                *shouldCloudPtr = false;
+                clouds->setText("Clouds: OFF");
+                parametersPtr->getBool("Rendering#Clouds", true) = false;
+            } else {
+                *shouldCloudPtr = true;
+                clouds->setText("Clouds: ON");
+                parametersPtr->getBool("Rendering#Clouds", true) = true;
+            }
+        }
+    });
     static auto fov = addOptionSlider("FOV: ", "Rendering#FOV", 50, -250, 90, 45, 110);
     if(fov.text->text == "FOV: 110")
         fov.text->setText("FOV: Quake Pro");
@@ -71,7 +88,7 @@ void OptionsMenuInterface::init(GameMenuInterface *gameMenuInterface, GameScene 
             auto data = std::to_string(int(value));
             chunkingRadius.text->setText(("Chunking-Distance: " + data).data());
             parametersPtr->getInt("World#ChunkingRadius", 10) = int(value);
-            gameScenePtr->terrainManager->getWorldManager()->setChunkingRadius(int(value));
+            gameScenePtr->terrainManager.getWorldManager()->setChunkingRadius(int(value));
         }
     });
     static auto chunksPerThread = addOptionSlider("Chunks-Per-Thread: ", "World#ChunksPerThread", -optionWidth - 50, -100, 1, 1, 10);
@@ -80,7 +97,7 @@ void OptionsMenuInterface::init(GameMenuInterface *gameMenuInterface, GameScene 
             auto data = std::to_string(int(value));
             chunksPerThread.text->setText(("Chunks-Per-Thread: " + data).data());
             parametersPtr->getInt("World#ChunksPerThread", 1) = int(value);
-            gameScenePtr->terrainManager->getWorldManager()->setChunksPerThread(int(value));
+            gameScenePtr->terrainManager.getWorldManager()->setChunksPerThread(int(value));
         }
     });
 }

@@ -19,6 +19,7 @@ public:
     void unload();
     ~OptionsMenuInterface() override;
     bool shouldVsync;
+    bool shouldCloud;
 private:
     Parameters parameters = Parameters("OptionsMenuInterface");
     UIButton* addOptionButton(std::string text, const char* parameterName, bool defaultValue, float xOffset, float yOffset);
