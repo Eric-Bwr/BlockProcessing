@@ -29,7 +29,8 @@ include_directories(Client)
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Client/Build)
 
-add_executable(Client ${SOURCE_FILES_CLIENT} ${DEPENDENCIES_FILES} Dependencies/FastNoise/FastNoise.h Dependencies/FastNoise/FastNoise.cpp Client/BlockProcessing/Game/Features/Interfaces/GameInterfaces/HotbarInterface/HotbarInterface.cpp Client/BlockProcessing/Game/Features/Interfaces/GameInterfaces/HotbarInterface/HotbarInterface.h)
+add_executable(Client ${SOURCE_FILES_CLIENT} ${DEPENDENCIES_FILES} Dependencies/FastNoise/FastNoise.h Dependencies/FastNoise/FastNoise.cpp)
+
 set_target_properties(Client PROPERTIES OUTPUT_NAME "Client")
 
 target_compile_options(Client PRIVATE -w)

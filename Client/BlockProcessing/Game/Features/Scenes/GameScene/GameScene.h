@@ -13,6 +13,7 @@
 #include "BlockProcessing/Game/Features/Terrain/Debug/LinePoint/LinePointVisualizer.h"
 #include "BlockProcessing/Game/Features/Terrain/Debug/Octree/OctreeVisualizer.h"
 #include "BlockProcessing/Game/Features/Terrain/TerrainManager.h"
+#include "BlockProcessing/Game/Features/Terrain/Environment/Clouds/Clouds.h"
 #include "BlockProcessing/Game/Features/Commands/CommandTP/CommandTP.h"
 #include "BlockProcessing/Game/Features/Commands/CommandSpeed/CommandSpeed.h"
 #include "BlockProcessing/Game/Features/Commands/CommandHelp/CommandHelp.h"
@@ -49,8 +50,10 @@ public:
     OctreeVisualizer* octreeVisualizer;
 
     TerrainManager* terrainManager;
+    Clouds clouds;
 
     GLFWwindow* window;
+    Parameters parameters = Parameters("GameScene");
     Mat4d view;
     Mat4f viewf;
     Mat4d projectionView;

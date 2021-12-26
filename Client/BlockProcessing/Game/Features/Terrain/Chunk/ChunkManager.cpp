@@ -1,7 +1,7 @@
 #include "ChunkManager.h"
 #include "BlockProcessing/Game/Features/Terrain/World/WorldManager.h"
 
-void ChunkManager::init(BlockManager* blockManager, WorldManager* worldManager) {
+void ChunkManager::init(BlockManager *blockManager, WorldManager *worldManager) {
     this->blockManager = blockManager;
     this->worldManager = worldManager;
     this->model.identity();
@@ -14,7 +14,7 @@ void ChunkManager::initChunk(Chunk *chunk) {
 }
 
 void ChunkManager::generateChunkData(Chunk *chunk) {
-    if(chunk->init){
+    if (chunk->init) {
         chunk->blocks = std::vector<int8_t>(CHUNK_CUBIC_SIZE);
         for (int x = 0; x < CHUNK_SIZE; x++) {
             int64_t posX = chunk->tileX * CHUNK_SIZE + x;
@@ -31,7 +31,7 @@ void ChunkManager::generateChunkData(Chunk *chunk) {
         generateChunkVertices(chunk);
     chunk->modified = false;
     chunk->vertexCount = chunk->vertices.size() / 6;
-    if(chunk->vertexCount == 0)
+    if (chunk->vertexCount == 0)
         std::vector<int8_t>().swap(chunk->blocks);
 }
 
@@ -217,16 +217,16 @@ void ChunkManager::loadChunkData(Chunk *chunk) {
         if (chunk->vertexCountBefore < chunk->vertexCount)
             glBufferData(GL_SHADER_STORAGE_BUFFER, chunk->vertexCount * stride, nullptr, GL_STATIC_DRAW);
         glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, stride * chunk->vertexCount, chunk->vertices.data());
-       std::vector<float>().swap(chunk->vertices);
+        std::vector<float>().swap(chunk->vertices);
     }
     chunk->loaded = true;
 }
 
-void ChunkManager::setShader(Shader* shader){
+void ChunkManager::setShader(Shader *shader) {
     this->shader = shader;
 }
 
-void ChunkManager::setView(Mat4d& view){
+void ChunkManager::setView(Mat4d &view) {
     this->view = view;
 }
 
@@ -257,7 +257,7 @@ int8_t ChunkManager::getChunkBlock(Chunk *chunk, int64_t x, int64_t y, int64_t z
     int indexZ = z - (chunk->tileZ * CHUNK_SIZE);
     if (chunk->blocks.empty())
         return worldManager->getBlockDefault(x, y, z);
-    if(chunk->blocks[indexZ * CHUNK_SIZE * CHUNK_SIZE + indexY * CHUNK_SIZE + indexX] == 0)
+    if (chunk->blocks[indexZ * CHUNK_SIZE * CHUNK_SIZE + indexY * CHUNK_SIZE + indexX] == 0)
         return worldManager->getBlockDefault(x, y, z);
     return chunk->blocks[indexZ * CHUNK_SIZE * CHUNK_SIZE + indexY * CHUNK_SIZE + indexX];
 }
@@ -265,7 +265,7 @@ int8_t ChunkManager::getChunkBlock(Chunk *chunk, int64_t x, int64_t y, int64_t z
 int8_t ChunkManager::getChunkBlock(Chunk *chunk, int64_t x, int64_t y, int64_t z, int64_t indexX, int64_t indexY, int64_t indexZ) {
     if (chunk->blocks.empty())
         return worldManager->getBlockDefault(x, y, z);
-    if(chunk->blocks[indexZ * CHUNK_SIZE * CHUNK_SIZE + indexY * CHUNK_SIZE + indexX] == 0)
+    if (chunk->blocks[indexZ * CHUNK_SIZE * CHUNK_SIZE + indexY * CHUNK_SIZE + indexX] == 0)
         return worldManager->getBlockDefault(x, y, z);
     return chunk->blocks[indexZ * CHUNK_SIZE * CHUNK_SIZE + indexY * CHUNK_SIZE + indexX];
 }
@@ -285,13 +285,13 @@ void ChunkManager::setChunkBlockIndexed(Chunk *chunk, int8_t block, int x, int y
     chunk->blocks[z * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + x] = block;
 }
 
-void ChunkManager::addFace(std::vector<float>& data, Block* block, int x, int y, int z, int face) {
+void ChunkManager::addFace(std::vector<float> &data, Block *block, int x, int y, int z, int face) {
     data.resize(data.size() + 6);
-    float* dataPtr = data.data() + (data.size() - 6);
-    dataPtr[0] = (float)x;
-    dataPtr[1] = (float)y;
-    dataPtr[2] = (float)z;
-    dataPtr[3] = (float)block->id;
-    dataPtr[4] = (float)block->index * 6 + block->textures[face];
-    dataPtr[5] = (float)face;
+    float *dataPtr = data.data() + (data.size() - 6);
+    dataPtr[0] = (float) x;
+    dataPtr[1] = (float) y;
+    dataPtr[2] = (float) z;
+    dataPtr[3] = (float) block->id;
+    dataPtr[4] = (float) block->index * 6 + block->textures[face];
+    dataPtr[5] = (float) face;
 }

@@ -22,6 +22,7 @@ inline void print(auto s){
 #define SHADER_CHUNK_BORDER "../Assets/Shader/ChunkBorderShader.glsl"
 #define SHADER_TERRAIN "../Assets/Shader/TerrainShader.glsl"
 #define SHADER_LINE "../Assets/Shader/LineShader.glsl"
+#define SHADER_CLOUD "../Assets/Shader/CloudShader.glsl"
 
 #define TEXTURE_WINDOW_ICON "../Assets/Textures/Icon.png"
 #define TEXTURE_BLOCKS "../Assets/Textures/Blocks/"
@@ -29,3 +30,4 @@ inline void print(auto s){
 #define TEXTURE_SKYBOX_ENDING "png"
 #define TEXTURE_GUI "../Assets/Textures/Gui/Gui.png"
 #define TEXTURE_SERVER "../Assets/Textures/Gui/Server.png"
+#define TEXTURE_CLOUDS "../Assets/Textures/Environment/Clouds.png"

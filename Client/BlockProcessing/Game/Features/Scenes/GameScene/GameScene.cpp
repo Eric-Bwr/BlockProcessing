@@ -23,7 +23,8 @@ void GameScene::init() {
     terrainManager = new TerrainManager();
 
     terrainManager->init(rand(), FastNoise::PerlinFractal, 0.009, 6);
-    terrainManager->setProjection(blockProcessing->projection);
+
+    clouds.init();
 
     blockProcessing->interfaceManager->add(chatInterface);
     blockProcessing->interfaceManager->add(debugInterface);
@@ -40,18 +41,16 @@ void GameScene::init() {
     optionsMenuInterface->init(gameMenuInterface, this);
 
     chunkBorderVisualizer->init();
-    chunkBorderVisualizer->setProjection(blockProcessing->projection);
     octreeVisualizer->init();
-    octreeVisualizer->setProjection(blockProcessing->projection);
     linePointVisualizer->init();
-    linePointVisualizer->setProjection(blockProcessing->projection);
 
     player->init(terrainManager->getWorldManager(), 0, 0, 0, 90, 0);
-    player->setProjection(blockProcessing->projection);
 
     commandManager->add(new CommandTP(player));
     commandManager->add(new CommandSpeed(player));
     commandManager->add(new CommandHelp());
+
+    updateProjection(parameters.getInt("Rendering#FOV", 90));
 }
 
 void GameScene::load() {
@@ -93,6 +92,7 @@ void GameScene::update(double deltaFrameTime) {
     player->update(deltaFrameTime);
     terrainManager->setLightPosition(player->position.x, player->position.y + 1000, player->position.z);
     terrainManager->generate(player->chunk, player->octree);
+    clouds.update(deltaFrameTime);
     if (wireFrame)
         chunkBorderVisualizer->generate(player->chunk);
     if (debug)
@@ -106,6 +106,7 @@ void GameScene::render(double deltaFrameTime) {
     viewf = toFloat(view);
     projectionView = projectionView.multiply(toDouble(blockProcessing->projection), view);
     terrainManager->render(projectionView, view);
+    clouds.render(viewf, player->position);
     octreeVisualizer->setView(view);
     player->render(view);
     if (collision)
@@ -119,6 +120,7 @@ void GameScene::render(double deltaFrameTime) {
 void GameScene::updateProjection(float fov) {
     blockProcessing->projection.perspective(fov, (float) blockProcessing->width, (float) blockProcessing->height, 0.1, 20000.0f);
     terrainManager->setProjection(blockProcessing->projection);
+    clouds.setProjection(blockProcessing->projection);
     octreeVisualizer->setProjection(blockProcessing->projection);
     linePointVisualizer->setProjection(blockProcessing->projection);
     chunkBorderVisualizer->setProjection(blockProcessing->projection);
