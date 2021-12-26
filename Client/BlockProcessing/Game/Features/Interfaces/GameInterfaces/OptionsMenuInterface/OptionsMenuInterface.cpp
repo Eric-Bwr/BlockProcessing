@@ -65,7 +65,7 @@ void OptionsMenuInterface::init(GameMenuInterface *gameMenuInterface, GameScene 
             gameScenePtr->updateProjection(value);
         }
     });
-    static auto chunkingRadius = addOptionSlider("Chunking-Distance: ", "World#ChunkingRadius", 50, -100, 10, 1, 200);
+    static auto chunkingRadius = addOptionSlider("Chunking-Distance: ", "World#ChunkingRadius", 50, -100, 10, 1, 100);
     chunkingRadius.slider->setCallback([](bool dragging, bool hovered, float value) {
         if (dragging) {
             auto data = std::to_string(int(value));
@@ -74,7 +74,7 @@ void OptionsMenuInterface::init(GameMenuInterface *gameMenuInterface, GameScene 
             gameScenePtr->terrainManager->getWorldManager()->setChunkingRadius(int(value));
         }
     });
-    static auto chunksPerThread = addOptionSlider("Chunks-Per-Thread: ", "World#ChunksPerThread", -optionWidth - 50, -100, 1, 1, 50);
+    static auto chunksPerThread = addOptionSlider("Chunks-Per-Thread: ", "World#ChunksPerThread", -optionWidth - 50, -100, 1, 1, 10);
     chunksPerThread.slider->setCallback([](bool dragging, bool hovered, float value) {
         if (dragging) {
             auto data = std::to_string(int(value));

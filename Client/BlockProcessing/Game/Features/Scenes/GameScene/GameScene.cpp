@@ -127,7 +127,7 @@ void GameScene::updateProjection(float fov) {
 }
 
 void GameScene::onKey(int key, int scancode, int action, int mods) {
-    if(hotbar)
+    if(hotbar && !chat && !gameMenu && !optionsMenu)
         hotbarInterface->onKey(key, scancode, action, mods);
     if (key == KEY_T && action == RELEASE) {
         if (!inInterface) {
