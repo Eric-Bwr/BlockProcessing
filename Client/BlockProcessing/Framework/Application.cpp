@@ -56,7 +56,7 @@ void Application::preInit() {
         glfwDestroyWindow(window);
     glfwSetWindowPos(window, (videoMode->width / 2) - (width / 2), (videoMode->height / 2) - (height / 2));
 
-    auto icon = new UITexture(TEXTURE_WINDOW_ICON);
+    auto icon = new Texture(TEXTURE_WINDOW_ICON, GL_TEXTURE_2D, 0, false);
     GLFWimage images[1];
     images[0].width = icon->getWidth();
     images[0].height = icon->getHeight();

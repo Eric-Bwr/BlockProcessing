@@ -193,4 +193,8 @@ PostProcessManager::~PostProcessManager() {
     delete shader;
     delete blurVerticalShader;
     delete blurHorizontalShader;
+    delete renderBuffer;
+    delete colorBuffer;
+    delete blurVColorBuffer;
+    delete blurHColorBuffer;
 }

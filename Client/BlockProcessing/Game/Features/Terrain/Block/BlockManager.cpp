@@ -1,5 +1,4 @@
 #include "BlockManager.h"
-#include <UIStructure/STB.h>
 
 void BlockManager::init() {
     addBlocks();
@@ -16,16 +15,11 @@ void BlockManager::init() {
     texture->setData(nullptr);
     texture->setDepth(6 * (blocks.size() - 1));
     texture->load();
-    int w, h;
     for (int i = 2; i < blocks.size() + 1; i++) {
         auto block = blocks.at(i);
-        for(int x = 0; x < 6; x++){
-            if(!block->paths[x].empty()){
-                auto data = stbi_load((blockTexturesPath + block->paths[x]).c_str(), &w, &h, nullptr, block->desiredChannels);
-                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, (i - 2) * 6 + x, TEXTURE_TILE_SIZE, TEXTURE_TILE_SIZE, 1, GL_RGB, GL_UNSIGNED_BYTE, data);
-                free(data);
-            }
-        }
+        for(int x = 0; x < 6; x++)
+            if(!block->paths[x].empty())
+                texture->loadSub((blockTexturesPath + block->paths[x]).c_str(), (i - 2) * 6 + x, 0, true);
     }
     texture->generateMipMap();
 }

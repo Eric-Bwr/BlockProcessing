@@ -26,8 +26,8 @@ inline void print(auto s){
 
 #define TEXTURE_WINDOW_ICON "../Assets/Textures/Icon.png"
 #define TEXTURE_BLOCKS "../Assets/Textures/Blocks/"
-#define TEXTURE_SKYBOX "../Assets/Textures/Gui/SkyBox/panorama_"
-#define TEXTURE_SKYBOX_ENDING "png"
+#define TEXTURE_SKYBOX "../Assets/Textures/Environment/SkyBox-MainMenu"
+#define TEXTURE_SKYBOX_ENDING ".png"
 #define TEXTURE_GUI "../Assets/Textures/Gui/Gui.png"
 #define TEXTURE_SERVER "../Assets/Textures/Gui/Server.png"
 #define TEXTURE_CLOUDS "../Assets/Textures/Environment/Clouds.png"

@@ -1,5 +1,4 @@
 #include "TerrainManager.h"
-#include "UITexture.h"
 
 void TerrainManager::init(int seed, FastNoise::NoiseType noiseType, float frequency, int octaves) {
     shader = new Shader(SHADER_TERRAIN);

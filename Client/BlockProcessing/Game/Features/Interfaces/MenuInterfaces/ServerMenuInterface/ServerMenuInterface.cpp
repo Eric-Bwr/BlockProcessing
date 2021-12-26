@@ -26,7 +26,7 @@ void ServerMenuInterface::init(SceneManager *sceneManager) {
     parametersPtr = &parameters;
     networkManagerPtr = sceneManager->blockProcessing->networkManager;
     networkManagerPtr->setServerMenuInterface(this);
-    serverTexture = new UITexture(TEXTURE_SERVER);
+    serverTexture = new Texture(TEXTURE_SERVER);
     serverTexture->minNear();
     serverTexture->magNear();
     serverTexture->repeat();

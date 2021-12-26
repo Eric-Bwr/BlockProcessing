@@ -1,10 +1,9 @@
 #include "Clouds.h"
-#include <UITexture.h>
 
 void Clouds::init() {
     shader = new Shader(SHADER_CLOUD);
     shader->addUniforms({"projection", "view", "data"});
-    texture = new UITexture(TEXTURE_CLOUDS);
+    texture = new Texture(TEXTURE_CLOUDS);
     texture->bind();
 }
 

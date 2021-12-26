@@ -40,8 +40,8 @@ void UIManager::add(UIComponent *component, int order) {
 }
 
 void UIManager::remove(UIComponent *component) {
-    for (auto compPair : components) {
-        std::vector<UIComponent *> *compList = compPair.second;
+    for (auto &compPair : components) {
+        auto compList = compPair.second;
         for (int i = 0; i < compList->size(); i++)
             if (compList->at(i) == component)
                 compList->erase(compList->begin() + i);
@@ -59,38 +59,51 @@ void UIManager::setSize(int width, int height) {
     if (scaleOnResize) {
         double factorX = (double) width / (double) this->width;
         double factorY = (double) height / (double) this->height;
-        for (auto const &componentList : components)
-            for (auto component : *componentList.second)
-                component->setBounds(component->positionX * factorX, component->positionY * factorY, component->width * factorX, component->height * factorY);
+        for (auto componentList: components) {
+            auto compList = componentList.second;
+            for (int i = 0; i < compList->size(); i++) {
+                auto component = compList->at(i);
+                component->setBounds(component->positionX * factorX, component->positionY * factorY,
+                                           component->width * factorX, component->height * factorY);
+            }
+        }
     }
     this->width = width;
     this->height = height;
 }
 
 void UIManager::keyInput(int key, int action, int mods) {
-    for (auto const &componentList : components)
-        for (auto component : *componentList.second)
-            component->keyInput(key, action, mods);
+    for (auto componentList: components) {
+        auto compList = componentList.second;
+        for (int i = 0; i < compList->size(); i++)
+            compList->at(i)->keyInput(key, action, mods);
+    }
 }
 
 void UIManager::charInput(unsigned int key) {
-    for (auto const &componentList : components)
-        for (auto component : *componentList.second)
-            component->charInput(key);
+    for (auto componentList: components) {
+        auto compList = componentList.second;
+        for (int i = 0; i < compList->size(); i++)
+            compList->at(i)->charInput(key);
+    }
 }
 
 void UIManager::mousePositionInput(double x, double y) {
     this->mouseX = x;
     this->mouseY = y;
-    for (auto const &componentList : components)
-        for (auto component : *componentList.second)
-            component->mousePositionInput(x, y);
+    for (auto componentList: components) {
+        auto compList = componentList.second;
+        for (int i = 0; i < compList->size(); i++)
+            compList->at(i)->mousePositionInput(x, y);
+    }
 }
 
 void UIManager::mouseButtonInput(int button, int action) {
     if (button == MOUSE_BUTTON_PRESSED) {
-        for (auto const &componentList : components) {
-            for (auto component : *componentList.second) {
+        for (auto componentList : components) {
+            auto compList = componentList.second;
+            for (int i = 0; i < compList->size(); i++) {
+                auto component = compList->at(i);
                 component->mouseButtonInput(action);
                 component->mousePositionInput(mouseX, mouseY);
             }
@@ -103,7 +116,7 @@ void UIManager::render() {
         cursor = !cursor;
         start = std::chrono::system_clock::now();
     }
-    for (auto const &componentList : components)
+    for (auto componentList : components)
         for (auto component : *componentList.second)
             renderComponent(component);
 }

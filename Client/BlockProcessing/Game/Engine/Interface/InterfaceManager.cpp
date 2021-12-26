@@ -5,7 +5,7 @@ void InterfaceManager::init(int width, int height) {
     this->height = height;
     UI.init(width, height, true);
     font = new Font(FONT);
-    guiTexture = new UITexture(TEXTURE_GUI);
+    guiTexture = new Texture(TEXTURE_GUI);
     guiTexture->nearest();
 }
 
