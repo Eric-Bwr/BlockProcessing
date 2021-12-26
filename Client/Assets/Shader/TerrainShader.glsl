@@ -1,9 +1,6 @@
 #vertex
 #version 430 core
 
-layout (location = 0) in vec3 inBlockPosition;
-layout (location = 1) in vec3 inBlockData;
-
 uniform mat4 projection;
 uniform mat4 viewModel;
 
@@ -78,22 +75,21 @@ const vec2 textureData[5] = {
     vec2(0, 1)
 };
 
-layout(std430, binding = 0) buffer datab {
+layout(std430, binding = 0) buffer data {
     float blockData[];
-} data;
+};
 
 void main(){
-    int face = int(inBlockData.z);
-    face = int(data.blockData[gl_InstanceID * 6 + 5]);
+    int face = int(blockData[gl_InstanceID * 6 + 5]);
     vec3 position = vertexData[face][gl_VertexID];
-    vec3 chunkPos = vec3(data.blockData[gl_InstanceID * 6 + 0], data.blockData[gl_InstanceID * 6 + 1], data.blockData[gl_InstanceID * 6 + 2]);
+    vec3 chunkPos = vec3(blockData[gl_InstanceID * 6 + 0], blockData[gl_InstanceID * 6 + 1], blockData[gl_InstanceID * 6 + 2]);
     vec4 pos = viewModel * vec4(position + chunkPos, 1.0f);
     normals = normalData[face];
     fragPosition = position;
     gl_Position = projection * pos;
-    textureCoords = vec3(textureData[gl_VertexID], data.blockData[gl_InstanceID * 6 + 4]);
+    textureCoords = vec3(textureData[gl_VertexID], blockData[gl_InstanceID * 6 + 4]);
     visibility = clamp(exp(-pow((length(pos.xyz) * intensity), gradient)), 0.0, 1.0);
-    blockID = data.blockData[gl_InstanceID * 6 + 3];
+    blockID = blockData[gl_InstanceID * 6 + 3];
 }
 
 #fragment

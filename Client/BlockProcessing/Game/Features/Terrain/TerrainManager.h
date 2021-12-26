@@ -5,7 +5,6 @@
 #include <Shader.h>
 #include <Texture.h>
 #include "BlockProcessing/Game/Features/Terrain/Chunk/Chunk.h"
-#include "BlockProcessing/Game/Features/Terrain/Cube/CubeManager.h"
 #include "BlockProcessing/Game/Features/Terrain/Chunk/ChunkManager.h"
 #include "BlockProcessing/Game/Features/Terrain/World/WorldManager.h"
 #include "BlockProcessing/Game/Features/Terrain/World/AsyncLoader.h"
