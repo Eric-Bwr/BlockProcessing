@@ -81,19 +81,19 @@ layout(std430, binding = 0) buffer data {
 };
 
 void main(){
-    int faceShifted = int(blockData[gl_InstanceID * 4 + 3]);
+    int chunkPosBitshifted = int(blockData[gl_InstanceID * 3 + 0]);
+    textureCoords = vec3(textureData[gl_VertexID], blockData[gl_InstanceID * 3 + 1]);
+    int faceShifted = int(blockData[gl_InstanceID * 3 + 2]);
     int face = faceShifted & 0xFF;
+    blockID = (faceShifted >> 8) & 0xFF;
     lightLevel = (faceShifted >> 16) & 0xFF;
-    vec3 position = vertexData[face][gl_VertexID];
-    int chunkPosBitshifted = int(blockData[gl_InstanceID * 4 + 0]);
     vec3 chunkPos = vec3(chunkPosBitshifted & 0xFF, (chunkPosBitshifted >> 8) & 0xFF, (chunkPosBitshifted >> 16) & 0xFF);
+    vec3 position = vertexData[face][gl_VertexID];
     vec4 pos = viewModel * vec4(position + chunkPos, 1.0f);
     normals = normalData[face];
     fragPosition = position;
     gl_Position = projection * pos;
-    textureCoords = vec3(textureData[gl_VertexID], blockData[gl_InstanceID * 4 + 2]);
     visibility = clamp(exp(-pow((length(pos.xyz) * intensity), gradient)), 0.0, 1.0);
-    blockID = blockData[gl_InstanceID * 4 + 1];
 }
 
 #fragment

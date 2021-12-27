@@ -5,7 +5,7 @@
 
 struct Block {
 public:
-    Block(char* name, int id, char* texture = ""){
+    Block(char* name, int8_t id, char* texture = ""){
         this->name = name;
         this->id = id;
         this->paths[0] = texture;
@@ -13,7 +13,7 @@ public:
             texture = 0;
     }
     char* name = "";
-    int id = 0;
+    int8_t id = 0;
     std::string paths[6];
     int textures[6];
     int desiredChannels = 0;
