@@ -11,7 +11,6 @@
 #include "BlockProcessing/Game/Features/Interfaces/GameInterfaces/OptionsMenuInterface/OptionsMenuInterface.h"
 #include "BlockProcessing/Game/Features/Terrain/Debug/ChunkBorder/ChunkBorderVisualizer.h"
 #include "BlockProcessing/Game/Features/Terrain/Debug/LinePoint/LinePointVisualizer.h"
-#include "BlockProcessing/Game/Features/Terrain/Debug/Octree/OctreeVisualizer.h"
 #include "BlockProcessing/Game/Features/Terrain/TerrainManager.h"
 #include "BlockProcessing/Game/Features/Terrain/Environment/Clouds/Clouds.h"
 #include "BlockProcessing/Game/Features/Commands/CommandTP/CommandTP.h"
@@ -47,7 +46,6 @@ public:
 
     ChunkBorderVisualizer chunkBorderVisualizer;
     LinePointVisualizer linePointVisualizer;
-    OctreeVisualizer octreeVisualizer;
 
     TerrainManager terrainManager;
     Clouds clouds;

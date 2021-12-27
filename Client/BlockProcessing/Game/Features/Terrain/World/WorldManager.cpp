@@ -1,7 +1,5 @@
 #include "WorldManager.h"
 #include <mutex>
-#include <condition_variable>
-#include <algorithm>
 
 void WorldManager::init(BlockManager *blockManager) {
     chunkManager.init(blockManager, this);
@@ -27,8 +25,12 @@ void WorldManager::generate(const Coord &playerChunkCoord, const Coord &playerOc
     for (auto it = octrees.begin(), next_it = it; it != octrees.end(); it = next_it) {
         ++next_it;
         it->second->getRoot().deleteFurthestLoadedChunks(playerChunkCoord, &chunkManager);
-        if (Coord::distanceSquared(playerChunkCoord, it->second->getRoot().coord) >= octreeDeletionRadiusSquared)
+        auto d = Coord::distanceSquared(playerChunkCoord, it->second->getRoot().coord);
+        if (d >= octreeDeletionRadiusSquared) {
+            print(d);
+            print(octreeDeletionRadiusSquared);
             octrees.erase(it);
+        }
     }
 
     int maxCandidates = maxPendingJobs - loader->getItemsCount();
@@ -38,7 +40,7 @@ void WorldManager::generate(const Coord &playerChunkCoord, const Coord &playerOc
     finishedUpdatingOctree = false;
     loader->exec([this, maxCandidates, playerChunkCoord, playerOctreeCoord]() {
         chunkCandidatesForGenerating.clear();
-        for (auto leaf: modifiedChunks) {
+        for (auto leaf : modifiedChunks) {
             leaf->chunk->generating = true;
             leaf->chunk->modified = true;
             chunkCandidatesForGenerating.push_back(leaf);
@@ -59,9 +61,8 @@ void WorldManager::generate(const Coord &playerChunkCoord, const Coord &playerOc
                             octree = new Octree(octreeCoord);
                             octree->updateProperties(chunkingRadiusSquared, chunkingDeletionRadiusSquared);
                             octrees.insert(std::pair<Coord, Octree *>(octreeCoord, octree));
-                        } else {
+                        } else
                             octree = it->second.get();
-                        }
                     }
                     if (octree->getRoot().loadedChildren != 0b11111111)
                         octree->getRoot().getClosestUnloadedChunks(chunkCandidatesForGenerating, maxCandidates, playerChunkCoord);
@@ -69,7 +70,7 @@ void WorldManager::generate(const Coord &playerChunkCoord, const Coord &playerOc
             }
         }
 
-        for (auto candidate: chunkCandidatesForGenerating) {
+        for (auto candidate : chunkCandidatesForGenerating) {
             candidate->chunk->generating = true;
             loader->scheduleTask([this, candidate]() {
                 chunkManager.generateChunkData(candidate->chunk);
@@ -220,9 +221,8 @@ void WorldManager::updateChunkFromChunkCoords(int64_t x, int64_t y, int64_t z) {
 
 void WorldManager::setChunkingRadius(int radius) {
     std::lock_guard<std::mutex> lock(octreeAccess);
-
     this->octreeRadius = ((radius / OCTREE_LENGTH) + 1) * OCTREE_LENGTH;
-    this->octreeDeletionRadiusSquared = (octreeRadius + 2.5 * OCTREE_LENGTH) * (octreeRadius + 2.5 * OCTREE_LENGTH);
+    this->octreeDeletionRadiusSquared = (octreeRadius + OCTREE_MAX_LEVEL * OCTREE_LENGTH) * (octreeRadius + OCTREE_MAX_LEVEL * OCTREE_LENGTH);
     this->chunkingRadiusSquared = radius * radius;
     this->chunkingDeletionRadiusSquared = (radius + 2) * (radius + 2);
     for (auto&[coord, octree]: octrees)
@@ -241,8 +241,24 @@ void WorldManager::render(Mat4d &projectionView, Mat4d &view) {
         octree->getRoot().render(&frustum, &chunkManager);
 }
 
+void WorldManager::reset() {
+    while(!finishedUpdatingOctree);
+    std::lock_guard<std::mutex> lock(octreeAccess);
+    chunkCandidatesForGenerating.clear();
+    modifiedChunks.clear();
+    for (auto&[coord, octree] : octrees)
+        for(auto& chunk : octree->chunks)
+            chunkManager.unloadChunk(&chunk);
+    octrees.clear();
+    loader->clear();
+    finishedUpdatingOctree = true;
+}
+
 WorldManager::~WorldManager() {
     std::lock_guard<std::mutex> lock(octreeAccess);
+    chunkCandidatesForGenerating.clear();
+    modifiedChunks.clear();
+    loader->clear();
     octrees.clear();
     delete fastNoise;
 }

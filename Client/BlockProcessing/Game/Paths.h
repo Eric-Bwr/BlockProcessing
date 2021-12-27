@@ -22,6 +22,7 @@ inline void print(auto s){
 #define SHADER_CHUNK_BORDER "../Assets/Shader/ChunkBorderShader.glsl"
 #define SHADER_TERRAIN "../Assets/Shader/TerrainShader.glsl"
 #define SHADER_LINE "../Assets/Shader/LineShader.glsl"
+#define SHADER_LINE "../Assets/Shader/OctreeShader.glsl"
 #define SHADER_CLOUD "../Assets/Shader/CloudShader.glsl"
 
 #define TEXTURE_WINDOW_ICON "../Assets/Textures/Icon.png"

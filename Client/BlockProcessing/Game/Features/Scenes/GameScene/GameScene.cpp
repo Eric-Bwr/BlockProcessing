@@ -34,7 +34,6 @@ void GameScene::init() {
     optionsMenuInterface->init(gameMenuInterface, this);
 
     chunkBorderVisualizer.init();
-    octreeVisualizer.init();
     linePointVisualizer.init();
 
     player->init(terrainManager.getWorldManager(), 0, 0, 0, 90, 0);
@@ -63,6 +62,7 @@ void GameScene::load() {
 }
 
 void GameScene::unload() {
+    terrainManager.getWorldManager()->reset();
     if (crosshair)
         crosshairInterface->unload();
     if (hotbar)
@@ -101,11 +101,9 @@ void GameScene::render(double deltaFrameTime) {
     terrainManager.render(projectionView, view);
     if(optionsMenuInterface->shouldCloud)
         clouds.render(viewf, player->position);
-    octreeVisualizer.setView(view);
     player->render(view);
     if (collision)
-        for (auto&[coord, octree] : terrainManager.getWorldManager()->octrees)
-            octreeVisualizer.visualize(terrainManager.getWorldManager()->chunkCandidatesForGenerating, OCTREE_MAX_LEVEL, player->chunk, &octree->getRoot());
+        terrainManager.visualizeOctree(view, leftControl, player->chunk);
     if (wireFrame)
         chunkBorderVisualizer.render(viewf);
     linePointVisualizer.setView(viewf);
@@ -115,7 +113,6 @@ void GameScene::updateProjection(float fov) {
     blockProcessing->projection.perspective(fov, (float) blockProcessing->width, (float) blockProcessing->height, 0.1, 20000.0f);
     terrainManager.setProjection(blockProcessing->projection);
     clouds.setProjection(blockProcessing->projection);
-    octreeVisualizer.setProjection(blockProcessing->projection);
     linePointVisualizer.setProjection(blockProcessing->projection);
     chunkBorderVisualizer.setProjection(blockProcessing->projection);
     player->setProjection(blockProcessing->projection);

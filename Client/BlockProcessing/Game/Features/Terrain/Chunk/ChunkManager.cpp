@@ -216,6 +216,7 @@ void ChunkManager::loadChunkData(Chunk *chunk) {
         glBindBuffer(GL_SHADER_STORAGE_BUFFER, chunk->ssbo);
         if (chunk->vertexCountBefore < chunk->vertexCount)
             glBufferData(GL_SHADER_STORAGE_BUFFER, chunk->vertexCount * stride, nullptr, GL_STATIC_DRAW);
+        chunk->vertexCountBefore = chunk->vertexCount;
         glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, stride * chunk->vertexCount, chunk->vertices.data());
         std::vector<float>().swap(chunk->vertices);
     }
@@ -242,6 +243,7 @@ void ChunkManager::renderChunk(Chunk *chunk) {
 }
 
 void ChunkManager::unloadChunk(Chunk *chunk) {
+    chunk->vertexCountBefore = 0;
     chunk->vertexCount = 0;
     glDeleteBuffers(1, &chunk->ssbo);
     std::vector<float>().swap(chunk->vertices);

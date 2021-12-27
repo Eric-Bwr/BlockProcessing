@@ -4,7 +4,8 @@
 
 void OctreeVisualizer::init() {
     shader = new Shader(SHADER_LINE);
-    shader->addUniforms({"projection", "viewModel", "color"});
+    shader->addUniforms({"projection", "view", "parameters"});
+    shader->setUniform2f("parameters", OCTREE_MAX_LEVEL, OCTREE_LENGTH);
     const float vertices[72]{
             0, 0, 0,
             0, CHUNK_SIZE, 0,
@@ -38,41 +39,52 @@ void OctreeVisualizer::init() {
     vao.init();
     vbo.init(vertices, layout.getStride() * 24, GL_STATIC_DRAW);
     vao.addBuffer(vbo, layout);
+    glGenBuffers(1, &ssbo);
+    stride = 4 * sizeof(float);
 }
 
-void OctreeVisualizer::visualizeNode(const std::vector<OctreeNode*>& candidates, int closestNodeLevel, Coord minCorner, const Coord& playerCoord, OctreeNode *octreeNode) {
-    glLineWidth(OCTREE_LINE_WIDTH + octreeNode->level * OCTREE_LINE_WIDTH_AMPLIFIER);
-    model.identity();
-    model.translate(octreeNode->coord.x * CHUNK_SIZE, octreeNode->coord.y * CHUNK_SIZE, octreeNode->coord.z * CHUNK_SIZE);
-    model.scale(octreeNode->scaling);
-    shader->setUniformMatrix4f("viewModel", multiplyMatrix(view, model).getBuffer());
-    shader->setUniform3f("color", OCTREE_VISUALIZING_COLORS[octreeNode->level * 3 + 0], OCTREE_VISUALIZING_COLORS[octreeNode->level * 3 + 1], OCTREE_VISUALIZING_COLORS[octreeNode->level * 3 + 2]);
-    if(octreeNode->level == OCTREE_MAX_LEVEL)
-        glDrawArrays(GL_LINES, 0, 24);
-    if(octreeNode->level == 0) {
+void OctreeVisualizer::visualizeNode(const std::vector<OctreeNode*>& candidates, bool displayChunks, int closestNodeLevel, Coord minCorner, const Coord& playerCoord, OctreeNode *octreeNode) {
+    auto index = octreeNodes.size();
+    if(octreeNode->level == OCTREE_MAX_LEVEL) {
+        octreeNodes.resize(index + 4);
+        octreeNodes[index + 0] = octreeNode->coord.x * CHUNK_SIZE;
+        octreeNodes[index + 1] = octreeNode->coord.y * CHUNK_SIZE;
+        octreeNodes[index + 2] = octreeNode->coord.z * CHUNK_SIZE;
+        octreeNodes[index + 3] = octreeNode->level;
+    }else if(octreeNode->level == 0 && displayChunks) {
         const auto& coordinate = [&](OctreeNode* c){
             return Coord::isEqual(c->coord, octreeNode->coord);
         };
         if(std::find_if(candidates.begin(), candidates.end(), coordinate) != candidates.end()){
-            glDrawArrays(GL_LINES, 0, 24);
+            octreeNodes.resize(index + 4);
+            octreeNodes[index + 0] = octreeNode->coord.x * CHUNK_SIZE;
+            octreeNodes[index + 1] = octreeNode->coord.y * CHUNK_SIZE;
+            octreeNodes[index + 2] = octreeNode->coord.z * CHUNK_SIZE;
+            octreeNodes[index + 3] = octreeNode->level;
         }
     }
     if (octreeNode->level > 0) {
         if(octreeNode->level == closestNodeLevel)
             minCorner = octreeNode->coord;
         for (auto child : octreeNode->children)
-            visualizeNode(candidates, closestNodeLevel, minCorner, playerCoord, child);
+            visualizeNode(candidates, displayChunks, closestNodeLevel, minCorner, playerCoord, child);
     }
 }
 
-void OctreeVisualizer::visualize(const std::vector<OctreeNode*>& candidates, int closestNodeLevel, Coord& playerCoord, OctreeNode *octreeNode) {
+void OctreeVisualizer::visualize(Mat4d& view, bool displayChunks, const std::vector<OctreeNode*>& candidates, int closestNodeLevel, const Coord& playerCoord, OctreeNode *octreeNode) {
     shader->bind();
     vao.bind();
-    visualizeNode(candidates, closestNodeLevel, {}, playerCoord, octreeNode);
-}
-
-void OctreeVisualizer::setView(Mat4d &view) {
-    this->view = view;
+    shader->setUniformMatrix4f("view", view.getBuffer());
+    visualizeNode(candidates, displayChunks, closestNodeLevel, {}, playerCoord, octreeNode);
+    glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
+    auto size = octreeNodes.size() / 4;
+    if (sizeBefore < size)
+        glBufferData(GL_SHADER_STORAGE_BUFFER, size * stride, nullptr, GL_STATIC_DRAW);
+    sizeBefore = size;
+    glBufferSubData(GL_SHADER_STORAGE_BUFFER, 0, stride * size, octreeNodes.data());
+    std::vector<float>().swap(octreeNodes);
+    glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, ssbo);
+    glDrawArraysInstanced(GL_LINES, 0, 24, size);
 }
 
 void OctreeVisualizer::setProjection(Mat4f &projection) {

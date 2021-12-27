@@ -33,6 +33,13 @@ public:
     size_t push(T &&task, int priority = 0);
     size_t get(T &task, const std::chrono::milliseconds &timeout, bool &success);
     size_t size() const;
+
+    void clear(){
+        std::unique_lock<std::mutex> lock(queue_mutex);
+        std::priority_queue<std::pair<int, T>, std::vector<std::pair<int, T>>, comp> queueEmpty;
+        queue.swap(queueEmpty);
+        queue_condition.notify_all();
+    }
 private:
     mutable std::mutex queue_mutex;
     std::condition_variable queue_condition;
@@ -62,6 +69,12 @@ public:
     }
     int getItemsProcessed() const {
         return results.size();
+    }
+
+    void clear(){
+        items_stored = 0;
+        tasks.clear();
+        results.clear();
     }
 private:
     size_t scheduleTask(std::function<T()> &&task, ThreadSafeQueue<T> *results, int priority);

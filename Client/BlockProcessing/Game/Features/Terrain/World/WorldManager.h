@@ -29,6 +29,7 @@ public:
     void setChunkingRadius(int radius);
     void setChunksPerThread(int max);
     void render(Mat4d& projectionView, Mat4d& view);
+    void reset();
 //    void lockOctree(){
 //    	lock.lock();
 //    }

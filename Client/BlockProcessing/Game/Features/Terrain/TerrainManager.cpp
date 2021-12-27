@@ -4,6 +4,7 @@ void TerrainManager::init(int seed, FastNoise::NoiseType noiseType, float freque
     shader = new Shader(SHADER_TERRAIN);
     shader->addUniforms({"projection", "viewModel", "intensity", "gradient", "image", "lightPos", "viewPos", "blinn", "skyColor"});
     blockManager.init();
+    octreeVisualizer.init();
     worldManager.fastNoise = new FastNoise;
     worldManager.fastNoise->SetNoiseType(noiseType);
     worldManager.fastNoise->SetSeed(seed);
@@ -18,6 +19,11 @@ void TerrainManager::generate(const Coord &playerChunkCoord, const Coord &player
     worldManager.generate(playerChunkCoord, playerOctreeCoord);
 }
 
+void TerrainManager::visualizeOctree(Mat4d &view, bool displayChunks, const Coord &playerChunkCoord) {
+    for (auto&[coord, octree] : worldManager.octrees)
+        octreeVisualizer.visualize(view, displayChunks, worldManager.chunkCandidatesForGenerating, OCTREE_MAX_LEVEL, playerChunkCoord, &octree->getRoot());
+}
+
 void TerrainManager::render(Mat4d &projectionView, Mat4d &view) {
     shader->bind();
     shader->setUniform3f("viewPos", view.m32, view.m30, view.m31);
@@ -28,6 +34,7 @@ void TerrainManager::render(Mat4d &projectionView, Mat4d &view) {
 void TerrainManager::setProjection(Mat4f &projection) {
     shader->bind();
     shader->setUniformMatrix4f("projection", projection.getBuffer());
+    octreeVisualizer.setProjection(projection);
 }
 
 void TerrainManager::setLightPosition(double x, double y, double z) {

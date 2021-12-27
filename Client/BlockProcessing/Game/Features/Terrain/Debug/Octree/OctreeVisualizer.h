@@ -9,15 +9,16 @@
 class OctreeVisualizer {
 public:
     void init();
-    void visualize(const std::vector<OctreeNode*>& candidates, int closestNodeLevel, Coord& playerCoord, OctreeNode* octreeNode);
-    void setView(Mat4d& view);
+    void visualize(Mat4d& view, bool displayChunks, const std::vector<OctreeNode*>& candidates, int closestNodeLevel, const Coord& playerCoord, OctreeNode* octreeNode);
     void setProjection(Mat4f& projection);
     ~OctreeVisualizer();
 private:
-    void visualizeNode(const std::vector<OctreeNode*>& candidates, int closestNodeLevel, Coord minCorner, const Coord& playerCoord, OctreeNode *octreeNode);
+    void visualizeNode(const std::vector<OctreeNode*>& candidates, bool displayChunks, int closestNodeLevel, Coord minCorner, const Coord& playerCoord, OctreeNode *octreeNode);
     Shader *shader;
     VertexArrayObject vao;
     VertexBufferObject vbo;
-    Mat4d view;
-    Mat4d model;
+    unsigned int ssbo;
+    int stride;
+    int64_t sizeBefore = 0;
+    std::vector<float> octreeNodes;
 };
