@@ -82,7 +82,7 @@ void OptionsMenuInterface::init(GameMenuInterface *gameMenuInterface, GameScene 
             gameScenePtr->updateProjection(value);
         }
     });
-    static auto chunkingRadius = addOptionSlider("Chunking-Distance: ", "World#ChunkingRadius", 50, -100, 10, 1, 100);
+    static auto chunkingRadius = addOptionSlider("Chunking-Distance: ", "World#ChunkingRadius", 50, -100, 10, 4, 100);
     chunkingRadius.slider->setCallback([](bool dragging, bool hovered, float value) {
         if (dragging) {
             auto data = std::to_string(int(value));

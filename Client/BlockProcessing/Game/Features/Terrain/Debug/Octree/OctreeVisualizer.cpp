@@ -43,7 +43,7 @@ void OctreeVisualizer::init() {
     stride = 4 * sizeof(float);
 }
 
-void OctreeVisualizer::visualizeNode(const std::vector<OctreeNode*>& candidates, bool displayChunks, int closestNodeLevel, Coord minCorner, const Coord& playerCoord, OctreeNode *octreeNode) {
+void OctreeVisualizer::visualizeNode(const std::vector<OctreeNode*>& candidates, bool displayChunks, int closestNodeLevel, Coord minCorner, OctreeNode *octreeNode) {
     auto index = octreeNodes.size();
     if(octreeNode->level == OCTREE_MAX_LEVEL) {
         octreeNodes.resize(index + 4);
@@ -67,15 +67,15 @@ void OctreeVisualizer::visualizeNode(const std::vector<OctreeNode*>& candidates,
         if(octreeNode->level == closestNodeLevel)
             minCorner = octreeNode->coord;
         for (auto child : octreeNode->children)
-            visualizeNode(candidates, displayChunks, closestNodeLevel, minCorner, playerCoord, child);
+            visualizeNode(candidates, displayChunks, closestNodeLevel, minCorner, child);
     }
 }
 
-void OctreeVisualizer::visualize(Mat4d& view, bool displayChunks, const std::vector<OctreeNode*>& candidates, int closestNodeLevel, const Coord& playerCoord, OctreeNode *octreeNode) {
+void OctreeVisualizer::visualize(Mat4d& view, bool displayChunks, const std::vector<OctreeNode*>& candidates, int closestNodeLevel, OctreeNode *octreeNode) {
     shader->bind();
     vao.bind();
     shader->setUniformMatrix4f("view", view.getBuffer());
-    visualizeNode(candidates, displayChunks, closestNodeLevel, {}, playerCoord, octreeNode);
+    visualizeNode(candidates, displayChunks, closestNodeLevel, {}, octreeNode);
     glBindBuffer(GL_SHADER_STORAGE_BUFFER, ssbo);
     auto size = octreeNodes.size() / 4;
     if (sizeBefore < size)

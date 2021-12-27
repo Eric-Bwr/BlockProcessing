@@ -19,9 +19,9 @@ void TerrainManager::generate(const Coord &playerChunkCoord, const Coord &player
     worldManager.generate(playerChunkCoord, playerOctreeCoord);
 }
 
-void TerrainManager::visualizeOctree(Mat4d &view, bool displayChunks, const Coord &playerChunkCoord) {
+void TerrainManager::visualizeOctree(Mat4d &view, bool displayChunks) {
     for (auto&[coord, octree] : worldManager.octrees)
-        octreeVisualizer.visualize(view, displayChunks, worldManager.chunkCandidatesForGenerating, OCTREE_MAX_LEVEL, playerChunkCoord, &octree->getRoot());
+        octreeVisualizer.visualize(view, displayChunks, worldManager.chunkCandidatesForGenerating, OCTREE_MAX_LEVEL, &octree->getRoot());
 }
 
 void TerrainManager::render(Mat4d &projectionView, Mat4d &view) {

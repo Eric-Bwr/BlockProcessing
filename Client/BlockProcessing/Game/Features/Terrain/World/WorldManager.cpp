@@ -25,12 +25,8 @@ void WorldManager::generate(const Coord &playerChunkCoord, const Coord &playerOc
     for (auto it = octrees.begin(), next_it = it; it != octrees.end(); it = next_it) {
         ++next_it;
         it->second->getRoot().deleteFurthestLoadedChunks(playerChunkCoord, &chunkManager);
-        auto d = Coord::distanceSquared(playerChunkCoord, it->second->getRoot().coord);
-        if (d >= octreeDeletionRadiusSquared) {
-            print(d);
-            print(octreeDeletionRadiusSquared);
+        if (Coord::distanceSquared(playerChunkCoord, it->second->getRoot().coord) >= octreeDeletionRadiusSquared)
             octrees.erase(it);
-        }
     }
 
     int maxCandidates = maxPendingJobs - loader->getItemsCount();
@@ -220,11 +216,11 @@ void WorldManager::updateChunkFromChunkCoords(int64_t x, int64_t y, int64_t z) {
 }
 
 void WorldManager::setChunkingRadius(int radius) {
-    std::lock_guard<std::mutex> lock(octreeAccess);
     this->octreeRadius = ((radius / OCTREE_LENGTH) + 1) * OCTREE_LENGTH;
-    this->octreeDeletionRadiusSquared = (octreeRadius + OCTREE_MAX_LEVEL * OCTREE_LENGTH) * (octreeRadius + OCTREE_MAX_LEVEL * OCTREE_LENGTH);
+    this->octreeDeletionRadiusSquared = octreeRadius * octreeRadius * radius;
     this->chunkingRadiusSquared = radius * radius;
     this->chunkingDeletionRadiusSquared = (radius + 2) * (radius + 2);
+    std::lock_guard<std::mutex> lock(octreeAccess);
     for (auto&[coord, octree]: octrees)
         octree->updateProperties(chunkingRadiusSquared, chunkingDeletionRadiusSquared);
 }

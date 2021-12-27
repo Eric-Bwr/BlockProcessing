@@ -85,6 +85,7 @@ void GameScene::update(double deltaFrameTime) {
     player->update(deltaFrameTime);
     terrainManager.setLightPosition(player->position.x, player->position.y + 1000, player->position.z);
     terrainManager.generate(player->chunk, player->octree);
+    //terrainManager.generate({}, {});
     clouds.update(deltaFrameTime);
     if (wireFrame)
         chunkBorderVisualizer.generate(player->chunk);
@@ -103,7 +104,7 @@ void GameScene::render(double deltaFrameTime) {
         clouds.render(viewf, player->position);
     player->render(view);
     if (collision)
-        terrainManager.visualizeOctree(view, leftControl, player->chunk);
+        terrainManager.visualizeOctree(view, leftControl);
     if (wireFrame)
         chunkBorderVisualizer.render(viewf);
     linePointVisualizer.setView(viewf);

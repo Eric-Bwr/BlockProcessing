@@ -9,11 +9,11 @@
 class OctreeVisualizer {
 public:
     void init();
-    void visualize(Mat4d& view, bool displayChunks, const std::vector<OctreeNode*>& candidates, int closestNodeLevel, const Coord& playerCoord, OctreeNode* octreeNode);
+    void visualize(Mat4d& view, bool displayChunks, const std::vector<OctreeNode*>& candidates, int closestNodeLevel, OctreeNode* octreeNode);
     void setProjection(Mat4f& projection);
     ~OctreeVisualizer();
 private:
-    void visualizeNode(const std::vector<OctreeNode*>& candidates, bool displayChunks, int closestNodeLevel, Coord minCorner, const Coord& playerCoord, OctreeNode *octreeNode);
+    void visualizeNode(const std::vector<OctreeNode*>& candidates, bool displayChunks, int closestNodeLevel, Coord minCorner, OctreeNode *octreeNode);
     Shader *shader;
     VertexArrayObject vao;
     VertexBufferObject vbo;

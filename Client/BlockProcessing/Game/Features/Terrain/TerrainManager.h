@@ -15,7 +15,7 @@ class TerrainManager {
 public:
     void init(int seed, FastNoise::NoiseType noiseType, float frequency, int octaves);
     void generate(const Coord &playerChunkCoord, const Coord &playerOctreeCoord);
-    void visualizeOctree(Mat4d &view, bool displayChunks, const Coord &playerChunkCoord);
+    void visualizeOctree(Mat4d &view, bool displayChunks);
     void render(Mat4d& projectionView, Mat4d& view);
     void setProjection(Mat4f& projection);
     void setLightPosition(double x, double y, double z);
