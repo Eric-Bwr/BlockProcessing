@@ -38,7 +38,6 @@ public:
         std::unique_lock<std::mutex> lock(queue_mutex);
         std::priority_queue<std::pair<int, T>, std::vector<std::pair<int, T>>, comp> queueEmpty;
         queue.swap(queueEmpty);
-        queue_condition.notify_all();
     }
 private:
     mutable std::mutex queue_mutex;

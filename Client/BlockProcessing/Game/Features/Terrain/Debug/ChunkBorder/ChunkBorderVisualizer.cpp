@@ -294,7 +294,6 @@ void ChunkBorderVisualizer::generate(const Coord& coord) {
 }
 
 void ChunkBorderVisualizer::render(Mat4f& view) {
-    glLineWidth(CHUNK_BORDER_WIDTH);
     shader->bind();
     shader->setUniformMatrix4f("view", view.getBuffer());
     shader->setUniformMatrix4f("model", model.getBuffer());
