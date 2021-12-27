@@ -3,7 +3,7 @@
 #include <algorithm>
 
 void OctreeVisualizer::init() {
-    shader = new Shader(SHADER_LINE);
+    shader = new Shader(SHADER_OCTREE);
     shader->addUniforms({"projection", "view", "parameters"});
     shader->setUniform2f("parameters", OCTREE_MAX_LEVEL, OCTREE_LENGTH);
     const float vertices[72]{

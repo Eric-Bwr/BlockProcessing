@@ -12,7 +12,7 @@ flat out float id;
 
 void main(){
     id = inID;
-    gl_Position = projection * view * model * vec4(inPosition, 1.0f);
+    gl_Position = projection * view * model * vec4(inPosition + 0.0075, 1.0f);
 }
 
     #fragment
