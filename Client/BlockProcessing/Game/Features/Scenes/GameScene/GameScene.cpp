@@ -85,7 +85,6 @@ void GameScene::update(double deltaFrameTime) {
     player->update(deltaFrameTime);
     terrainManager.setLightPosition(player->position.x, player->position.y + 1000, player->position.z);
     terrainManager.generate(player->chunk, player->octree);
-    //terrainManager.generate({}, {});
     clouds.update(deltaFrameTime);
     if (wireFrame)
         chunkBorderVisualizer.generate(player->chunk);
