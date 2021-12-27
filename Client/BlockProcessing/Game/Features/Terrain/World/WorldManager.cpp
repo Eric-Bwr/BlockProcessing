@@ -133,9 +133,9 @@ void WorldManager::setBlock(int8_t block, int64_t x, int64_t y, int64_t z) {
         OctreeNode &root = it->second->getRoot();
         auto leaf = root.getLeaf(chunkCoord);
         if (leaf->chunk != nullptr) {
-            int indexX = x - (leaf->coord.x * CHUNK_SIZE);
-            int indexY = y - (leaf->coord.y * CHUNK_SIZE);
-            int indexZ = z - (leaf->coord.z * CHUNK_SIZE);
+            int8_t indexX = x - (leaf->coord.x * CHUNK_SIZE);
+            int8_t indexY = y - (leaf->coord.y * CHUNK_SIZE);
+            int8_t indexZ = z - (leaf->coord.z * CHUNK_SIZE);
             chunkManager.setChunkBlockIndexed(leaf->chunk, block, indexX, indexY, indexZ);
             modifiedChunks.push_back(leaf);
             if (indexX == 0) {
