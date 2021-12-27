@@ -5,7 +5,7 @@ void ChunkManager::init(BlockManager *blockManager, WorldManager *worldManager) 
     this->blockManager = blockManager;
     this->worldManager = worldManager;
     this->model.identity();
-    stride = 6 * sizeof(float);
+    stride = 4 * sizeof(float);
 }
 
 void ChunkManager::initChunk(Chunk *chunk) {
@@ -30,7 +30,7 @@ void ChunkManager::generateChunkData(Chunk *chunk) {
     } else
         generateChunkVertices(chunk);
     chunk->modified = false;
-    chunk->vertexCount = chunk->vertices.size() / 6;
+    chunk->vertexCount = chunk->vertices.size() / 4;
     if (chunk->vertexCount == 0)
         std::vector<int8_t>().swap(chunk->blocks);
 }
@@ -51,68 +51,68 @@ void ChunkManager::generateChunkDefaultVertices(Chunk *chunk) {
                     if (y == 0) {
                         neighbor = worldManager->getBlockDefault(posX, posY - 1, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_BOTTOM);
+                            addFace(chunk->vertices, block, x, y, z, FACE_BOTTOM, 5);
                         neighbor = getChunkBlock(chunk, posX, posY + 1, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_TOP);
+                            addFace(chunk->vertices, block, x, y, z, FACE_TOP, 5);
                     } else if (y == CHUNK_SIZE_MINUS_ONE) {
                         neighbor = worldManager->getBlockDefault(posX, posY + 1, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_TOP);
+                            addFace(chunk->vertices, block, x, y, z, FACE_TOP, 5);
                         neighbor = getChunkBlock(chunk, posX, posY - 1, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_BOTTOM);
+                            addFace(chunk->vertices, block, x, y, z, FACE_BOTTOM, 5);
                     } else {
                         neighbor = getChunkBlock(chunk, posX, posY + 1, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_TOP);
+                            addFace(chunk->vertices, block, x, y, z, FACE_TOP, 5);
                         neighbor = getChunkBlock(chunk, posX, posY - 1, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_BOTTOM);
+                            addFace(chunk->vertices, block, x, y, z, FACE_BOTTOM, 5);
                     }
                     if (x == CHUNK_SIZE_MINUS_ONE) {
                         neighbor = worldManager->getBlockDefault(posX + 1, posY, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_RIGHT);
+                            addFace(chunk->vertices, block, x, y, z, FACE_RIGHT, 5);
                         neighbor = getChunkBlock(chunk, posX - 1, posY, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_LEFT);
+                            addFace(chunk->vertices, block, x, y, z, FACE_LEFT, 5);
                     } else if (x == 0) {
                         neighbor = worldManager->getBlockDefault(posX - 1, posY, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_LEFT);
+                            addFace(chunk->vertices, block, x, y, z, FACE_LEFT, 5);
                         neighbor = getChunkBlock(chunk, posX + 1, posY, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_RIGHT);
+                            addFace(chunk->vertices, block, x, y, z, FACE_RIGHT, 5);
                     } else {
                         neighbor = getChunkBlock(chunk, posX + 1, posY, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_RIGHT);
+                            addFace(chunk->vertices, block, x, y, z, FACE_RIGHT, 5);
                         neighbor = getChunkBlock(chunk, posX - 1, posY, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_LEFT);
+                            addFace(chunk->vertices, block, x, y, z, FACE_LEFT, 5);
                     }
                     if (z == CHUNK_SIZE_MINUS_ONE) {
                         neighbor = worldManager->getBlockDefault(posX, posY, posZ + 1);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_FRONT);
+                            addFace(chunk->vertices, block, x, y, z, FACE_FRONT, 5);
                         neighbor = getChunkBlock(chunk, posX, posY, posZ - 1);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_BACK);
+                            addFace(chunk->vertices, block, x, y, z, FACE_BACK, 5);
                     } else if (z == 0) {
                         neighbor = worldManager->getBlockDefault(posX, posY, posZ - 1);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_BACK);
+                            addFace(chunk->vertices, block, x, y, z, FACE_BACK, 5);
                         neighbor = getChunkBlock(chunk, posX, posY, posZ + 1);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_FRONT);
+                            addFace(chunk->vertices, block, x, y, z, FACE_FRONT, 5);
                     } else {
                         neighbor = getChunkBlock(chunk, posX, posY, posZ + 1);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_FRONT);
+                            addFace(chunk->vertices, block, x, y, z, FACE_FRONT, 5);
                         neighbor = getChunkBlock(chunk, posX, posY, posZ - 1);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_BACK);
+                            addFace(chunk->vertices, block, x, y, z, FACE_BACK, 5);
                     }
                 }
             }
@@ -142,68 +142,68 @@ void ChunkManager::generateChunkVertices(Chunk *chunk) {
                     if (y == 0) {
                         neighbor = getChunkBlock(neighborChunkBottom, posX, posY - 1, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_BOTTOM);
+                            addFace(chunk->vertices, block, x, y, z, FACE_BOTTOM, 5);
                         neighbor = getChunkBlock(chunk, posX, posY + 1, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_TOP);
+                            addFace(chunk->vertices, block, x, y, z, FACE_TOP, 5);
                     } else if (y == CHUNK_SIZE_MINUS_ONE) {
                         neighbor = getChunkBlock(neighborChunkTop, posX, posY + 1, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_TOP);
+                            addFace(chunk->vertices, block, x, y, z, FACE_TOP, 5);
                         neighbor = getChunkBlock(chunk, posX, posY - 1, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_BOTTOM);
+                            addFace(chunk->vertices, block, x, y, z, FACE_BOTTOM, 5);
                     } else {
                         neighbor = getChunkBlock(chunk, posX, posY - 1, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_BOTTOM);
+                            addFace(chunk->vertices, block, x, y, z, FACE_BOTTOM, 5);
                         neighbor = getChunkBlock(chunk, posX, posY + 1, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_TOP);
+                            addFace(chunk->vertices, block, x, y, z, FACE_TOP, 5);
                     }
                     if (x == 0) {
                         neighbor = getChunkBlock(neighborChunkLeft, posX - 1, posY, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_LEFT);
+                            addFace(chunk->vertices, block, x, y, z, FACE_LEFT, 5);
                         neighbor = getChunkBlock(chunk, posX + 1, posY, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_RIGHT);
+                            addFace(chunk->vertices, block, x, y, z, FACE_RIGHT, 5);
                     } else if (x == CHUNK_SIZE_MINUS_ONE) {
                         neighbor = getChunkBlock(neighborChunkRight, posX + 1, posY, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_RIGHT);
+                            addFace(chunk->vertices, block, x, y, z, FACE_RIGHT, 5);
                         neighbor = getChunkBlock(chunk, posX - 1, posY, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_LEFT);
+                            addFace(chunk->vertices, block, x, y, z, FACE_LEFT, 5);
                     } else {
                         neighbor = getChunkBlock(chunk, posX - 1, posY, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_LEFT);
+                            addFace(chunk->vertices, block, x, y, z, FACE_LEFT, 5);
                         neighbor = getChunkBlock(chunk, posX + 1, posY, posZ);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_RIGHT);
+                            addFace(chunk->vertices, block, x, y, z, FACE_RIGHT, 5);
                     }
                     if (z == 0) {
                         neighbor = getChunkBlock(neighborChunkFront, posX, posY, posZ - 1);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_BACK);
+                            addFace(chunk->vertices, block, x, y, z, FACE_BACK, 5);
                         neighbor = getChunkBlock(chunk, posX, posY, posZ + 1);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_FRONT);
+                            addFace(chunk->vertices, block, x, y, z, FACE_FRONT, 5);
                     } else if (z == CHUNK_SIZE_MINUS_ONE) {
                         neighbor = getChunkBlock(neighborChunkBack, posX, posY, posZ + 1);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_FRONT);
+                            addFace(chunk->vertices, block, x, y, z, FACE_FRONT, 5);
                         neighbor = getChunkBlock(chunk, posX, posY, posZ - 1);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_BACK);
+                            addFace(chunk->vertices, block, x, y, z, FACE_BACK, 5);
                     } else {
                         neighbor = getChunkBlock(chunk, posX, posY, posZ - 1);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_BACK);
+                            addFace(chunk->vertices, block, x, y, z, FACE_BACK, 5);
                         neighbor = getChunkBlock(chunk, posX, posY, posZ + 1);
                         if (neighbor == BLOCK_AIR)
-                            addFace(chunk->vertices, block, x, y, z, FACE_FRONT);
+                            addFace(chunk->vertices, block, x, y, z, FACE_FRONT, 5);
                     }
                 }
             }
@@ -287,13 +287,11 @@ void ChunkManager::setChunkBlockIndexed(Chunk *chunk, int8_t block, int x, int y
     chunk->blocks[z * CHUNK_SIZE * CHUNK_SIZE + y * CHUNK_SIZE + x] = block;
 }
 
-void ChunkManager::addFace(std::vector<float> &data, Block *block, int x, int y, int z, int face) {
-    data.resize(data.size() + 6);
-    float *dataPtr = data.data() + (data.size() - 6);
-    dataPtr[0] = (float) x;
-    dataPtr[1] = (float) y;
-    dataPtr[2] = (float) z;
-    dataPtr[3] = (float) block->id;
-    dataPtr[4] = (float) block->index * 6 + block->textures[face];
-    dataPtr[5] = (float) face;
+void ChunkManager::addFace(std::vector<float> &data, Block *block, int x, int y, int z, int face, int lightLevel) {
+    data.resize(data.size() + 4);
+    float *dataPtr = data.data() + (data.size() - 4);
+    dataPtr[0] = float((x & 0xFF) | ((y & 0xFF) << 8) | (z & 0xFF) << 16);
+    dataPtr[1] = (float)block->id;
+    dataPtr[2] = (float)block->index * 6 + block->textures[face];
+    dataPtr[3] = float((face & 0xFF) | (lightLevel & 0xFF) << 16);
 }

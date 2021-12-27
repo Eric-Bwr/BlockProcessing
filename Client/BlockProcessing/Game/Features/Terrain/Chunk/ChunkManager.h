@@ -28,7 +28,7 @@ private:
     int stride;
     void generateChunkVertices(Chunk* chunk);
     void generateChunkDefaultVertices(Chunk* chunk);
-    void addFace(std::vector<float>& data, Block* block, int x, int y, int z, int face);
+    void addFace(std::vector<float>& data, Block* block, int x, int y, int z, int face, int lightLevel);
     BlockManager *blockManager;
     WorldManager *worldManager;
 };

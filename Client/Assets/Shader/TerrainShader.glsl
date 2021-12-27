@@ -8,6 +8,7 @@ out vec3 textureCoords;
 flat out vec3 normals;
 out vec3 fragPosition;
 flat out float blockID;
+flat out float lightLevel;
 out float visibility;
 
 uniform float intensity = 0.0015;
@@ -80,16 +81,19 @@ layout(std430, binding = 0) buffer data {
 };
 
 void main(){
-    int face = int(blockData[gl_InstanceID * 6 + 5]);
+    int faceShifted = int(blockData[gl_InstanceID * 4 + 3]);
+    int face = faceShifted & 0xFF;
+    lightLevel = (faceShifted >> 16) & 0xFF;
     vec3 position = vertexData[face][gl_VertexID];
-    vec3 chunkPos = vec3(blockData[gl_InstanceID * 6 + 0], blockData[gl_InstanceID * 6 + 1], blockData[gl_InstanceID * 6 + 2]);
+    int chunkPosBitshifted = int(blockData[gl_InstanceID * 4 + 0]);
+    vec3 chunkPos = vec3(chunkPosBitshifted & 0xFF, (chunkPosBitshifted >> 8) & 0xFF, (chunkPosBitshifted >> 16) & 0xFF);
     vec4 pos = viewModel * vec4(position + chunkPos, 1.0f);
     normals = normalData[face];
     fragPosition = position;
     gl_Position = projection * pos;
-    textureCoords = vec3(textureData[gl_VertexID], blockData[gl_InstanceID * 6 + 4]);
+    textureCoords = vec3(textureData[gl_VertexID], blockData[gl_InstanceID * 4 + 2]);
     visibility = clamp(exp(-pow((length(pos.xyz) * intensity), gradient)), 0.0, 1.0);
-    blockID = blockData[gl_InstanceID * 6 + 3];
+    blockID = blockData[gl_InstanceID * 4 + 1];
 }
 
 #fragment
@@ -99,6 +103,7 @@ in vec3 textureCoords;
 flat in vec3 normals;
 in vec3 fragPosition;
 flat in float blockID;
+flat in float lightLevel;
 in float visibility;
 
 uniform sampler2DArray image;
@@ -136,12 +141,5 @@ void main(){
     vec3 specular = vec3(0.175) * spec;// assuming bright white light color
     FragColor = vec4(ambient + diffuse + specular, 1.0);
     FragColor = mix(vec4(skyColor, 1.0), FragColor, visibility);
-
-
-
-   // vec2 texCoord = gl_Position.xy * 0.5 + 0.5;
-
-
     //FragColor = vec4((normals.x + 1) / 2, (normals.y + 1) / 2, (normals.z + 1 / 2), 1);
-   // FragColor = vec4(color, 1);
 }

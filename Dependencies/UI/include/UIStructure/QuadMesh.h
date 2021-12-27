@@ -20,7 +20,7 @@ public:
     VertexArrayObject vao;
     VertexBufferObject vbo;
     void setRadii(float radii, bool upperLeft, bool lowerLeft, bool upperRight, bool lowerRight);
-    float radii = 0, corners = 0 << 8 | 0 << 6 | 0 << 4 | 0 << 2;
+    float radii = 0, corners = float((int)0 << 3 | (int)0 << 2 | (int)0 << 1 | (int)0);
 private:
     std::vector<float> vertices;
 };
