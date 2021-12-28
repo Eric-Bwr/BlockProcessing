@@ -10,7 +10,8 @@ class NetworkManager : Network::Client {
 public:
     void init();
     void setServerMenuInterface(ServerMenuInterface* serverMenuInterface);
-    void connect(const std::string& server);
+    void connect(std::string& server);
+    void disconnect();
     void update();
     void OnConnect() override;
     void OnConnectFail() override;
@@ -19,7 +20,9 @@ public:
     void OnPacketSend(Network::Packet& packet) override;
     ~NetworkManager();
     bool connected = false;
-    int status = 0;
+    int status = 0, delay = 0;
+    std::string hostname;
+    short port;
 private:
     ServerMenuInterface* serverMenuInterface;
     ThreadSafeQueue<Network::Packet> packets;

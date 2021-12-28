@@ -178,9 +178,11 @@ static bool shouldStop(char input) {
 void UITextField::keyInput(int key, int action, int mods) {
     if (pressed) {
         if (action == INPUT_PRESSED || action == INPUT_REPEATED) {
-            if (key == KEY_TAB)
+            if (key == KEY_TAB) {
                 charInput(char('\t'));
-            else if (key == KEY_BACKSPACE) {
+                if (contentCallback != nullptr)
+                    (*contentCallback)(content, passwordContent);
+            } else if (key == KEY_BACKSPACE) {
                 if (mods == KEY_MOD_CONTROL) {
                     if (isPasswordField) {
                         passwordContent = passwordContent.substr(cursorContent.size(), passwordContent.size());
@@ -213,6 +215,8 @@ void UITextField::keyInput(int key, int action, int mods) {
                         updateCursor();
                     }
                 }
+                if (contentCallback != nullptr)
+                    (*contentCallback)(content, passwordContent);
             } else if (key == KEY_DELETE) {
                 if (mods == KEY_MOD_CONTROL) {
                     if (isPasswordField) {
@@ -247,6 +251,8 @@ void UITextField::keyInput(int key, int action, int mods) {
                         updateCursor();
                     }
                 }
+                if (contentCallback != nullptr)
+                    (*contentCallback)(content, passwordContent);
             } else if (key == KEY_LEFT) {
                 if (!cursorContent.empty()) {
                     if (mods == KEY_MOD_CONTROL) {
@@ -263,6 +269,8 @@ void UITextField::keyInput(int key, int action, int mods) {
                         cursorContent.pop_back();
                     updateCursor();
                 }
+                if (contentCallback != nullptr)
+                    (*contentCallback)(content, passwordContent);
             } else if (key == KEY_RIGHT) {
                 if (cursorContent.size() < content.size()) {
                     if (mods == KEY_MOD_CONTROL) {
@@ -281,9 +289,9 @@ void UITextField::keyInput(int key, int action, int mods) {
                         cursorContent += content.at(cursorContent.size());
                     updateCursor();
                 }
+                if (contentCallback != nullptr)
+                    (*contentCallback)(content, passwordContent);
             }
-            if (contentCallback != nullptr)
-                (*contentCallback)(content, passwordContent);
         }
     }
 }

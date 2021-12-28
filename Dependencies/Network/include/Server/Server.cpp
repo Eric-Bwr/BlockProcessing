@@ -56,9 +56,16 @@ void Network::Server::Frame() {
         if (m_MasterFD[i].revents & POLLRDNORM) {
             uint32_t size = 0;
             connection.Socket.ReceiveAll(&size, sizeof(uint32_t));
-            if (size == 0 || size > MAX_PACKET_SIZE) {
-                CloseConnection(index);
-                OnDisconnect(connection, DisconnectReason::InvalidPacketLength);
+            if (size == 0) {
+                //CloseConnection(index);
+                //OnDisconnect(connection, DisconnectReason::InvalidPacketLength);
+                printf("%s", "too small");
+                continue;
+            }
+            if (size > MAX_PACKET_SIZE) {
+                //CloseConnection(index);
+                printf("%s", "too large");
+                //OnDisconnect(connection, DisconnectReason::InvalidPacketLength);
                 continue;
             }
             Packet packet;

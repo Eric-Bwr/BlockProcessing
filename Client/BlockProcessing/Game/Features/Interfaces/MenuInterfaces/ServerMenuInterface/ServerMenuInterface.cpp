@@ -57,7 +57,7 @@ void ServerMenuInterface::init(SceneManager *sceneManager) {
         if(!strippedContent.empty())
             parametersPtr->getString("Server#Address", "127.0.0.1:25566") = strippedContent;
     });
-    backButton = new UIButton(width / 2 - 200 * 4 / 2, height - 140, 200 * 4, 20 * 4);
+    backButton = new UIButton(width / 2 - 200 * 4 / 2, height - 120, 200 * 4, 20 * 4);
     backButton->setBackgroundTexture(guiTexture, 0, 20, 200, 20, 0, 40, 200, 20, 0, 40, 200, 20);
     backButton->setText("Back", font, 40);
     backButton->setCallback([](bool hovered, bool pressed) {
@@ -66,19 +66,25 @@ void ServerMenuInterface::init(SceneManager *sceneManager) {
     });
     serverName = new UIText("", font, 50, width / 2 - serverFieldWidth / 2 + 20, height - 400 + 20, serverFieldWidth, 50, UITextMode::LEFT);
     serverMotd = new UIText("", font, 50, width / 2 - serverFieldWidth / 2 + 20, height - 400 + 145, serverFieldWidth, 50, UITextMode::LEFT);
+    serverPing = new UIText("", font, 50, width / 2 + serverFieldWidth / 2 - 10 * 8 - 50 - 200, height - 400 + 12, 200, 50, UITextMode::RIGHT);
     refreshButton = new UIButton(width / 2 - 200 * 3.25 / 2, height - 510, 200 * 3.25, 20 * 3.25);
     refreshButton->setBackgroundTexture(guiTexture, 0, 20, 200, 20, 0, 40, 200, 20, 0, 40, 200, 20);
     refreshButton->setText("Refresh", font, 40);
     refreshButton->setCallback([](bool hovered, bool pressed) {
+        if (hovered && pressed)
+            sceneManagerPtr->onKey(KEY_ENTER, 0, PRESS, 0);
+    });
+    joinButton = new UIButton(width / 2 - 200 * 3.25 / 2, height - 220, 200 * 3.25, 20 * 3.25);
+    joinButton->setBackgroundTexture(guiTexture, 0, 20, 200, 20, 0, 40, 200, 20, 0, 40, 200, 20);
+    joinButton->setText("Join", font, 40);
+    joinButton->setCallback([](bool hovered, bool pressed) {
         if (hovered && pressed) {
-            auto option = parametersPtr->getString("Server#Address", "127.0.0.1:25566");
-            if(!option.empty())
-                networkManagerPtr->connect(option);
+
         }
     });
     connectionInfo = new UIImage(width / 2 + serverFieldWidth / 2 - 11 * 8, height - 400 + 8, 10 * 8, 7 * 8);
     connectionInfo->setTexture(guiTexture, connectionIcons[0][0], connectionIcons[0][1], 10, 7);
-    serverBackground = new UIImage(width / 2 - serverFieldWidth / 2, height - 400, serverFieldWidth, serverFieldHeight);
+    serverBackground = new UIImage(width / 2 - serverFieldWidth / 2, height - 450, serverFieldWidth, serverFieldHeight);
     serverBackground->setTexture(guiTexture, 0, 155, 250, 55);
     background = new UIImage(0, 0, width, height);
     background->setTexture(serverTexture, 0, 0, width / 8, height / 8);
@@ -93,9 +99,11 @@ void ServerMenuInterface::load() {
     UI->add(serverText, 1);
     UI->add(serverField, 1);
     UI->add(backButton, 1);
+    UI->add(joinButton, 1);
     UI->add(refreshButton, 1);
     UI->add(serverName, 2);
     UI->add(serverMotd, 2);
+    UI->add(serverPing, 2);
     UI->add(connectionInfo, 2);
     UI->add(serverBackground, 1);
     UI->add(background, 0);
@@ -103,12 +111,15 @@ void ServerMenuInterface::load() {
 }
 
 void ServerMenuInterface::unload() {
+    networkManagerPtr->disconnect();
     UI->remove(titleText);
     UI->remove(nameText);
     UI->remove(nameField);
     UI->remove(serverText);
     UI->remove(serverField);
+    UI->remove(serverPing);
     UI->remove(backButton);
+    UI->remove(joinButton);
     UI->remove(refreshButton);
     UI->remove(serverName);
     UI->remove(serverMotd);
@@ -120,41 +131,53 @@ void ServerMenuInterface::unload() {
 void ServerMenuInterface::update(double frameDeltaTime) {
     networkManagerPtr->update();
     auto status = networkManagerPtr->status;
+    int i = 0;
     if (status == STATUS_CONNECTING) {
-        if(animation > 8)
+        if (animation > 8) {
             animation = 0.0f;
-        else if(animation > 7)
-            connectionInfo->setTextureCoords(connectionIcons[2][0], connectionIcons[2][1], 10, 7);
-        else if(animation > 6)
-            connectionInfo->setTextureCoords(connectionIcons[3][0], connectionIcons[3][1], 10, 7);
-        else if(animation > 5)
-            connectionInfo->setTextureCoords(connectionIcons[4][0], connectionIcons[4][1], 10, 7);
-        else if(animation > 4)
-            connectionInfo->setTextureCoords(connectionIcons[5][0], connectionIcons[5][1], 10, 7);
-        else if(animation > 3)
-            connectionInfo->setTextureCoords(connectionIcons[4][0], connectionIcons[4][1], 10, 7);
-        else if(animation > 2)
-            connectionInfo->setTextureCoords(connectionIcons[3][0], connectionIcons[3][1], 10, 7);
-        else if(animation > 1)
-            connectionInfo->setTextureCoords(connectionIcons[2][0], connectionIcons[2][1], 10, 7);
-        else if(animation > 0)
-            connectionInfo->setTextureCoords(connectionIcons[1][0], connectionIcons[1][1], 10, 7);
+            i = 1;
+        } else if (animation > 7)
+            i = 2;
+        else if (animation > 6)
+            i = 3;
+        else if (animation > 5)
+            i = 4;
+        else if (animation > 4)
+            i = 5;
+        else if (animation > 3)
+            i = 4;
+        else if (animation > 2)
+            i = 3;
+        else if (animation > 1)
+            i = 2;
+        else if (animation >= 0)
+            i = 1;
+        connectionInfo->setTextureCoords(connectionIcons[i][0], connectionIcons[i][1], 10, 7);
         animation += animationSpeed * frameDeltaTime;
         serverName->setText("Connecting...");
         serverName->setHex(0xDDDDDD);
-    } else {
-        if (oldStatus != status) {
-            if (status == STATUS_UNKNOWN_HOST) {
-                connectionInfo->setTextureCoords(connectionIcons[0][0], connectionIcons[0][1], 10, 7);
-                serverName->setText("Unknown Host");
-                serverName->setHex(0xDDDDDD);
-            } else if (status == STATUS_CONNECTED) {
-                connectionInfo->setTextureCoords(connectionIcons[1][0], connectionIcons[1][1], 10, 7);
-                serverName->setHex(0xFFFFFF);
-            }
-        }
+        serverPing->setText("");
+    } else if (status == STATUS_CONNECTED) {
+        auto delay = networkManagerPtr->delay;
+        if (delay <= 30)
+            i = 10;
+        else if (delay <= 40)
+            i = 9;
+        else if (delay <= 50)
+            i = 8;
+        else if (delay <= 60)
+            i = 7;
+        else if (delay <= 70)
+            i = 6;
+        connectionInfo->setTextureCoords(connectionIcons[i][0], connectionIcons[i][1], 10, 7);
+        serverName->setHex(0xFFFFFF);
+        serverPing->setText((std::to_string(delay) + "ms").c_str());
+    } else if (status == STATUS_UNKNOWN_HOST) {
+        connectionInfo->setTextureCoords(connectionIcons[0][0], connectionIcons[0][1], 10, 7);
+        serverName->setText("Unknown Host");
+        serverName->setHex(0xDDDDDD);
+        serverPing->setText("");
     }
-    oldStatus = status;
 }
 
 void ServerMenuInterface::setInfo(const char *name, const char *motd) {
@@ -165,6 +188,7 @@ void ServerMenuInterface::setInfo(const char *name, const char *motd) {
 void ServerMenuInterface::keyInput(int key, int action, int mods) {
     if(action == PRESS){
         if(key == KEY_ENTER || key == KEY_KP_ENTER) {
+            animation = 0.0f;
             auto option = parameters.getString("Server#Address", "127.0.0.1:25566");
             if (!option.empty())
                 networkManagerPtr->connect(option);
@@ -180,9 +204,11 @@ ServerMenuInterface::~ServerMenuInterface() {
     UI->remove(serverText);
     UI->remove(serverField);
     UI->remove(backButton);
-    UI->remove(refreshButton);
+    UI->remove(joinButton);
     UI->remove(serverName);
     UI->remove(serverMotd);
+    UI->remove(serverPing);
+    UI->remove(refreshButton);
     UI->remove(connectionInfo);
     UI->remove(serverBackground);
     UI->remove(background);
@@ -192,7 +218,9 @@ ServerMenuInterface::~ServerMenuInterface() {
     delete nameField;
     delete serverText;
     delete serverField;
+    delete serverPing;
     delete backButton;
+    delete joinButton;
     delete refreshButton;
     delete serverName;
     delete serverMotd;

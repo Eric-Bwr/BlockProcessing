@@ -28,11 +28,13 @@ private:
     UITextField* nameField;
     UIText* serverText;
     UITextField* serverField;
+    UIButton* joinButton;
     UIButton* refreshButton;
     UIImage* serverBackground;
     UIImage* background;
     UIText* serverName;
     UIText* serverMotd;
+    UIText* serverPing;
     UIImage* connectionInfo;
     int oldStatus = -1;
     float animation = 0, animationSpeed = 6.5;
