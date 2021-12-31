@@ -230,7 +230,6 @@ void WorldManager::setChunksPerThread(int max) {
 }
 
 void WorldManager::render(Mat4d &projectionView, Mat4d &view) {
-    std::lock_guard<std::mutex> lock(octreeAccess);
     frustum.update(projectionView);
     chunkManager.setView(view);
     for (auto&[coord, octree]: octrees)

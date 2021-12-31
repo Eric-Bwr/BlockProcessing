@@ -12,7 +12,9 @@ static ThreadSafeQueue<std::string> attempts;
 static std::atomic_bool alive = true;
 static std::atomic_bool attempt = false;
 static std::atomic_bool update = false;
+static std::atomic_bool receivedInfo = false;
 static Network::Packet ping = Network::Packet(PACKET_PING);
+static Network::Packet info = Network::Packet(PACKET_INFO);
 static std::chrono::time_point<std::chrono::system_clock> pingSend;
 
 static void frame(Network::Client* client){
@@ -39,8 +41,10 @@ static void frame(Network::Client* client){
         }else{
             if(networkManagerPtr->connected) {
                 if ((std::chrono::system_clock::now() - pingSend) >= std::chrono::seconds(1)) {
-                    client->Connection.OutStream.push(ping);
+                    client->Connection.OutStream.Append(ping);
                     pingSend = std::chrono::system_clock::now();
+                    if(!receivedInfo)
+                        client->Connection.OutStream.Append(info);
                 }
                 client->Frame();
             }
@@ -52,6 +56,7 @@ void NetworkManager::init() {
     networkManagerPtr = this;
     Network::Initialize();
     ping.AppendString("Ping");
+    info.AppendString("Info");
     std::thread thread(frame, (Network::Client*)this);
     thread.detach();
 }
@@ -61,6 +66,7 @@ void NetworkManager::setServerMenuInterface(ServerMenuInterface *serverMenuInter
 }
 
 void NetworkManager::connect(std::string &server) {
+    receivedInfo = false;
     packets.clear();
     attempt = true;
     attempts.push((std::string)server);
@@ -82,33 +88,31 @@ void NetworkManager::update() {
             switch(packet.GetPacketType()){
                 case PACKET_INFO:
                     serverMenuInterface->setInfo(packet.GetString().substr(0, 26).c_str(), packet.GetString().substr(0, 30).c_str());
+                    receivedInfo = true;
                     break;
                 case PACKET_DISCONNECT:
                     serverMenuInterface->setInfo("", "");
                     break;
                 default:
-                    print("Uknown Packet -> " + packet.GetString());
+                    LOG<WARN_LVL>("Uknown Packet -> " + packet.GetPacketType());
                     break;
             }
         }
     }
 }
 
-void NetworkManager::OnConnect() {}
+void NetworkManager::OnConnect() {
+    Connection.OutStream.Append(info);
+}
 
 void NetworkManager::OnConnectFail() {
     packets.push(Network::Packet(PACKET_DISCONNECT));
 }
 
-void NetworkManager::OnDisconnect() {
-    packets.push(Network::Packet(PACKET_DISCONNECT));
-}
-
 void NetworkManager::OnPacketReceive(Network::Packet &packet) {
-    if(packet.GetPacketType() == PACKET_PING){
+    if(packet.GetPacketType() == PACKET_PING)
         delay = (int)std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - pingSend).count();
-        print(delay);
-    }else
+    else
         packets.push(std::move(packet));
 }
 

@@ -10,11 +10,11 @@ static Network::Packet info = Network::Packet(PACKET_INFO);
 void Server::init(const char* name, const char* motd) {
     info.AppendString(motd);
     info.AppendString(name);
+    playerManager.init();
 }
 
 void Server::OnConnect(Network::TCPConnection &connection) {
     LOG<INFO_LVL>("New Connection: " + connection.Endpoint.GetIP());
-    connection.OutStream.push(info);
 }
 
 void Server::OnDisconnect(Network::TCPConnection &connection, Network::DisconnectReason reason) {
@@ -26,8 +26,12 @@ void Server::OnDisconnect(Network::TCPConnection &connection, Network::Disconnec
 
 void Server::OnPacketReceive(Network::TCPConnection &connection, Network::Packet &packet) {
     switch(packet.GetPacketType()){
+        case PACKET_INFO:
+            connection.OutStream.Append(info);
+            LOG<INFO_LVL>("Info Packet from: " + connection.Endpoint.GetIP());
+            break;
         case PACKET_PING:
-            connection.OutStream.push(packet);
+            connection.OutStream.Append(packet);
             LOG<INFO_LVL>("Ping Packet from: " + connection.Endpoint.GetIP());
             break;
         default:

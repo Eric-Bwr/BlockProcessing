@@ -31,7 +31,7 @@ void ServerMenuInterface::init(SceneManager *sceneManager) {
     serverTexture->magNear();
     serverTexture->repeat();
     titleText = new UIText("Server", font, 60, 0, 40, width, 80, UITextMode::CENTERED);
-    nameText = new UIText("Your name:", font, 40, width / 2 - fieldWidth / 2, 160, fieldWidth, 40, UITextMode::LEFT);
+    nameText = new UIText("Your name:", font, 40, width / 2 - fieldWidth / 2, 180, fieldWidth, 40, UITextMode::LEFT);
     nameText->setRGBA(0.7, 0.7, 0.7, 1.0);
     nameField = new UITextField("", font, 40, nameText->getX(), nameText->getY() + nameText->getHeight(), fieldWidth, fieldHeight, 10);
     nameField->setBackgroundTexture(guiTexture, 0, 131, 202, 22);
@@ -41,7 +41,7 @@ void ServerMenuInterface::init(SceneManager *sceneManager) {
     nameField->setContentCallback([](std::string content, std::string passwordContent) {
         parametersPtr->getString("Server#PlayerName") = content;
     });
-    serverText = new UIText("Server address:", font, 40, width / 2 - fieldWidth / 2, 320, fieldWidth, 40, UITextMode::LEFT);
+    serverText = new UIText("Server address:", font, 40, width / 2 - fieldWidth / 2, 330, fieldWidth, 40, UITextMode::LEFT);
     serverText->setRGBA(0.7, 0.7, 0.7, 1.0);
     serverField = new UITextField("", font, 40, serverText->getX(), serverText->getY() + serverText->getHeight(), fieldWidth, fieldHeight, 10);
     serverField->setBackgroundTexture(guiTexture, 0, 131, 202, 22);
@@ -57,34 +57,34 @@ void ServerMenuInterface::init(SceneManager *sceneManager) {
         if(!strippedContent.empty())
             parametersPtr->getString("Server#Address", "127.0.0.1:25566") = strippedContent;
     });
-    backButton = new UIButton(width / 2 - 200 * 4 / 2, height - 120, 200 * 4, 20 * 4);
+    backButton = new UIButton(width / 2 - 185 * 4 / 2, height - 120, 185 * 4, 18.5 * 4);
     backButton->setBackgroundTexture(guiTexture, 0, 20, 200, 20, 0, 40, 200, 20, 0, 40, 200, 20);
     backButton->setText("Back", font, 40);
     backButton->setCallback([](bool hovered, bool pressed) {
         if (hovered && pressed)
             sceneManagerPtr->setCurrent(ID_MAIN_MENU);
     });
-    serverName = new UIText("", font, 50, width / 2 - serverFieldWidth / 2 + 20, height - 400 + 20, serverFieldWidth, 50, UITextMode::LEFT);
-    serverMotd = new UIText("", font, 50, width / 2 - serverFieldWidth / 2 + 20, height - 400 + 145, serverFieldWidth, 50, UITextMode::LEFT);
-    serverPing = new UIText("", font, 50, width / 2 + serverFieldWidth / 2 - 10 * 8 - 50 - 200, height - 400 + 12, 200, 50, UITextMode::RIGHT);
-    refreshButton = new UIButton(width / 2 - 200 * 3.25 / 2, height - 510, 200 * 3.25, 20 * 3.25);
+    serverName = new UIText("", font, 50, width / 2 - serverFieldWidth / 2 + 20, height - 410 + 20, serverFieldWidth, 50, UITextMode::LEFT);
+    serverMotd = new UIText("", font, 50, width / 2 - serverFieldWidth / 2 + 20, height - 410 + 140, serverFieldWidth, 50, UITextMode::LEFT);
+    serverPing = new UIText("", font, 50, width / 2 + serverFieldWidth / 2 - 10 * 8 - 50 - 200, height - 410 + 12, 200, 50, UITextMode::RIGHT);
+    refreshButton = new UIButton(width / 2 - 200 * 2 - 5, height - 510, 200 * 2 - 5, 20 * 3.6);
     refreshButton->setBackgroundTexture(guiTexture, 0, 20, 200, 20, 0, 40, 200, 20, 0, 40, 200, 20);
-    refreshButton->setText("Refresh", font, 40);
+    refreshButton->setText("Refresh", font, 50);
     refreshButton->setCallback([](bool hovered, bool pressed) {
         if (hovered && pressed)
             sceneManagerPtr->onKey(KEY_ENTER, 0, PRESS, 0);
     });
-    joinButton = new UIButton(width / 2 - 200 * 3.25 / 2, height - 220, 200 * 3.25, 20 * 3.25);
+    joinButton = new UIButton(width / 2 + 5, height - 510, 200 * 2 - 5, 20 * 3.6);
     joinButton->setBackgroundTexture(guiTexture, 0, 20, 200, 20, 0, 40, 200, 20, 0, 40, 200, 20);
-    joinButton->setText("Join", font, 40);
+    joinButton->setText("Join", font, 50);
     joinButton->setCallback([](bool hovered, bool pressed) {
         if (hovered && pressed) {
 
         }
     });
-    connectionInfo = new UIImage(width / 2 + serverFieldWidth / 2 - 11 * 8, height - 400 + 8, 10 * 8, 7 * 8);
+    connectionInfo = new UIImage(width / 2 + serverFieldWidth / 2 - 11 * 8, height - 410 + 8, 10 * 8, 7 * 8);
     connectionInfo->setTexture(guiTexture, connectionIcons[0][0], connectionIcons[0][1], 10, 7);
-    serverBackground = new UIImage(width / 2 - serverFieldWidth / 2, height - 450, serverFieldWidth, serverFieldHeight);
+    serverBackground = new UIImage(width / 2 - serverFieldWidth / 2, height - 410, serverFieldWidth, serverFieldHeight);
     serverBackground->setTexture(guiTexture, 0, 155, 250, 55);
     background = new UIImage(0, 0, width, height);
     background->setTexture(serverTexture, 0, 0, width / 8, height / 8);
@@ -157,6 +157,7 @@ void ServerMenuInterface::update(double frameDeltaTime) {
         serverName->setText("Connecting...");
         serverName->setHex(0xDDDDDD);
         serverPing->setText("");
+        serverMotd->setText("");
     } else if (status == STATUS_CONNECTED) {
         auto delay = networkManagerPtr->delay;
         if (delay <= 30)

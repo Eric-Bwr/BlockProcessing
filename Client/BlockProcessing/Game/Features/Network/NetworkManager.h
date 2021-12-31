@@ -15,14 +15,11 @@ public:
     void update();
     void OnConnect() override;
     void OnConnectFail() override;
-    void OnDisconnect() override;
     void OnPacketReceive(Network::Packet& packet) override;
     void OnPacketSend(Network::Packet& packet) override;
     ~NetworkManager();
     bool connected = false;
     int status = 0, delay = 0;
-    std::string hostname;
-    short port;
 private:
     ServerMenuInterface* serverMenuInterface;
     ThreadSafeQueue<Network::Packet> packets;

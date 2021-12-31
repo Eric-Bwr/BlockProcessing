@@ -2,9 +2,6 @@
 
 #ifdef _WIN32
 #define NETWORK_WIN
-#ifndef _WIN32_WINNT
-#define _WIN32_WINNT 0x0600
-#endif
 #include <ws2tcpip.h>
 #include <ws2def.h>
 #include <winsock2.h>

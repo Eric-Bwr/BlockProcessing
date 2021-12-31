@@ -1,6 +1,6 @@
 #pragma once
 #include "Socket/Socket.h"
-#include "Packet/Packet.h"
+#include "PacketManager/PacketManager.h"
 #include <queue>
 
 namespace Network{
@@ -8,6 +8,8 @@ namespace Network{
         Socket Socket;
         Endpoint Endpoint;
         uint64_t Index;
-        std::queue<Packet> OutStream;
+        PacketManager OutStream;
+        PacketManager InStream;
+        char Buffer[MAX_PACKET_SIZE];
     };
 }
