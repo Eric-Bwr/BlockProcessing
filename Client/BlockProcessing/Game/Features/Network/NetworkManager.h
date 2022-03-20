@@ -11,6 +11,7 @@ public:
     void init();
     void setServerMenuInterface(ServerMenuInterface* serverMenuInterface);
     void connect(std::string& server);
+    void join(std::string &playerName);
     void disconnect();
     void update();
     void OnConnect() override;

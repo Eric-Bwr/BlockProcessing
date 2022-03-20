@@ -188,7 +188,7 @@ void Parameters::readParams() {
 			float x, y;
 			ss >> x >> y;
 			vec2Params[name] = Vec2f(x, y);
-		} else if (type == "vec2") {
+		} else if (type == "vec3") {
 			float x, y, z;
 			ss >> x >> y >> z;
 			vec3Params[name] = Vec3f(x, y, z);

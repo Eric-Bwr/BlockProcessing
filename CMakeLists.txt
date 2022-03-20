@@ -5,7 +5,6 @@ set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
 
-#Ill put them back in later, i want to fix other things first
 #set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -Wall -Werror -std=gnu2x")
 #set(CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -Wall -Werror -O2 -std=gnu++20 -Wno-deprecated-enum-enum-conversion")
 
@@ -52,6 +51,7 @@ include_directories(Server)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/Server/Build)
 
 add_executable(Server ${SOURCE_FILES_SERVER} ${DEPENDENCIES_FILES} Server/BlockProcessing/Server/PlayerManager.cpp Server/BlockProcessing/Server/PlayerManager.h)
+
 set_target_properties(Server PROPERTIES OUTPUT_NAME "Server")
 
 target_compile_options(Server PRIVATE -w)

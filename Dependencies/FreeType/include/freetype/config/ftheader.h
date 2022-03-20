@@ -4,7 +4,7 @@
  *
  *   Build macros of the FreeType 2 library.
  *
- * Copyright (C) 1996-2020 by
+ * Copyright (C) 1996-2021 by
  * David Turner, Robert Wilhelm, and Werner Lemberg.
  *
  * This file is part of the FreeType project, and may only be used,
@@ -27,7 +27,7 @@
   /* <Description>                                                         */
   /*    This macro is used in association with @FT_END_HEADER in header    */
   /*    files to ensure that the declarations within are properly          */
-  /*    encapsulated in an `extern "C" { .. }` cell when included from a  */
+  /*    encapsulated in an `extern "C" { .. }` block when included from a  */
   /*    C++ compiler.                                                      */
   /*                                                                       */
 #ifndef FT_BEGIN_HEADER
@@ -47,7 +47,7 @@
   /* <Description>                                                         */
   /*    This macro is used in association with @FT_BEGIN_HEADER in header  */
   /*    files to ensure that the declarations within are properly          */
-  /*    encapsulated in an `extern "C" { .. }` cell when included from a  */
+  /*    encapsulated in an `extern "C" { .. }` block when included from a  */
   /*    C++ compiler.                                                      */
   /*                                                                       */
 #ifndef FT_END_HEADER

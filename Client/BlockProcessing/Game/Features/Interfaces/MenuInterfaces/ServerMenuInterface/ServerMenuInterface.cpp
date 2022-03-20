@@ -39,7 +39,7 @@ void ServerMenuInterface::init(SceneManager *sceneManager) {
     nameField->setText(parameters.getString("Server#PlayerName", "Elly").data());
     nameField->setMaxCharacter(20);
     nameField->setContentCallback([](std::string content, std::string passwordContent) {
-        parametersPtr->getString("Server#PlayerName") = content;
+        parametersPtr->getString("Server#PlayerName", "Elly") = content;
     });
     serverText = new UIText("Server address:", font, 40, width / 2 - fieldWidth / 2, 330, fieldWidth, 40, UITextMode::LEFT);
     serverText->setRGBA(0.7, 0.7, 0.7, 1.0);
@@ -61,8 +61,10 @@ void ServerMenuInterface::init(SceneManager *sceneManager) {
     backButton->setBackgroundTexture(guiTexture, 0, 20, 200, 20, 0, 40, 200, 20, 0, 40, 200, 20);
     backButton->setText("Back", font, 40);
     backButton->setCallback([](bool hovered, bool pressed) {
-        if (hovered && pressed)
+        if (hovered && pressed) {
+            networkManagerPtr->disconnect();
             sceneManagerPtr->setCurrent(ID_MAIN_MENU);
+        }
     });
     serverName = new UIText("", font, 50, width / 2 - serverFieldWidth / 2 + 20, height - 410 + 20, serverFieldWidth, 50, UITextMode::LEFT);
     serverMotd = new UIText("", font, 50, width / 2 - serverFieldWidth / 2 + 20, height - 410 + 140, serverFieldWidth, 50, UITextMode::LEFT);
@@ -78,8 +80,10 @@ void ServerMenuInterface::init(SceneManager *sceneManager) {
     joinButton->setBackgroundTexture(guiTexture, 0, 20, 200, 20, 0, 40, 200, 20, 0, 40, 200, 20);
     joinButton->setText("Join", font, 50);
     joinButton->setCallback([](bool hovered, bool pressed) {
-        if (hovered && pressed) {
-
+        if (hovered && pressed){
+            auto playerName = parametersPtr->getString("Server#PlayerName", "Elly");
+            if(!playerName.empty())
+                networkManagerPtr->join(playerName);
         }
     });
     connectionInfo = new UIImage(width / 2 + serverFieldWidth / 2 - 11 * 8, height - 410 + 8, 10 * 8, 7 * 8);
@@ -111,7 +115,6 @@ void ServerMenuInterface::load() {
 }
 
 void ServerMenuInterface::unload() {
-    networkManagerPtr->disconnect();
     UI->remove(titleText);
     UI->remove(nameText);
     UI->remove(nameField);
@@ -193,8 +196,10 @@ void ServerMenuInterface::keyInput(int key, int action, int mods) {
             auto option = parameters.getString("Server#Address", "127.0.0.1:25566");
             if (!option.empty())
                 networkManagerPtr->connect(option);
-        } else if(key == KEY_ESCAPE)
+        } else if(key == KEY_ESCAPE) {
+            networkManagerPtr->disconnect();
             sceneManagerPtr->setCurrent(ID_MAIN_MENU);
+        }
     }
 }
 

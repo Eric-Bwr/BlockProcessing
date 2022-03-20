@@ -7,6 +7,7 @@
 const int STATUS_UNKNOWN_HOST = 0;
 const int STATUS_CONNECTING = 1;
 const int STATUS_CONNECTED = 2;
+const int STATUS_JOINING = 3;
 
 class ServerMenuInterface : public Interface {
 public:

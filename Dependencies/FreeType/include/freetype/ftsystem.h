@@ -4,7 +4,7 @@
  *
  *   FreeType low-level system interface definition (specification).
  *
- * Copyright (C) 1996-2020 by
+ * Copyright (C) 1996-2021 by
  * David Turner, Robert Wilhelm, and Werner Lemberg.
  *
  * This file is part of the FreeType project, and may only be used,
@@ -80,7 +80,7 @@ FT_BEGIN_HEADER
    *     The size in bytes to allocate.
    *
    * @return:
-   *   Address of new memory cell.  0~in case of failure.
+   *   Address of new memory block.  0~in case of failure.
    *
    */
   typedef void*
@@ -94,14 +94,14 @@ FT_BEGIN_HEADER
    *   FT_Free_Func
    *
    * @description:
-   *   A function used to release a given cell of memory.
+   *   A function used to release a given block of memory.
    *
    * @input:
    *   memory ::
    *     A handle to the source memory manager.
    *
-   *   cell ::
-   *     The address of the target memory cell.
+   *   block ::
+   *     The address of the target memory block.
    *
    */
   typedef void
@@ -115,26 +115,26 @@ FT_BEGIN_HEADER
    *   FT_Realloc_Func
    *
    * @description:
-   *   A function used to re-allocate a given cell of memory.
+   *   A function used to re-allocate a given block of memory.
    *
    * @input:
    *   memory ::
    *     A handle to the source memory manager.
    *
    *   cur_size ::
-   *     The cell's current size in bytes.
+   *     The block's current size in bytes.
    *
    *   new_size ::
-   *     The cell's requested new size.
+   *     The block's requested new size.
    *
-   *   cell ::
-   *     The cell's current address.
+   *   block ::
+   *     The block's current address.
    *
    * @return:
-   *   New cell address.  0~in case of memory shortage.
+   *   New block address.  0~in case of memory shortage.
    *
    * @note:
-   *   In case of error, the old cell must still be available.
+   *   In case of error, the old block must still be available.
    *
    */
   typedef void*

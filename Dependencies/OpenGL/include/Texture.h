@@ -64,12 +64,12 @@ public:
     float getTextureYOffset(int index) const;
     inline int getWidth() const{ return width; }
     inline int getHeight() const{ return height; }
+    void determineFormats(int nrComponents, int desiredChannels);
     bool hasError() const;
     std::string getErrorMessage();
     inline Errors& getErrors(){ return errors; }
     ~Texture();
 private:
-    void determineFormats(int nrComponents, int desiredChannels);
     std::string path;
     bool fixedSamples = true, shouldFree = false;
     float bias = -0.4f, factor;

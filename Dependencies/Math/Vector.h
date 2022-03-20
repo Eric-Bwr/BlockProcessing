@@ -303,60 +303,6 @@ public:
     }
 };
 
-template<typename T = double>
-Vec2<float> toFloat(Vec2<T> vector) {
-    Vec2<float> result;
-    result.x = (float)vector.x;
-    result.y = (float)vector.y;
-    return result;
-}
-
-template<typename T = float>
-Vec2<double> toDouble(Vec2<T> vector) {
-    Vec2<double> result;
-    result.x = (double)vector.x;
-    result.y = (double)vector.y;
-    return result;
-}
-
-template<typename T = double>
-Vec3<float> toFloat(Vec3<T> vector)  {
-    Vec3<float> result;
-    result.x = (float)vector.x;
-    result.y = (float)vector.y;
-    result.z = (float)vector.z;
-    return result;
-}
-
-template<typename T = float>
-Vec3<double> toDouble(Vec3<T> vector) {
-    Vec3<double> result;
-    result.x = (double)vector.x;
-    result.y = (double)vector.y;
-    result.z = (double)vector.z;
-    return result;
-}
-
-template<typename T = double>
-Vec4<float> toFloat(Vec4<T> vector) {
-    Vec4<float> result;
-    result.x = (float)vector.x;
-    result.y = (float)vector.y;
-    result.z = (float)vector.z;
-    result.w = (float)vector.w;
-    return result;
-}
-
-template<typename T = float>
-Vec4<double> toDouble(Vec4<T> vector) {
-    Vec4<double> result;
-    result.x = (double)vector.x;
-    result.y = (double)vector.y;
-    result.z = (double)vector.z;
-    result.w = (double)vector.w;
-    return result;
-}
-
 typedef Vec2<int> Vec2i;
 typedef Vec2<float> Vec2f;
 typedef Vec2<double> Vec2d;

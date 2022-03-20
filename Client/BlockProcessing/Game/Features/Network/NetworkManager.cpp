@@ -6,6 +6,7 @@
 const int PACKET_INFO = 0;
 const int PACKET_DISCONNECT = 1;
 const int PACKET_PING = 2;
+const int PACKET_JOIN = 3;
 
 static NetworkManager* networkManagerPtr;
 static ThreadSafeQueue<std::string> attempts;
@@ -13,8 +14,8 @@ static std::atomic_bool alive = true;
 static std::atomic_bool attempt = false;
 static std::atomic_bool update = false;
 static std::atomic_bool receivedInfo = false;
-static Network::Packet ping = Network::Packet(PACKET_PING);
-static Network::Packet info = Network::Packet(PACKET_INFO);
+static Network::Packet pingPacket = Network::Packet(PACKET_PING);
+static Network::Packet infoPacket = Network::Packet(PACKET_INFO);
 static std::chrono::time_point<std::chrono::system_clock> pingSend;
 
 static void frame(Network::Client* client){
@@ -41,10 +42,10 @@ static void frame(Network::Client* client){
         }else{
             if(networkManagerPtr->connected) {
                 if ((std::chrono::system_clock::now() - pingSend) >= std::chrono::seconds(1)) {
-                    client->Connection.OutStream.Append(ping);
+                    client->Connection.OutStream.Append(pingPacket);
                     pingSend = std::chrono::system_clock::now();
                     if(!receivedInfo)
-                        client->Connection.OutStream.Append(info);
+                        client->Connection.OutStream.Append(infoPacket);
                 }
                 client->Frame();
             }
@@ -55,8 +56,8 @@ static void frame(Network::Client* client){
 void NetworkManager::init() {
     networkManagerPtr = this;
     Network::Initialize();
-    ping.AppendString("Ping");
-    info.AppendString("Info");
+    pingPacket.AppendString("Ping");
+    infoPacket.AppendString("Info");
     std::thread thread(frame, (Network::Client*)this);
     thread.detach();
 }
@@ -70,6 +71,15 @@ void NetworkManager::connect(std::string &server) {
     packets.clear();
     attempt = true;
     attempts.push((std::string)server);
+}
+
+void NetworkManager::join(std::string &playerName) {
+    if(!connected)
+        return;
+    auto joinPacket = Network::Packet(PACKET_JOIN);
+    joinPacket.AppendString(playerName);
+    Connection.OutStream.Append(joinPacket);
+    status = STATUS_JOINING;
 }
 
 void NetworkManager::disconnect() {
@@ -102,7 +112,7 @@ void NetworkManager::update() {
 }
 
 void NetworkManager::OnConnect() {
-    Connection.OutStream.Append(info);
+    Connection.OutStream.Append(infoPacket);
 }
 
 void NetworkManager::OnConnectFail() {

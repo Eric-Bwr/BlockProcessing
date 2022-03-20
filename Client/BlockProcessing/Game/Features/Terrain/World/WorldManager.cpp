@@ -44,10 +44,8 @@ void WorldManager::generate(const Coord &playerChunkCoord, const Coord &playerOc
         modifiedChunks.clear();
 
         for (int64_t xx = playerOctreeCoord.x - octreeRadius; xx <= playerOctreeCoord.x + octreeRadius; xx += OCTREE_LENGTH) {
-            for (int64_t yy = playerOctreeCoord.y - octreeRadius; yy <= playerOctreeCoord.y + octreeRadius; yy += OCTREE_LENGTH) {
+            for (int64_t yy = 0; yy <= OCTREE_LENGTH * 3; yy += OCTREE_LENGTH) {
                 for (int64_t zz = playerOctreeCoord.z - octreeRadius; zz <= playerOctreeCoord.z + octreeRadius; zz += OCTREE_LENGTH) {
-                    if(yy < 0)
-                        continue;
                     auto octreeCoord = Coord{xx, yy, zz};
                     Octree *octree = nullptr;
                     {
@@ -98,15 +96,17 @@ Chunk *WorldManager::getChunkFromChunkCoords(int64_t x, int64_t y, int64_t z) {
 }
 
 int8_t WorldManager::getBlockDefault(int64_t x, int64_t y, int64_t z) {
-    int height = int(((fastNoise->GetNoise(x, z) + 1.0f) / 2.0f) * 200);
-    if (y > height || y < 0) {
+    float threshold = 0.55;
+    auto noise = (fastNoise->GetNoise(x, y, z) + 1.0f) / 2.0f;
+    if(noise < threshold)
         return BLOCK_AIR;
-    } else if (y == height) {
-        return BLOCK_GRASS;
-    } else if (y < height && y >= height - 1) {
-        return BLOCK_DIRT;
-    } else {
-        return BLOCK_STONE;
+    else{
+        if((fastNoise->GetNoise(x, y + 1, z) + 1.0f) / 2.0f < threshold){
+            return BLOCK_GRASS;
+        }else if((fastNoise->GetNoise(x, y + 2, z) + 1.0f) / 2.0f < threshold){
+            return BLOCK_DIRT;
+        }else
+            return BLOCK_STONE;
     }
 }
 

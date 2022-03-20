@@ -19,7 +19,7 @@ void MainMenuInterface::init(SceneManager *sceneManager) {
     copyrightText = new UIText("Copyright Boewer AB. Do not quit!", font, 35, 8, height - 38, width - 8, 38, UITextMode::RIGHT);
     playButton->setCallback([](bool hovered, bool pressed) {
         if (hovered && pressed)
-            sceneManagerPtr->setCurrent(ID_SERVER);
+            sceneManagerPtr->setCurrent(ID_GAME);
     });
     quitButton->setCallback([](bool hovered, bool pressed) {
         if (hovered && pressed)

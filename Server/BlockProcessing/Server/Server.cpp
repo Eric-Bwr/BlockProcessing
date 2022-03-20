@@ -4,6 +4,7 @@
 const int PACKET_INFO = 0;
 const int PACKET_DISCONNECT = 1;
 const int PACKET_PING = 2;
+const int PACKET_JOIN = 3;
 
 static Network::Packet info = Network::Packet(PACKET_INFO);
 
@@ -33,6 +34,10 @@ void Server::OnPacketReceive(Network::TCPConnection &connection, Network::Packet
         case PACKET_PING:
             connection.OutStream.Append(packet);
             LOG<INFO_LVL>("Ping Packet from: " + connection.Endpoint.GetIP());
+            break;
+        case PACKET_JOIN:
+            LOG<INFO_LVL>("Join Packet from: " + connection.Endpoint.GetIP());
+
             break;
         default:
             LOG<INFO_LVL>("Packet from: " + connection.Endpoint.GetIP());

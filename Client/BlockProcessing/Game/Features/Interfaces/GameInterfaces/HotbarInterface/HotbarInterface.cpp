@@ -69,6 +69,11 @@ void HotbarInterface::onMouseScroll(double x, double y) {
     }
 }
 
+void HotbarInterface::onResize(int width, int height, float factorX, float factorY) {
+    hotbarWidth *= (int)factorX;
+    hotbarSelectorSize *= (int)factorY;
+}
+
 void HotbarInterface::selectSlot(int slot){
     currentSlot = slot;
     hotbarSelector->setPosition(width / 2 - hotbarWidth / 2 - hotbarAmplifier + slot * hotbarSelectorAdvance, height - hotbarSelectorSize - hotbarOffset + hotbarAmplifier);

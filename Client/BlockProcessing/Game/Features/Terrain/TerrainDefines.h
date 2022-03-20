@@ -1,7 +1,7 @@
 #pragma once
 
 const int CHUNK_SIZE = 16;
-const int OCTREE_MAX_LEVEL = 4;
+const int OCTREE_MAX_LEVEL = 2;
 
 const int CHUNK_SIZE_MINUS_ONE = (CHUNK_SIZE - 1);
 const int CHUNK_CUBIC_SIZE = (CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE);
