@@ -14,48 +14,42 @@ out float visibility;
 uniform float intensity = 0.0015;
 uniform float gradient = 1.2;
 
-const vec3 vertexData[6][5] = {
+const vec3 vertexData[6][4] = {
     {
     vec3(0, 0, 1),
     vec3(1, 0, 1),
     vec3(0, 1, 1),
-    vec3(1, 1, 1),
-    vec3(0, 1, 1)
+    vec3(1, 1, 1)
     },
     {
     vec3(1, 0, 0),
     vec3(0, 0, 0),
     vec3(1, 1, 0),
+    vec3(0, 1, 0)
+    },
+    {
+    vec3(0, 0, 0),
+    vec3(0, 0, 1),
+    vec3(0, 1, 0),
+    vec3(0, 1, 1)
+    },
+    {
+    vec3(1, 0, 1),
+    vec3(1, 0, 0),
+    vec3(1, 1, 1),
+    vec3(1, 1, 0)
+    },
+    {
+    vec3(0, 1, 1),
+    vec3(1, 1, 1),
     vec3(0, 1, 0),
     vec3(1, 1, 0)
     },
     {
     vec3(0, 0, 0),
-    vec3(0, 0, 1),
-    vec3(0, 1, 0),
-    vec3(0, 1, 1),
-    vec3(0, 1, 0)
-    },
-    {
-    vec3(1, 0, 1),
-    vec3(1, 0, 0),
-    vec3(1, 1, 1),
-    vec3(1, 1, 0),
-    vec3(1, 1, 1)
-    },
-    {
-    vec3(0, 1, 1),
-    vec3(1, 1, 1),
-    vec3(0, 1, 0),
-    vec3(1, 1, 0),
-    vec3(0, 1, 0)
-    },
-    {
-    vec3(0, 0, 0),
     vec3(1, 0, 0),
     vec3(0, 0, 1),
-    vec3(1, 0, 1),
-    vec3(0, 0, 1)
+    vec3(1, 0, 1)
     }
 };
 
@@ -68,12 +62,11 @@ const vec3 normalData[6] = {
     vec3(0, -1, 0)
 };
 
-const vec2 textureData[5] = {
+const vec2 textureData[4] = {
     vec2(0, 0),
     vec2(1, 0),
     vec2(0, 1),
-    vec2(1, 1),
-    vec2(0, 1)
+    vec2(1, 1)
 };
 
 layout(std430, binding = 0) buffer data {

@@ -238,7 +238,7 @@ void ChunkManager::renderChunk(Chunk *chunk) {
         model.m32 = chunk->tileZ * CHUNK_SIZE;
         shader->setUniformMatrix4f("viewModel", multiplyMatrix(view, model).getBuffer());
         glBindBufferBase(GL_SHADER_STORAGE_BUFFER, 0, chunk->ssbo);
-        glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 5, chunk->vertexCount);
+        glDrawArraysInstanced(GL_TRIANGLE_STRIP, 0, 4, chunk->vertexCount);
     }
 }
 
