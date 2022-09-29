@@ -252,8 +252,8 @@ void WorldManager::reset() {
 WorldManager::~WorldManager() {
     std::lock_guard<std::mutex> lock(octreeAccess);
     chunkCandidatesForGenerating.clear();
-    modifiedChunks.clear();
     loader->clear();
+    modifiedChunks.clear();
     octrees.clear();
     delete fastNoise;
 }
