@@ -1,6 +1,6 @@
 #include "DebugInterface.h"
 #include "BlockProcessing/Game/Features/Entities/Player/Player.h"
-#include "UIComponents/Text/Structure/FontType.h"
+#include "UI/UIComponents/Text/Structure/FontType.h"
 
 void DebugInterface::init() {
     fps = 0;

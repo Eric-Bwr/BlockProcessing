@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Buffer.h>
-#include <Texture.h>
+#include <OpenGL/Buffer.h>
+#include <OpenGL/Texture.h>
 #include "FileStream.h"
 #include "ModelStructure.h"
 

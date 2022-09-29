@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Shader.h>
-#include <Buffer.h>
-#include <FrameBuffer.h>
+#include <OpenGL/Shader.h>
+#include <OpenGL/Buffer.h>
+#include <OpenGL/FrameBuffer.h>
 
 class PostProcessManager {
 public:

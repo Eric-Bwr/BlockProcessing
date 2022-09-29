@@ -3,7 +3,8 @@
 #include <thread>
 #include <condition_variable>
 #include <iostream>
-#include <Network.h>
+#include <atomic>
+#include <Network/Network.h>
 
 static std::atomic_bool alive = true;
 static std::atomic<int> terminatedThreads = 0;
@@ -13,7 +14,7 @@ static std::condition_variable condition;
 
 static void frame(Server *server) {
     while (alive) {
-        server->Frame();
+        //server->Frame();
     }
     std::lock_guard<std::mutex> lock(mutex);
     terminatedThreads++;
@@ -46,7 +47,7 @@ void BlockProcessing::init(Application* application) {
     }
     LOG<INFO_LVL>("Initializing Server...");
     server.init(parameters.getString("Name", "Server Name").c_str(), parameters.getString("MOTD", "Message of the day").c_str());
-    if (server.Initialize(Network::Endpoint(parameters.getString("IP", "127.0.0.1").c_str(), parameters.getInt("Port", 25566))))
+    if (server.Open(parameters.getString("IP", "127.0.0.1").c_str(), parameters.getInt("Port", 25566), parameters.getInt("Port", 25566)))
         LOG<INFO_LVL>("Initialized Server Successfully");
     else {
         LOG<ERROR_LVL>("Failed to initialize Server");
@@ -67,7 +68,7 @@ void BlockProcessing::update() {
 
 BlockProcessing::~BlockProcessing() {
     LOG<INFO_LVL>("Stopping Threads...");
-    server.Terminate();
+    server.Close();
     alive = false;
     std::unique_lock<std::mutex> lock(mutex);
     condition.wait(lock, [this]() { return terminatedThreads == 2; });

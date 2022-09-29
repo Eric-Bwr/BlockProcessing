@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Shader.h>
-#include <Buffer.h>
-#include <Texture.h>
+#include <OpenGL/Shader.h>
+#include <OpenGL/Buffer.h>
+#include <OpenGL/Texture.h>
 #include <Math/Matrix.h>
 #include "BlockProcessing/Game/Paths.h"
 

@@ -36,7 +36,7 @@ void MainMenuScene::update(double frameDeltaTime) {
     front.norm();
     right = front.cross(worldUp).norm();
     up = (right.cross(front)).norm();
-    view.lookAtModified(position, front, up);
+    view.lookAtO(position, front, up);
     skyBox.update(rotation += rotationSpeed * frameDeltaTime, 0, 1, 0);
 }
 

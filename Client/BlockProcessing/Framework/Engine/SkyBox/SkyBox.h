@@ -1,7 +1,7 @@
 #pragma once
 
 #include <Math/Matrix.h>
-#include "Texture.h"
+#include <OpenGL/Texture.h>
 
 class SkyBox {
 public:

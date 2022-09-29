@@ -1,3 +1,4 @@
+#include <cstring>
 #include "ChunkBorderVisualizer.h"
 #include "BlockProcessing/Game/Paths.h"
 

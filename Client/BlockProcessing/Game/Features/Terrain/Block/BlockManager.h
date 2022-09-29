@@ -1,7 +1,7 @@
 #pragma once
 
 #include <map>
-#include <Texture.h>
+#include <OpenGL/Texture.h>
 #include "BlockProcessing/Game/Paths.h"
 #include "Block.h"
 

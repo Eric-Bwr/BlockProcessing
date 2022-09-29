@@ -1,6 +1,6 @@
 #pragma once
 
-#include <UIColor.h>
+#include <UI/UIColor.h>
 
 const UIColor MESSAGES_ERROR_COLOR = UIColor(0xb02e26);
 #define MESSAGES_ERROR_UNKNOWN_CMD "Unknown Command"

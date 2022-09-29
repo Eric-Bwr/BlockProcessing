@@ -1,7 +1,7 @@
 #include "NetworkManager.h"
 #include "BlockProcessing/Game/Features/Interfaces/MenuInterfaces/ServerMenuInterface/ServerMenuInterface.h"
 #include <thread>
-#include <Network.h>
+#include <Network/Network.h>
 
 const int PACKET_INFO = 0;
 const int PACKET_DISCONNECT = 1;
@@ -14,8 +14,10 @@ static std::atomic_bool alive = true;
 static std::atomic_bool attempt = false;
 static std::atomic_bool update = false;
 static std::atomic_bool receivedInfo = false;
-static Network::Packet pingPacket = Network::Packet(PACKET_PING);
-static Network::Packet infoPacket = Network::Packet(PACKET_INFO);
+static NetPacketPtr infoPacket = std::make_shared<NetPacket>(PACKET_INFO);
+static NetPacketPtr disconnectPacket = std::make_shared<NetPacket>(PACKET_DISCONNECT);
+static NetPacketPtr pingPacket = std::make_shared<NetPacket>(PACKET_PING);
+static NetPacketPtr joinPacket = std::make_shared<NetPacket>(PACKET_JOIN);
 static std::chrono::time_point<std::chrono::system_clock> pingSend;
 
 static void frame(Network::Client* client){
@@ -31,7 +33,8 @@ static void frame(Network::Client* client){
                         client->Close();
                     auto ip = serverAddress.substr(0, serverAddress.find(':'));
                     auto port = (unsigned short)std::stoi(serverAddress.substr(serverAddress.find(':') + 1, serverAddress.size()));
-                    networkManagerPtr->connected = client->Connect(Network::Endpoint(ip.c_str(), port));
+                    client->setConnection(ip.c_str(), port, port);
+                    client->Connect();
                     attempt = false;
                     if (networkManagerPtr->connected)
                         networkManagerPtr->status = STATUS_CONNECTED;
@@ -42,12 +45,12 @@ static void frame(Network::Client* client){
         }else{
             if(networkManagerPtr->connected) {
                 if ((std::chrono::system_clock::now() - pingSend) >= std::chrono::seconds(1)) {
-                    client->Connection.OutStream.Append(pingPacket);
+                    client->TCPOutStream.Append(pingPacket);
                     pingSend = std::chrono::system_clock::now();
                     if(!receivedInfo)
-                        client->Connection.OutStream.Append(infoPacket);
+                        client->TCPOutStream.Append(infoPacket);
                 }
-                client->Frame();
+                client->Update();
             }
         }
     }
@@ -56,8 +59,8 @@ static void frame(Network::Client* client){
 void NetworkManager::init() {
     networkManagerPtr = this;
     Network::Initialize();
-    pingPacket.AppendString("Ping");
-    infoPacket.AppendString("Info");
+    pingPacket->AppendString("Ping");
+    infoPacket->AppendString("Info");
     std::thread thread(frame, (Network::Client*)this);
     thread.detach();
 }
@@ -76,9 +79,8 @@ void NetworkManager::connect(std::string &server) {
 void NetworkManager::join(std::string &playerName) {
     if(!connected)
         return;
-    auto joinPacket = Network::Packet(PACKET_JOIN);
-    joinPacket.AppendString(playerName);
-    Connection.OutStream.Append(joinPacket);
+    joinPacket->AppendString(playerName);
+    TCPOutStream.Append(joinPacket);
     status = STATUS_JOINING;
 }
 
@@ -92,40 +94,40 @@ void NetworkManager::disconnect() {
 void NetworkManager::update() {
     bool success = true;
     while (success) {
-        Network::Packet packet;
+        NetPacketPtr packet;
         packets.get(packet, std::chrono::milliseconds(0), success);
         if (success) {
-            switch(packet.GetPacketType()){
+            switch(packet->GetPacketType()){
                 case PACKET_INFO:
-                    serverMenuInterface->setInfo(packet.GetString().substr(0, 26).c_str(), packet.GetString().substr(0, 30).c_str());
+                    serverMenuInterface->setInfo(packet->GetString().substr(0, 26).c_str(), packet->GetString().substr(0, 30).c_str());
                     receivedInfo = true;
                     break;
                 case PACKET_DISCONNECT:
                     serverMenuInterface->setInfo("", "");
                     break;
                 default:
-                    LOG<WARN_LVL>("Uknown Packet -> " + packet.GetPacketType());
+                    LOG<WARN_LVL>("Uknown Packet -> " + packet->GetPacketType());
                     break;
             }
         }
     }
 }
 
-void NetworkManager::OnConnect() {
-    Connection.OutStream.Append(infoPacket);
+void NetworkManager::OnConnected() {
+    TCPOutStream.Append(infoPacket);
 }
 
-void NetworkManager::OnConnectFail() {
-    packets.push(Network::Packet(PACKET_DISCONNECT));
+void NetworkManager::OnConnectionFailed() {
+    packets.push(disconnectPacket);
 }
 
-void NetworkManager::OnPacketReceive(Network::Packet &packet) {
-    if(packet.GetPacketType() == PACKET_PING)
+void NetworkManager::OnTCPPacketReceived(std::shared_ptr<Network::Packet>& packet) {
+    if(packet->GetPacketType() == PACKET_PING)
         delay = (int)std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now() - pingSend).count();
     else
-        packets.push(std::move(packet));
+        packets.push(packet);
 }
 
-void NetworkManager::OnPacketSend(Network::Packet &packet) {}
+void NetworkManager::OnTCPPacketSent(std::shared_ptr<Network::Packet>& packet) {}
 
 NetworkManager::~NetworkManager() = default;

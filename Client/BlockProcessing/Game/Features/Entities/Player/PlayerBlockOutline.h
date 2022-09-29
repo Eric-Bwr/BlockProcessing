@@ -1,8 +1,8 @@
 #pragma once
 
-#include <Shader.h>
-#include <Buffer.h>
-#include <UIColor.h>
+#include <OpenGL/Shader.h>
+#include <OpenGL/Buffer.h>
+#include <UI/UIColor.h>
 #include <Math/Matrix.h>
 #include "BlockProcessing/Game/Features/Terrain/Util/Coordinate.h"
 

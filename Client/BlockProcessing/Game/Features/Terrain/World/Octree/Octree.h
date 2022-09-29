@@ -6,7 +6,7 @@
 #include <cstdint>
 #include <atomic>
 #include <Math/Matrix.h>
-#include <Shader.h>
+#include <OpenGL/Shader.h>
 #include "BlockProcessing/Game/Features/Terrain/TerrainDefines.h"
 #include "BlockProcessing/Game/Features/Terrain/Util/Coordinate.h"
 #include "BlockProcessing/Game/Features/Terrain/Chunk/Chunk.h"

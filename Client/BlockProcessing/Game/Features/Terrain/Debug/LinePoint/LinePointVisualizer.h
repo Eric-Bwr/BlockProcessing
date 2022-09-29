@@ -1,7 +1,7 @@
 #pragma once
 
-#include <Shader.h>
-#include <Buffer.h>
+#include <OpenGL/Shader.h>
+#include <OpenGL/Buffer.h>
 #include <Math/Matrix.h>
 #include "BlockProcessing/Game/Features/Terrain/TerrainDefines.h"
 

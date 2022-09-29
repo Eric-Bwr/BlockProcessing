@@ -1,5 +1,5 @@
 #include "ModelLoader.h"
-#include "GLUtil/STB.h"
+#include "OpenGL/GLUtil/STB.h"
 
 static unsigned int format, internalFormat;
 static std::vector<Texture*> textures;

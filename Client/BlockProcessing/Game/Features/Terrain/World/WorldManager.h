@@ -2,7 +2,7 @@
 
 #include <cassert>
 #include <thread>
-#include <FastNoise.h>
+#include <FastNoise/FastNoise.h>
 #include <unordered_map>
 #include <unordered_set>
 #include <atomic>

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <Math/Matrix.h>
-#include <Shader.h>
-#include <Buffer.h>
+#include <OpenGL/Shader.h>
+#include <OpenGL/Buffer.h>
 #include "BlockProcessing/Game/Features/Terrain/TerrainDefines.h"
 #include "BlockProcessing/Game/Features/Terrain/Util/Coordinate.h"
 

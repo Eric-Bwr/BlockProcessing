@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Shader.h>
+#include <OpenGL/Shader.h>
 #include "ModelLoader.h"
 
 class Mesh {

@@ -1,4 +1,3 @@
-//Author: Briac
 #pragma once
 
 #include <chrono>

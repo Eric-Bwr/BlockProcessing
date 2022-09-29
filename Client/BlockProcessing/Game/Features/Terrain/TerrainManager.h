@@ -2,8 +2,8 @@
 
 #include "BlockProcessing/Game/Paths.h"
 #include "BlockProcessing/Framework/Engine/Logger/Logger.h"
-#include <Shader.h>
-#include <Texture.h>
+#include <OpenGL/Shader.h>
+#include <OpenGL/Texture.h>
 #include "BlockProcessing/Game/Features/Terrain/Chunk/Chunk.h"
 #include "BlockProcessing/Game/Features/Terrain/Chunk/ChunkManager.h"
 #include "BlockProcessing/Game/Features/Terrain/World/WorldManager.h"

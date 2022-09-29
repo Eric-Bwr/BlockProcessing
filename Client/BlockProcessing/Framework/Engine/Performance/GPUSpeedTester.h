@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include <OpenGL.h>
+#include <OpenGL/OpenGL.h>
 
 static GLuint64 speedGPUTesterBegin, speedGPUTesterEnd;
 static unsigned int queryID[2];

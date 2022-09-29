@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 #include <cctype>
-#include <tchar.h>
+#include <cstring>
 
 struct Binary_buffer {
     uint8_t* _byte_array;
@@ -44,4 +44,3 @@ static std::vector<const char*> endings = { "stl","dae","obj","3ds","fbx","gltf"
 char* getFilename(char* filename);
 const char* toLow(const char* string);
 bool contains(const char* searchFor, const char* searchIn);
-std::vector<std::string> getFilenames(char* exePath);

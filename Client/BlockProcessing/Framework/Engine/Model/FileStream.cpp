@@ -1,5 +1,4 @@
 #include "FileStream.h"
-#include <windows.h>
 
 void binary_buffer_create(Binary_buffer_pointer buffer, uint64_t alloc_size) {
     buffer->_byte_array =  (uint8_t*)malloc(alloc_size);
@@ -214,30 +213,4 @@ const char* toLow(const char* string ) {
         stringLow[i] = (char)tolower((int)string[i]);
     stringLow[len] = '\0';
     return stringLow;
-}
-
-std::vector<std::string> getFilenames(char* exePath) {
-    auto folderPath = new std::string(exePath);
-    folderPath->erase(folderPath->end() - 18, folderPath->end());
-    folderPath->append("\\Input");
-    WIN32_FIND_DATA wfd;
-    HANDLE handle;
-    folderPath->append("/*");
-    TCHAR* path = (TCHAR*)(folderPath->data());
-    std::vector<std::string> filenames;
-    handle = FindFirstFile(path, &wfd);
-    while (FindNextFile(handle, &wfd)) {
-        if (!strcmp((char*)wfd.cFileName, "..") == 0){
-            for(auto toCompare : endings){
-                if(contains(toCompare, toLow(wfd.cFileName))){
-                    filenames.emplace_back(wfd.cFileName);
-                    break;
-                }
-            }
-        }
-    }
-    FindClose(handle);
-    folderPath->clear();
-    delete folderPath;
-    return filenames;
 }

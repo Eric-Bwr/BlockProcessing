@@ -244,7 +244,7 @@ void Player::moveMouse(double xPos, double yPos) {
 }
 
 Mat4d Player::getViewMatrix() {
-    return view.lookAtModified(position, front, up);
+    return view.lookAtO(position, front, up);
 }
 
 Player::~Player() = default;
